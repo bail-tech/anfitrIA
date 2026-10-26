@@ -1,12 +1,15 @@
 /**
  * Scheduled guest messages (pre-arrival, check-out) from templates the host approved once.
- * Runs hourly. Inside WhatsApp's 24-hour window it sends; otherwise (WhatsApp needs a
+ * Runs daily (Vercel Hobby crons are daily); each message goes out in the run nearest its due time. Inside WhatsApp's 24-hour window it sends; otherwise (WhatsApp needs a
  * Meta-approved template for business-initiated messages) it leaves a card for the host.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { features } from '@/lib/env';
 import { inServiceWindow, sendText } from '@/lib/channels/whatsapp';
 import type { Conversation, MessageTemplate, Property, Reservation } from '@/lib/types';
+
+/** Half the cron period: with a daily run, every due time falls in exactly one run's window. */
+export const SEND_WINDOW_MS = 12 * 3_600_000;
 
 const PLACEHOLDER = /\{(guest_name|check_in|check_out|check_in_time|check_out_time|property_name)\}/g;
 
@@ -48,7 +51,7 @@ export async function runLifecycle(db: SupabaseClient, orgId: number, now = new 
     for (const r of (res ?? []) as Reservation[]) {
       for (const t of (templates as MessageTemplate[]).filter((x) => x.property_id === null || x.property_id === p.id)) {
         const due = dueAt(t, r, p);
-        if (local < due || local >= due + 2 * 3_600_000) continue; // hourly cron, 2 h grace
+        if (Math.abs(local - due) >= SEND_WINDOW_MS) continue; // daily cron: the run nearest the due time sends it
         const key = `lifecycle:${t.id}:${r.id}`;
         const { data: done } = await db.from('audit_logs').select('id').eq('org_id', orgId).eq('action', 'lifecycle_message').eq('detail', key).maybeSingle();
         if (done) continue;

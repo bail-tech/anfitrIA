@@ -1,4 +1,4 @@
-/** Hourly (Vercel cron): scheduled guest messages, plus the daily pricing and weekly analytics agents. */
+/** Daily at 07:00 UTC (Vercel cron): scheduled guest messages, plus the daily pricing and weekly analytics agents. */
 import { runLifecycle } from '@/lib/agents/lifecycle';
 import { startManagedRun, type ManagedAgentKey } from '@/lib/agents/managed';
 import { features } from '@/lib/env';
@@ -23,8 +23,8 @@ export async function GET(request: Request) {
     }
   }
 
-  // Managed agents: pricing daily at 07:00 UTC, analytics on Mondays at 07:00 UTC.
-  if (features.managedAgents() && now.getUTCHours() === 7) {
+  // Managed agents: pricing every day, analytics on Mondays (this cron runs at 07:00 UTC).
+  if (features.managedAgents()) {
     const due: ManagedAgentKey[] = now.getUTCDay() === 1 ? ['pricing', 'analytics'] : ['pricing'];
     const { data: settings } = await db.from('agent_settings').select('org_id, agent').eq('enabled', true).in('agent', due);
     for (const s of settings ?? []) {
