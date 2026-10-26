@@ -1,0 +1,50 @@
+{
+  "name": "anfitria",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run skills:build && next dev",
+    "build": "npm run skills:build && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run skills:build && vitest run",
+    "skills:build": "tsx scripts/build-skills.ts",
+    "skills:sync": "tsx scripts/sync-skills.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.61.0",
+    "next": "^16.0.7",
+    "next-intl": "^4.14.9",
+    "openai": "^7.45.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.7.0",
+    "three": "^0.186.1",
+    "unpdf": "^1.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.0.7",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
