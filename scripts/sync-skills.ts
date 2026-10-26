@@ -25,7 +25,7 @@ async function main() {
     try {
       if (ids[name]) {
         const version = await client.skills.versions.create(ids[name], { files });
-        console.log(`${name}: new version ${version.version}`);
+        console.log(`${name}: new version ${version.id}`);
       } else {
         const skill = await client.skills.create({ files });
         ids[name] = skill.id;

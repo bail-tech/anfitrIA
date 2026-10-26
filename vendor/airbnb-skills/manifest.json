@@ -1,0 +1,26 @@
+{
+  "name": "airbnb-skills",
+  "version": "1.0.1",
+  "description": "Agent skills for Airbnb stay data via StayingAPI.com",
+  "author": "Staying API",
+  "homepage": "https://stayingapi.com",
+  "repository": "https://github.com/nikhonit/airbnb-skills",
+  "license": "MIT-0",
+  "skills": [
+    {
+      "name": "airbnb-full",
+      "path": "skills/airbnb-full",
+      "description": "Complete Airbnb stay data toolkit — id/URL/address lookup, sub-resources, search, async batch jobs, webhooks, account/usage."
+    },
+    {
+      "name": "airbnb-stay",
+      "path": "skills/airbnb-stay",
+      "description": "Single Airbnb listing lookup by id, URL, or address, plus photos, reviews, host, amenities, availability, pricing, location, and rating."
+    },
+    {
+      "name": "airbnb-search",
+      "path": "skills/airbnb-search",
+      "description": "Search Airbnb listings by location, dates, price, beds, capacity, and host attributes (superhost, instant-book, luxury)."
+    }
+  ]
+}

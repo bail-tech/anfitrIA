@@ -75,8 +75,8 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   if (input.externalId) {
     const { data: existing } = await db.from('messages').select('*').eq('external_id', input.externalId).maybeSingle();
     if (existing) {
-      const conversation = must(await db.from('conversations').select('*').eq('id', existing.conversation_id).single(), 'conversation');
-      const { data: draft } = await db.from('drafts').select('*').eq('inbound_message_id', existing.id).maybeSingle();
+      const conversation = must(await db.from('conversations').select('*').eq('id', existing.conversation_id).single<Conversation>(), 'conversation');
+      const { data: draft } = await db.from('drafts').select('*').eq('inbound_message_id', existing.id).maybeSingle<Draft>();
       return { conversation, inbound: existing, draft: draft ?? null, answered: false, reason: null, duplicate: true };
     }
   }
@@ -115,7 +115,9 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   );
 
   // Link the conversation to the guest's reservation.
-  const { data: guestReservations } = await db.from('reservations').select('*').eq('property_id', property.id).eq('guest_ref', guestRef);
+  // WhatsApp sends numbers without "+"; bookings may store them with it.
+  const bare = guestRef.replace(/^\+/, '');
+  const { data: guestReservations } = await db.from('reservations').select('*').eq('property_id', property.id).in('guest_ref', [bare, `+${bare}`]);
   const reservation = pickReservation((guestReservations ?? []) as Reservation[], today);
   const convPatch: Partial<Conversation> = { last_guest_message_at: now.toISOString() };
   if (reservation && conversation.reservation_id !== reservation.id) convPatch.reservation_id = reservation.id;
