@@ -12,7 +12,8 @@ import { rateLimit } from '@/lib/rate-limit';
 import { getSession } from '@/lib/supabase/server';
 import { BROWSER_EVENTS, LIVE_MODEL, LIVE_VOICE, VOICE_SESSIONS_PER_HOUR, voiceInstructions } from '@/lib/voice/live';
 
-const Body = z.object({ sdp: z.string().trim().min(1).max(20_000), locale: z.enum(['es', 'en']).default('es') });
+// No .trim() on the SDP: an offer must end with CRLF, and trimming it makes OpenAI fail with "unmarshal SDP: EOF".
+const Body = z.object({ sdp: z.string().min(1).max(20_000), locale: z.enum(['es', 'en']).default('es') });
 
 let client: OpenAI | null = null;
 
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
         client: { data_channel: { allowed_client_events: BROWSER_EVENTS } },
         store: false,
       },
-      transport: { type: 'webrtc', sdp: parsed.data.sdp },
+      transport: { type: 'webrtc', sdp: parsed.data.sdp.endsWith('\r\n') ? parsed.data.sdp : `${parsed.data.sdp.replace(/\s+$/, '')}\r\n` },
     });
     return Response.json({ session: { id: result.session.id }, transport: result.transport }, { status: 201 });
   } catch (e) {
