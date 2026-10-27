@@ -57,7 +57,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
         <Card data-anfi="list" className="divide-y divide-line">
           {rows.map(({ c, last, pending }) => (
             <Link key={c.id} href={`/bandeja/${c.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-sand/40">
-              <div className={cn('size-2.5 shrink-0 rounded-full', pending ? (pending.reason === 'urgente' ? 'bg-terra' : 'bg-gold') : c.handoff ? 'bg-violet' : 'bg-sage')} />
+              <div className={cn('size-2.5 shrink-0 rounded-full', pending ? (pending.reason === 'urgente' ? 'bg-terra' : 'bg-brand') : c.handoff ? 'bg-violet' : 'bg-sage')} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 text-sm">
                   <span className="font-medium">{c.reservation_id ? gname.get(c.reservation_id) : c.guest_ref}</span>

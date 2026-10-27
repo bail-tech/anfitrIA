@@ -27,7 +27,7 @@ export function ProposalCard({ proposal, onDecide }: { proposal: Proposal; onDec
   }
 
   return (
-    <div className="rounded-2xl border border-gold/40 bg-gold-soft/40 p-3 text-sm">
+    <div className="rounded-2xl border border-brand/40 bg-brand-soft/40 p-3 text-sm">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="font-medium">{proposal.title}</span>
         <Badge tone={KIND_TONE[proposal.kind] ?? 'neutral'}>{proposal.kind.replace('_', ' ')}</Badge>

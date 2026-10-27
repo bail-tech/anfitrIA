@@ -19,7 +19,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 
 const BUTTON = {
   primary: 'bg-ink text-cream hover:bg-ink/90',
-  gold: 'bg-gold text-white hover:bg-gold/90',
+  gold: 'bg-brand font-medium text-ink hover:bg-brand/90',
   ghost: 'border border-line bg-paper hover:bg-sand/60',
   danger: 'border border-terra/40 bg-terra-soft text-terra hover:bg-terra-soft/70',
 };
@@ -34,9 +34,9 @@ export function buttonClass(variant: keyof typeof BUTTON = 'primary', size: 'sm'
 
 const TONES = {
   neutral: 'bg-sand text-ink/80',
-  gold: 'bg-gold-soft text-[#8a6418]',
+  gold: 'bg-brand-soft text-brand-ink',
   sage: 'bg-sage-soft text-[#2f6b4f]',
-  terra: 'bg-terra-soft text-[#9a4220]',
+  terra: 'bg-terra-soft text-terra-ink',
   violet: 'bg-violet-soft text-[#5a3fa0]',
 };
 export type Tone = keyof typeof TONES;
@@ -46,7 +46,7 @@ export function Badge({ tone = 'neutral', children, className }: { tone?: Tone; 
 }
 
 export function Dot({ tone, pulse }: { tone: 'sage' | 'gold' | 'terra' | 'muted' | 'violet'; pulse?: boolean }) {
-  const color = { sage: 'bg-sage', gold: 'bg-gold', terra: 'bg-terra', muted: 'bg-muted/40', violet: 'bg-violet' }[tone];
+  const color = { sage: 'bg-sage', gold: 'bg-brand', terra: 'bg-terra', muted: 'bg-muted/40', violet: 'bg-violet' }[tone];
   return <span className={cn('inline-block size-2 rounded-full', color, pulse && 'animate-pulse-dot')} />;
 }
 
@@ -55,7 +55,7 @@ export function StatTile({ label, value, delta, icon, hint }: { label: string; v
     <Card className="p-4">
       <div className="flex items-center justify-between text-xs text-muted">
         <span>{label}</span>
-        <span className="text-gold">{icon}</span>
+        <span className="text-brand">{icon}</span>
       </div>
       <div className="mt-3 font-display text-3xl font-semibold tracking-tight">{value}</div>
       {delta ? (
@@ -70,7 +70,7 @@ export function StatTile({ label, value, delta, icon, hint }: { label: string; v
 }
 
 /** Small bar chart (SVG), no chart library. */
-export function Bars({ values, color = '#c79a3c', height = 64, labels }: { values: number[]; color?: string; height?: number; labels?: string[] }) {
+export function Bars({ values, color = '#1dbf8e', height = 64, labels }: { values: number[]; color?: string; height?: number; labels?: string[] }) {
   const max = Math.max(...values, 1e-9);
   const w = 100 / Math.max(values.length, 1);
   return (
@@ -83,7 +83,7 @@ export function Bars({ values, color = '#c79a3c', height = 64, labels }: { value
   );
 }
 
-export function Sparkline({ values, color = '#5f9e80' }: { values: number[]; color?: string }) {
+export function Sparkline({ values, color = '#0f9d74' }: { values: number[]; color?: string }) {
   if (values.length < 2) return <div className="h-10" />;
   const max = Math.max(...values, 1);
   const pts = values.map((v, i) => `${(i / (values.length - 1)) * 100},${38 - (v / max) * 34}`).join(' ');
@@ -103,7 +103,7 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
   );
 }
 
-export const inputClass = 'w-full rounded-xl border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-gold/20';
+export const inputClass = 'w-full rounded-xl border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/20';
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (

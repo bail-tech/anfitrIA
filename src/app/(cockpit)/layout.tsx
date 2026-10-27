@@ -33,7 +33,7 @@ export default async function CockpitLayout({ children }: { children: React.Reac
           </div>
           <div className="flex items-center gap-2 text-xs">
             <span className="hidden font-mono text-muted sm:inline">{now}</span>
-            <Link href="/agentes" className="rounded-full border border-gold/40 bg-gold-soft/60 px-2.5 py-1 font-medium text-[#8a6418]">
+            <Link href="/agentes" className="rounded-full border border-brand/40 bg-brand-soft/60 px-2.5 py-1 font-medium text-brand-ink">
               ● {activeAgents}/5 {t('agents').toLowerCase()}
             </Link>
             <Link href="/bandeja" className="relative rounded-xl border border-line bg-paper p-2" aria-label="notifications">
@@ -44,7 +44,7 @@ export default async function CockpitLayout({ children }: { children: React.Reac
               <input type="hidden" name="locale" value={locale === 'es' ? 'en' : 'es'} />
               <button className="rounded-xl border border-line bg-paper px-2 py-1.5 font-medium uppercase">{locale === 'es' ? 'EN' : 'ES'}</button>
             </form>
-            <span className="grid size-8 place-items-center rounded-full bg-gold-soft font-semibold text-[#8a6418]">{profile.name.slice(0, 1).toUpperCase()}</span>
+            <span className="grid size-8 place-items-center rounded-full bg-brand-soft font-semibold text-brand-ink">{profile.name.slice(0, 1).toUpperCase()}</span>
           </div>
         </header>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 lg:px-8">{children}</main>

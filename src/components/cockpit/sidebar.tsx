@@ -24,9 +24,9 @@ function NavLink({ href, icon: Icon, label, right, onNavigate }: { href: string;
     <Link
       href={href}
       onClick={onNavigate}
-      className={cn('flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors', active ? 'bg-gold-soft/70 font-medium text-ink' : 'text-ink/75 hover:bg-sand/70')}
+      className={cn('flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors', active ? 'bg-brand-soft/70 font-medium text-ink' : 'text-ink/75 hover:bg-sand/70')}
     >
-      <Icon className={cn('size-4', active ? 'text-gold' : 'text-muted')} />
+      <Icon className={cn('size-4', active ? 'text-brand' : 'text-muted')} />
       <span className="flex-1">{label}</span>
       {right}
     </Link>

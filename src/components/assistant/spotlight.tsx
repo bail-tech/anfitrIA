@@ -52,7 +52,7 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
   return createPortal(
     <div className="fixed inset-0 z-[60]" onClick={ui.exit} role="presentation">
       <div
-        className="pointer-events-none fixed rounded-2xl ring-2 ring-gold motion-safe:transition-all motion-safe:duration-300"
+        className="pointer-events-none fixed rounded-2xl ring-2 ring-brand motion-safe:transition-all motion-safe:duration-300"
         style={{ ...rect, boxShadow: '0 0 0 9999px rgba(43,38,32,0.45)' }}
       />
       <div
@@ -63,7 +63,7 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
         style={{ top: cardTop, left: cardLeft, width: `min(${CARD_W}px, calc(100vw - 24px))` }}
       >
         <div className="mb-1 flex items-center gap-2 font-medium">
-          <Sparkles className="size-4 text-gold" /> {spot.title}
+          <Sparkles className="size-4 text-brand" /> {spot.title}
           {spot.step && <span className="ml-auto font-mono text-xs text-muted">{spot.step.index + 1}/{spot.step.total}</span>}
         </div>
         {spot.note && <p className="text-muted">{spot.note}</p>}

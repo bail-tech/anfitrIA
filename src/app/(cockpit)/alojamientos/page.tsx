@@ -31,7 +31,7 @@ export default async function PropertiesPage() {
           {properties.map((p) => (
             <Link key={p.id} href={`/alojamientos/${p.id}`}>
               <Card className="flex items-center gap-4 p-4 transition-shadow hover:shadow-lg">
-                <span className="grid size-10 place-items-center rounded-xl bg-gold-soft text-gold">
+                <span className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
                   <Home className="size-5" />
                 </span>
                 <div className="flex-1">
@@ -64,7 +64,7 @@ export default async function PropertiesPage() {
       </div>
 
       <h2 data-anfi="buildings" className="mb-3 mt-8 flex items-center gap-2 font-display text-xl font-semibold">
-        <Building2 className="size-5 text-gold" /> {t('buildings')}
+        <Building2 className="size-5 text-brand" /> {t('buildings')}
       </h2>
       <div className="space-y-4">
         {buildings.map((b) => (

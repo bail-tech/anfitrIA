@@ -22,7 +22,7 @@ const DOT: Record<AssistantState, string> = {
   idle: 'bg-muted/40',
   thinking: 'bg-sage animate-pulse-dot',
   working: 'bg-sage animate-pulse-dot',
-  approval: 'bg-gold',
+  approval: 'bg-brand',
   done: 'bg-sage',
   error: 'bg-terra',
 };
@@ -102,7 +102,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
           if (item.kind === 'assistant')
             return (
               <div key={item.id} className="mr-6 flex gap-2">
-                <Bot className="mt-1 size-4 shrink-0 text-gold" />
+                <Bot className="mt-1 size-4 shrink-0 text-brand" />
                 <div className="whitespace-pre-wrap rounded-2xl rounded-tl-md border border-line bg-paper px-3 py-2">{item.text}</div>
               </div>
             );
@@ -114,7 +114,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
                 {item.detail && <span className="text-terra">· {item.detail}</span>}
               </div>
             );
-          if (item.kind === 'ui') return <div key={item.id} className="pl-6 text-xs text-gold">{item.text}</div>;
+          if (item.kind === 'ui') return <div key={item.id} className="pl-6 text-xs text-brand-ink">{item.text}</div>;
           if (item.kind === 'proposal') return <ProposalCard key={item.id} proposal={item.proposal} onDecide={assistant.decide} />;
           return (
             <div key={item.id} className={cn('rounded-xl px-3 py-2 text-xs', item.tone === 'error' ? 'bg-terra-soft text-terra' : 'bg-sand text-muted')}>
@@ -136,7 +136,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
       </div>
 
       {voice.error && (
-        <p className="shrink-0 border-t border-line bg-terra-soft px-3 py-2 text-xs text-[#9a4220]" role="alert">
+        <p className="shrink-0 border-t border-line bg-terra-soft px-3 py-2 text-xs text-terra-ink" role="alert">
           {t(['mic', 'openai_auth', 'openai_quota', 'openai_model'].includes(voice.error) ? `voiceErr_${voice.error as 'mic'}` : 'voiceErr_other')}
         </p>
       )}
@@ -150,7 +150,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
         >
           {voice.active ? <MicOff className="size-4" /> : <Mic className="size-4" />}
         </button>
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t('placeholder')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-gold" />
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t('placeholder')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-brand" />
         <button disabled={!text.trim() || assistant.busy} aria-label={t('send')} className="grid size-10 shrink-0 place-items-center rounded-xl bg-ink text-cream disabled:opacity-40">
           {assistant.busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         </button>

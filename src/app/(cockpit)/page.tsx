@@ -12,7 +12,7 @@ import { Badge, Bars, Card, Dot, PageHeader, Sparkline, StatTile } from '@/compo
 
 export const metadata = { title: 'Resumen' };
 
-const AGENT_COLOR: Record<AgentKey, string> = { guest: '#8467c9', operations: '#d0693f', pricing: '#c79a3c', analytics: '#5f9e80', marketing: '#4e8fc4' };
+const AGENT_COLOR: Record<AgentKey, string> = { guest: '#8467c9', operations: '#f25c4c', pricing: '#1dbf8e', analytics: '#0f9d74', marketing: '#4e8fc4' };
 const AGENTS: AgentKey[] = ['guest', 'operations', 'pricing', 'analytics', 'marketing'];
 
 const dayOffset = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
@@ -75,15 +75,15 @@ export default async function OverviewPage() {
       <div data-anfi="trends" className="mt-4 grid gap-3 md:grid-cols-3">
         <Card className="p-4">
           <div className="mb-3 text-xs text-muted">{t('revenue7')}</div>
-          <Bars values={o.week.map((d) => d.revenue)} color="#c79a3c" labels={o.week.map((d) => d.day)} />
+          <Bars values={o.week.map((d) => d.revenue)} color="#1dbf8e" labels={o.week.map((d) => d.day)} />
         </Card>
         <Card className="p-4">
           <div className="mb-3 text-xs text-muted">{t('occupancy7')}</div>
-          <Bars values={o.week.map((d) => d.occupancy)} color="#5f9e80" labels={o.week.map((d) => d.day)} />
+          <Bars values={o.week.map((d) => d.occupancy)} color="#0f9d74" labels={o.week.map((d) => d.day)} />
         </Card>
         <Card className="p-4">
           <div className="mb-3 text-xs text-muted">{t('adr7')}</div>
-          <Bars values={o.week.map((d) => d.adr)} color="#7cc4a4" labels={o.week.map((d) => d.day)} />
+          <Bars values={o.week.map((d) => d.adr)} color="#f25c4c" labels={o.week.map((d) => d.day)} />
         </Card>
       </div>
 
@@ -96,7 +96,7 @@ export default async function OverviewPage() {
           ] as const
         ).map(([key, list]) => (
           <div key={key} className="flex items-start gap-3">
-            <BedDouble className="mt-0.5 size-4 text-gold" />
+            <BedDouble className="mt-0.5 size-4 text-brand" />
             <div>
               <div className="text-xs text-muted">
                 {t('today')} · {t(key)}
@@ -159,7 +159,7 @@ export default async function OverviewPage() {
         </div>
 
         <Card data-anfi="health" className="h-fit p-4">
-          <div className="text-xs font-medium uppercase tracking-wider text-gold">● {t('health')}</div>
+          <div className="text-xs font-medium uppercase tracking-wider text-brand-ink">● {t('health')}</div>
           <div className="mt-3 font-display text-xl font-semibold">{features.claude() ? CLAUDE_MODEL_NAME : th('mock')}</div>
           <div className="font-mono text-xs text-muted">{features.claude() ? CLAUDE_MODEL : 'mock · sin ANTHROPIC_API_KEY'}</div>
           <ul className="mt-4 space-y-2 text-sm">
@@ -181,7 +181,7 @@ export default async function OverviewPage() {
             ))}
           </ul>
           {o.pending.drafts > 0 && (
-            <Link href="/bandeja" className="mt-4 block rounded-xl bg-terra-soft px-3 py-2 text-sm text-[#9a4220]">
+            <Link href="/bandeja" className="mt-4 block rounded-xl bg-terra-soft px-3 py-2 text-sm text-terra-ink">
               {o.pending.drafts} {t('escalations').toLowerCase()} → {t('openInbox')}
             </Link>
           )}

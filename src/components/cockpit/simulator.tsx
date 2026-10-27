@@ -77,7 +77,7 @@ export function Simulator({ properties, guests }: { properties: Array<{ id: numb
         </div>
       </Card>
       <Card className="flex min-h-[420px] flex-col p-4">
-        <div className="flex-1 space-y-2 rounded-2xl bg-[#e9e2d3]/50 p-3">
+        <div className="flex-1 space-y-2 rounded-2xl bg-sand/70 p-3">
           {thread.map((m) => (
             <div key={m.id} className={cn('flex', m.direction === 'in' ? 'justify-end' : 'justify-start')}>
               <div className={cn('max-w-[80%] rounded-2xl px-3 py-2 text-sm shadow-sm', m.direction === 'in' ? 'rounded-br-md bg-[#d9f5c9]' : 'rounded-bl-md bg-paper')}>{m.text}</div>

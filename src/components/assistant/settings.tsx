@@ -16,7 +16,7 @@ export interface AnfiPrefs {
 /** Language names in their own language, so the host can find theirs whatever the panel shows. */
 const NATIVE: Record<Exclude<AssistantLanguage, 'auto'>, string> = { es: 'Español', en: 'English', fr: 'Français', de: 'Deutsch', it: 'Italiano' };
 
-const field = 'h-9 w-full rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-gold';
+const field = 'h-9 w-full rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-brand';
 
 /** The ⚙ pill in the dock header and its modal: Anfi's language, the panel language and Anfi's voice. */
 export function AnfiSettings({ prefs, onSaved, voiceActive }: { prefs: AnfiPrefs; onSaved: (p: AnfiPrefs) => void; voiceActive: boolean }) {
@@ -146,8 +146,8 @@ export function AnfiSettings({ prefs, onSaved, voiceActive }: { prefs: AnfiPrefs
             <span className="block text-xs text-muted">{t('settingsCustomHint')}</span>
           </label>
 
-          {voiceActive && <p className="rounded-xl bg-gold-soft/60 px-3 py-2 text-xs text-[#8a6418]">{t('settingsRestartNote')}</p>}
-          {error && <p className="rounded-xl bg-terra-soft px-3 py-2 text-xs text-[#9a4220]" role="alert">{error}</p>}
+          {voiceActive && <p className="rounded-xl bg-brand-soft/60 px-3 py-2 text-xs text-brand-ink">{t('settingsRestartNote')}</p>}
+          {error && <p className="rounded-xl bg-terra-soft px-3 py-2 text-xs text-terra-ink" role="alert">{error}</p>}
 
           <div className="flex justify-end gap-2 pt-1">
             <button type="button" onClick={close} className="rounded-xl border border-line px-3 py-2 hover:bg-sand">{t('settingsCancel')}</button>

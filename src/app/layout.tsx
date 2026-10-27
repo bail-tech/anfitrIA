@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: 'Conserje con IA supervisada para alquiler vacacional: tu cockpit con voz.',
 };
 
-export const viewport: Viewport = { themeColor: '#f7f3ec', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#fbf8f2', width: 'device-width', initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();

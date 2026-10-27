@@ -5,19 +5,21 @@
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Warm, calm hospitality palette */
-  --color-cream: #f7f3ec;
-  --color-paper: #fffdf9;
-  --color-sand: #ece5d8;
-  --color-ink: #2b2620;
-  --color-muted: #7a7166;
-  --color-line: #e7dfd1;
-  --color-gold: #c79a3c;
-  --color-gold-soft: #f4e7c8;
-  --color-sage: #5f9e80;
-  --color-sage-soft: #dcefe4;
-  --color-terra: #d0693f;
-  --color-terra-soft: #f8e0d4;
+  /* The logo's palette: emerald robot, coral roof, cream background */
+  --color-cream: #fbf8f2;
+  --color-paper: #ffffff;
+  --color-sand: #f1eee6;
+  --color-ink: #16302a;
+  --color-muted: #66756f;
+  --color-line: #e8e3d8;
+  --color-brand: #1dbf8e;
+  --color-brand-soft: #d5f5e9;
+  --color-brand-ink: #0b7353;
+  --color-sage: #0f9d74;
+  --color-sage-soft: #d9f2e8;
+  --color-terra: #f25c4c;
+  --color-terra-soft: #fde3df;
+  --color-terra-ink: #b7352a;
   --color-violet: #8467c9;
   --color-violet-soft: #e9e2f7;
   --color-sky: #4e8fc4;
@@ -31,13 +33,13 @@ body {
 
 body {
   background-image:
-    linear-gradient(rgba(199, 154, 60, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 154, 60, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(29, 191, 142, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 191, 142, 0.045) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
 ::selection {
-  background: var(--color-gold-soft);
+  background: var(--color-brand-soft);
 }
 
 ::-webkit-scrollbar {
@@ -45,7 +47,7 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(122 113 102 / 0.35);
+  background: rgb(102 117 111 / 0.35);
   border-radius: 4px;
 }
 
