@@ -151,7 +151,7 @@ export function AnfiSettings({ prefs, onSaved, voiceActive }: { prefs: AnfiPrefs
 
           <div className="flex justify-end gap-2 pt-1">
             <button type="button" onClick={close} className="rounded-xl border border-line px-3 py-2 hover:bg-sand">{t('settingsCancel')}</button>
-            <button disabled={saving} className="flex items-center gap-2 rounded-xl bg-ink px-4 py-2 text-cream disabled:opacity-50">
+            <button disabled={saving} className="flex items-center gap-2 rounded-xl bg-brand px-4 py-2 font-semibold text-ink disabled:opacity-50">
               {saving && <Loader2 className="size-4 animate-spin" />} {t('settingsSave')}
             </button>
           </div>

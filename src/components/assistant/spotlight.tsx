@@ -72,12 +72,12 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
             <>
               <button onClick={ui.exit} className="rounded-lg px-2.5 py-1.5 hover:bg-sand">{t('tourExit')}</button>
               {spot.step.index > 0 && <button onClick={ui.back} className="rounded-lg border border-line px-2.5 py-1.5 hover:bg-sand">{t('tourBack')}</button>}
-              <button onClick={ui.next} className="rounded-lg bg-ink px-3 py-1.5 text-cream" autoFocus>
+              <button onClick={ui.next} className="rounded-lg bg-brand px-3 py-1.5 font-semibold text-ink" autoFocus>
                 {spot.step.index + 1 < spot.step.total ? t('tourNext') : t('tourDone')}
               </button>
             </>
           ) : (
-            <button onClick={ui.exit} className="rounded-lg bg-ink px-3 py-1.5 text-cream" autoFocus>{t('tourOk')}</button>
+            <button onClick={ui.exit} className="rounded-lg bg-brand px-3 py-1.5 font-semibold text-ink" autoFocus>{t('tourOk')}</button>
           )}
         </div>
       </div>

@@ -18,7 +18,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 }
 
 const BUTTON = {
-  primary: 'bg-ink text-cream hover:bg-ink/90',
+  primary: 'bg-brand font-semibold text-ink hover:bg-brand/90',
   gold: 'bg-brand font-medium text-ink hover:bg-brand/90',
   ghost: 'border border-line bg-paper hover:bg-sand/60',
   danger: 'border border-terra/40 bg-terra-soft text-terra hover:bg-terra-soft/70',

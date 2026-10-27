@@ -151,7 +151,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
           {voice.active ? <MicOff className="size-4" /> : <Mic className="size-4" />}
         </button>
         <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t('placeholder')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-brand" />
-        <button disabled={!text.trim() || assistant.busy} aria-label={t('send')} className="grid size-10 shrink-0 place-items-center rounded-xl bg-ink text-cream disabled:opacity-40">
+        <button disabled={!text.trim() || assistant.busy} aria-label={t('send')} className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand text-ink disabled:opacity-40">
           {assistant.busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         </button>
       </form>
@@ -182,7 +182,7 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
   }
   return (
     <>
-      <button onClick={() => setSheet('open')} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-sm text-cream shadow-lg" aria-label={t('open')}>
+      <button onClick={() => setSheet('open')} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-brand px-4 py-3 text-sm font-semibold text-ink shadow-lg" aria-label={t('open')}>
         <MessageCircle className="size-4" /> {t('title')}
       </button>
       {sheet !== 'closed' && (
