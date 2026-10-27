@@ -16,6 +16,21 @@ const Body = z.object({ sdp: z.string().trim().min(1).max(20_000), locale: z.enu
 
 let client: OpenAI | null = null;
 
+/** Safe facts about the configured key for diagnosing 401s; never logs the key itself. */
+function keyShape(raw: string | undefined) {
+  const v = raw ?? '';
+  const t = v.trim();
+  return {
+    length: v.length,
+    trimmedLength: t.length,
+    prefix: t.slice(0, 7),
+    hasInnerWhitespace: /\s/.test(t),
+    hasNonAscii: /[^\x21-\x7e]/.test(t),
+    hasQuotes: /["']/.test(t),
+    hasEquals: t.includes('='),
+  };
+}
+
 export async function POST(request: Request) {
   if (!features.openai()) return fail(503, 'Voice is not enabled on this deployment', 'not_configured');
   if (!sameOrigin(request)) return fail(403, 'unexpected origin');
@@ -41,7 +56,7 @@ export async function POST(request: Request) {
     return Response.json({ session: { id: result.session.id }, transport: result.transport }, { status: 201 });
   } catch (e) {
     if (e instanceof OpenAI.APIError) {
-      console.error('Live session creation failed', e.status, e.message);
+      console.error('Live session creation failed', e.status, e.message, keyShape(process.env.OPENAI_API_KEY));
       if (e.status === 401 || e.status === 403) return fail(502, 'OpenAI rejected the API key (check OPENAI_API_KEY and its permissions)', 'openai_auth');
       if (e.status === 429) return fail(502, 'OpenAI quota or rate limit reached (check billing)', 'openai_quota');
       if (e.status === 404) return fail(502, 'This OpenAI account has no access to the voice model', 'openai_model');
