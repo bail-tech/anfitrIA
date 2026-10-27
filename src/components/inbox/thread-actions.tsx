@@ -115,7 +115,7 @@ export function ThreadActions({ conversationId, handoff, windowOpen, ttsAvailabl
       )}
       {handoff && <p className="rounded-xl bg-violet-soft px-3 py-2 text-sm text-[#5a3fa0]">{t('handoffOn')}</p>}
       {!windowOpen && <p className="rounded-xl bg-terra-soft px-3 py-2 text-sm text-[#9a4220]">{t('windowClosed')}</p>}
-      <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} placeholder={t('placeholder')} className={inputClass} />
+      <textarea name="text" value={text} onChange={(e) => setText(e.target.value)} rows={4} placeholder={t('placeholder')} className={inputClass} />
       {draft && (
         <label className="flex flex-wrap items-center gap-2 text-sm">
           <input type="checkbox" checked={learn} onChange={(e) => setLearn(e.target.checked)} />

@@ -4,6 +4,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { speak } from '@/lib/audio/openai';
+import { ttsVoiceFor } from '@/lib/voice/voices';
 import { features } from '@/lib/env';
 import { sendText } from '@/lib/channels/whatsapp';
 import { addKnowledge, loadConversation, resolvePrivate, sendHostAudio, sendHostReply } from '@/lib/concierge/host';
@@ -44,7 +45,7 @@ export async function decideProposal(db: SupabaseClient, profile: Profile, id: s
         if (payload.as_voice && features.openai()) {
           const ctx = await loadConversation(db, p.conversation_id);
           const spoken = await resolvePrivate(db, ctx, text, 'es');
-          const audio = await speak(spoken, 'es');
+          const audio = await speak(spoken, 'es', ttsVoiceFor(profile.voice));
           await sendHostAudio(db, profile, { conversationId: p.conversation_id, data: audio, mime: 'audio/ogg', transcript: spoken, mode: 'assistant_voice', draftId: payload.draft_id });
         } else {
           // "Learn" pairs the guest's original question with the approved answer.

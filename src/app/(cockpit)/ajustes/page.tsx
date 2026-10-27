@@ -29,7 +29,7 @@ export default async function SettingsPage() {
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="p-4">
+        <Card data-anfi="team" className="p-4">
           <h2 className="mb-3 font-medium">{t('team')}</h2>
           <ul className="mb-3 divide-y divide-line text-sm">
             {((members ?? []) as Profile[]).map((m) => (
@@ -60,7 +60,7 @@ export default async function SettingsPage() {
           )}
         </Card>
 
-        <Card className="p-4">
+        <Card data-anfi="integrations" className="p-4">
           <h2 className="mb-1 font-medium">{t('integrations')}</h2>
           <p className="mb-3 text-xs text-muted">{t('envHint')}</p>
           <ul className="space-y-2 text-sm">
@@ -78,7 +78,7 @@ export default async function SettingsPage() {
           </ul>
         </Card>
 
-        <Card className="p-4 lg:col-span-2">
+        <Card data-anfi="templates" className="p-4 lg:col-span-2">
           <h2 className="mb-1 font-medium">{t('templates')}</h2>
           <p className="mb-3 text-xs text-muted">{t('templatesHint')} · {'{guest_name} {check_in} {check_out} {check_in_time} {check_out_time} {property_name}'}</p>
           <div className="grid gap-3 md:grid-cols-2">

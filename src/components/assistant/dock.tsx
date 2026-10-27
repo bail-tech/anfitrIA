@@ -2,13 +2,16 @@
 
 import { Bot, CircleAlert, Loader2, MessageCircle, Mic, MicOff, Send, Wrench, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { BlemiStage } from '@/components/blemi/blemi-stage';
 import { useScreenSignals } from '@/components/blemi/use-screen-signals';
 import { CharacterStage } from '@/components/character/stage';
 import type { Mood } from '@/components/character/face';
 import { cn } from '@/lib/utils';
 import { ProposalCard } from './proposal-card';
+import { AnfiSettings, type AnfiPrefs } from './settings';
+import { Spotlight } from './spotlight';
+import { useAnfiUi } from './use-anfi-ui';
 import { useAssistant, type AssistantState } from './use-assistant';
 import { useVoice } from './use-voice';
 
@@ -24,13 +27,20 @@ const DOT: Record<AssistantState, string> = {
   error: 'bg-terra',
 };
 
-function DockBody({ onClose }: { onClose?: () => void }) {
+function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () => void; onMinimize?: () => void; prefs: AnfiPrefs }) {
   const t = useTranslations('assistant');
   const locale = useLocale();
-  const assistant = useAssistant(t('welcome'), locale);
-  const voice = useVoice({ assistant, locale });
+  const say = useRef<(text: string) => void>(() => undefined);
+  const narrate = useCallback((text: string) => say.current(text), []);
+  const ui = useAnfiUi({ onNarrate: narrate, onMinimize, prefilledLabel: t('prefilled') });
+  const assistant = useAssistant(t('welcome'), locale, ui.run);
+  const voice = useVoice({ assistant, locale, intercept: ui.command });
+  useEffect(() => {
+    say.current = voice.say;
+  });
   const signals = useScreenSignals(assistant, voice);
   const [text, setText] = useState('');
+  const [prefs, setPrefs] = useState(initialPrefs);
   const list = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,7 +58,7 @@ function DockBody({ onClose }: { onClose?: () => void }) {
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    void assistant.send(text);
+    if (!ui.command(text)) void assistant.send(text);
     setText('');
   }
 
@@ -56,6 +66,7 @@ function DockBody({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="flex h-full flex-col">
+      <Spotlight ui={ui} />
       <div className="relative shrink-0 border-b border-line bg-gradient-to-b from-sand/60 to-paper">
         {CHARACTER === 'anfi' ? (
           <CharacterStage mood={mood} levels={voice.levels} className="mx-auto h-44 w-full max-w-[280px]" />
@@ -67,11 +78,22 @@ function DockBody({ onClose }: { onClose?: () => void }) {
           <span className="font-medium">{t('title')}</span>
           <span className="text-muted">· {stateLabel}</span>
         </div>
-        {onClose && (
-          <button onClick={onClose} aria-label={t('close')} className="absolute right-3 top-3 rounded-full bg-paper/80 p-1.5">
-            <X className="size-4" />
-          </button>
-        )}
+        <div className="absolute right-3 top-3 flex items-center gap-1.5">
+          <AnfiSettings
+            prefs={prefs}
+            voiceActive={voice.active}
+            onSaved={(next) => {
+              const changed = next.voice !== prefs.voice || next.voice_custom_id !== prefs.voice_custom_id || next.assistant_language !== prefs.assistant_language;
+              setPrefs(next);
+              if (changed) voice.restart();
+            }}
+          />
+          {onClose && (
+            <button onClick={onClose} aria-label={t('close')} className="rounded-full bg-paper/80 p-1.5">
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div ref={list} className="flex-1 space-y-3 overflow-y-auto px-3 py-3 text-sm" aria-live="polite">
@@ -92,6 +114,7 @@ function DockBody({ onClose }: { onClose?: () => void }) {
                 {item.detail && <span className="text-terra">· {item.detail}</span>}
               </div>
             );
+          if (item.kind === 'ui') return <div key={item.id} className="pl-6 text-xs text-gold">{item.text}</div>;
           if (item.kind === 'proposal') return <ProposalCard key={item.id} proposal={item.proposal} onDecide={assistant.decide} />;
           return (
             <div key={item.id} className={cn('rounded-xl px-3 py-2 text-xs', item.tone === 'error' ? 'bg-terra-soft text-terra' : 'bg-sand text-muted')}>
@@ -144,27 +167,39 @@ const subscribeDesktop = (cb: () => void) => {
   return () => mq.removeEventListener('change', cb);
 };
 
-export function AssistantDock() {
+export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
   const t = useTranslations('assistant');
-  const [open, setOpen] = useState(false);
+  const [sheet, setSheet] = useState<'closed' | 'open' | 'mini'>('closed');
+  const minimize = useCallback(() => setSheet((s) => (s === 'open' ? 'mini' : s)), []);
   // Mount one dock only, so a hidden one never keeps a 3D canvas or a voice session alive.
   const desktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP).matches, () => false);
   if (desktop) {
     return (
       <aside className="sticky top-0 h-screen w-[360px] shrink-0 border-l border-line bg-paper/95">
-        <DockBody />
+        <DockBody prefs={prefs} />
       </aside>
     );
   }
   return (
     <>
-      <button onClick={() => setOpen(true)} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-sm text-cream shadow-lg" aria-label={t('open')}>
+      <button onClick={() => setSheet('open')} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-sm text-cream shadow-lg" aria-label={t('open')}>
         <MessageCircle className="size-4" /> {t('title')}
       </button>
-      {open && (
-        <div className="fixed inset-0 z-40 bg-ink/30" onClick={() => setOpen(false)}>
-          <div className="absolute inset-x-0 bottom-0 h-[85vh] overflow-hidden rounded-t-3xl bg-paper shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <DockBody onClose={() => setOpen(false)} />
+      {sheet !== 'closed' && (
+        <div className={cn('fixed inset-0 z-40', sheet === 'open' ? 'bg-ink/30' : 'pointer-events-none')} onClick={() => setSheet('closed')}>
+          <div
+            className={cn(
+              'pointer-events-auto absolute inset-x-0 bottom-0 h-[85vh] overflow-hidden rounded-t-3xl bg-paper shadow-2xl motion-safe:transition-transform',
+              sheet === 'mini' && 'translate-y-[calc(85vh-3.5rem)]',
+            )}
+            onClickCapture={(e) => {
+              if (sheet !== 'mini') return;
+              e.stopPropagation();
+              setSheet('open');
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DockBody prefs={prefs} onClose={() => setSheet('closed')} onMinimize={minimize} />
           </div>
         </div>
       )}

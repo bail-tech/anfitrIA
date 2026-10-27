@@ -24,10 +24,10 @@ export async function transcribe(data: Uint8Array, mime: string): Promise<string
 }
 
 /** Speak `text` (already approved by the host) as an OGG/Opus voice note. */
-export async function speak(text: string, language: string): Promise<Uint8Array> {
+export async function speak(text: string, language: string, voice: string = TTS_VOICE): Promise<Uint8Array> {
   const response = await openai().audio.speech.create({
     model: TTS_MODEL,
-    voice: TTS_VOICE,
+    voice,
     input: text.slice(0, 4000),
     response_format: 'opus',
     instructions: `Speak warmly and clearly, like a friendly holiday-rental host, in the language of the text (${language}).`,

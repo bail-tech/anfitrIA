@@ -12,11 +12,13 @@ import { forModel } from '@/lib/concierge/privacy';
 import { todayIn } from '@/lib/concierge/stay';
 import { loadOverview } from '@/lib/metrics';
 import type { Draft, KnowledgeItem, Message, Profile, Proposal, Reservation } from '@/lib/types';
+import type { UiAction } from './ui-tools';
 
 export type AssistantEvent =
   | { type: 'text'; text: string }
   | { type: 'tool'; id: string; name: string; status: 'running' | 'ok' | 'error'; detail?: string }
   | { type: 'proposal'; proposal: Proposal }
+  | { type: 'ui'; action: UiAction }
   | { type: 'notice'; key: 'no_claude' | 'error' | 'refused'; text: string }
   | { type: 'done' };
 

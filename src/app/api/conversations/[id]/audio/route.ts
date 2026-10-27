@@ -6,6 +6,7 @@
  */
 import { NextResponse } from 'next/server';
 import { MAX_AUDIO_BYTES, speak, transcribe } from '@/lib/audio/openai';
+import { ttsVoiceFor } from '@/lib/voice/voices';
 import { loadConversation, resolvePrivate, sendHostAudio } from '@/lib/concierge/host';
 import { features } from '@/lib/env';
 import { fail, sameOrigin, withSession } from '@/lib/http';
@@ -29,7 +30,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       if (!text) return fail(400, 'text required');
       const ctx = await loadConversation(db, conversationId);
       const spoken = await resolvePrivate(db, ctx, text, 'es');
-      const audio = await speak(spoken, 'es');
+      const audio = await speak(spoken, 'es', ttsVoiceFor(profile.voice));
       await sendHostAudio(db, profile, { conversationId, data: audio, mime: 'audio/ogg', transcript: spoken, mode, draftId });
       return NextResponse.json({ ok: true });
     }

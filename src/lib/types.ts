@@ -6,6 +6,9 @@ export interface Profile {
   name: string;
   email: string;
   role: 'owner' | 'member';
+  assistant_language: 'auto' | 'es' | 'en' | 'fr' | 'de' | 'it';
+  voice: string;
+  voice_custom_id: string | null;
 }
 
 export interface Property {

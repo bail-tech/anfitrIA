@@ -15,7 +15,7 @@ export default async function SimulatorPage() {
   return (
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
-      {props?.length ? <Simulator properties={props} guests={res ?? []} /> : <Empty title="—" />}
+      <div data-anfi="chat">{props?.length ? <Simulator properties={props} guests={res ?? []} /> : <Empty title="—" />}</div>
     </>
   );
 }

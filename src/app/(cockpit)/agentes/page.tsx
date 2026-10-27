@@ -33,12 +33,12 @@ export default async function AgentsPage() {
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
-      <h2 className="mb-3 font-display text-lg font-semibold">
+      <h2 data-anfi="approvals" className="mb-3 font-display text-lg font-semibold">
         {t('pendingApprovals')} ({proposals?.length ?? 0})
       </h2>
       {proposals?.length ? <ProposalQueue proposals={proposals as Proposal[]} /> : <Empty title={t('noPending')} />}
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
+      <div data-anfi="agents" className="mt-8 grid gap-4 md:grid-cols-2">
         {AGENTS.map(({ key, managed, skills }) => {
           const on = enabled.get(key) ?? false;
           const mine = runList.filter((r) => r.agent === key).slice(0, 4);

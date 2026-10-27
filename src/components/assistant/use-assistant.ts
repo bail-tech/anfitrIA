@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { nowMs } from '@/components/blemi/clock';
 import type { AssistantEvent } from '@/lib/assistant/tools';
+import type { UiAction } from '@/lib/assistant/ui-tools';
 import type { Proposal } from '@/lib/types';
 
 /** What the dock shows and what Anfi's face mirrors. Driven only by server events. */
@@ -13,12 +14,22 @@ export type ChatItem =
   | { id: string; kind: 'assistant'; text: string }
   | { id: string; kind: 'tool'; toolId: string; name: string; status: 'running' | 'ok' | 'error'; detail?: string }
   | { id: string; kind: 'proposal'; proposal: Proposal }
-  | { id: string; kind: 'notice'; text: string; tone: 'info' | 'error' };
+  | { id: string; kind: 'notice'; text: string; tone: 'info' | 'error' }
+  | { id: string; kind: 'ui'; text: string };
 
 let seq = 0;
 const nextId = () => `c${++seq}`;
 
-export function useAssistant(welcome: string, locale: string) {
+const UI_MARK = { navigate: '→', highlight: '◎', tour: '▶', prefill: '✎' } as const;
+const uiText = (a: UiAction) => `${UI_MARK[a.kind]} ${a.kind === 'prefill' ? a.form : a.title}`;
+
+/** Where the host is, so "¿qué es esto?" means the page on screen. */
+function pageContext() {
+  const sections = [...document.querySelectorAll('[data-anfi]')].map((el) => el.getAttribute('data-anfi') ?? '').filter(Boolean);
+  return { path: window.location.pathname, sections: [...new Set(sections)].slice(0, 40) };
+}
+
+export function useAssistant(welcome: string, locale: string, onUi?: (action: UiAction) => void) {
   const [items, setItems] = useState<ChatItem[]>([{ id: nextId(), kind: 'assistant', text: welcome }]);
   const [state, setState] = useState<AssistantState>('idle');
   const [busy, setBusy] = useState(false);
@@ -28,6 +39,10 @@ export function useAssistant(welcome: string, locale: string) {
   const history = useRef<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
   /** Proposal cards still waiting for the host's tap. */
   const pending = useRef(new Set<string>());
+  const onUiRef = useRef(onUi);
+  useEffect(() => {
+    onUiRef.current = onUi;
+  });
 
   const onEvent = useCallback((e: AssistantEvent, collect: string[]) => {
     switch (e.type) {
@@ -53,6 +68,10 @@ export function useAssistant(welcome: string, locale: string) {
         setItems((list) => [...list, { id: nextId(), kind: 'notice', text: e.text, tone: e.key === 'no_claude' ? 'info' : 'error' }]);
         if (e.key !== 'no_claude') setState('error');
         break;
+      case 'ui':
+        setItems((list) => [...list, { id: nextId(), kind: 'ui', text: uiText(e.action) }]);
+        onUiRef.current?.(e.action);
+        break;
       case 'done':
         break;
     }
@@ -71,7 +90,7 @@ export function useAssistant(welcome: string, locale: string) {
         const res = await fetch('/api/assistant', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history.current.slice(-20), locale }),
+          body: JSON.stringify({ messages: history.current.slice(-20), locale, page: pageContext() }),
         });
         if (!res.ok || !res.body) throw new Error(String(res.status));
         const reader = res.body.getReader();

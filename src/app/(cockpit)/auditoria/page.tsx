@@ -18,7 +18,7 @@ export default async function AuditPage() {
   return (
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
-      <Card className="overflow-x-auto">
+      <Card data-anfi="log" className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="border-b border-line text-left text-xs text-muted">
             <tr>

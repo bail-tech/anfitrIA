@@ -44,7 +44,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
-      <div className="mb-4 flex gap-2">
+      <div data-anfi="filters" className="mb-4 flex gap-2">
         {tabs.map((f) => (
           <Link key={f} href={`/bandeja?f=${f}`} className={cn('rounded-full border px-3 py-1 text-sm', f === filter ? 'border-ink bg-ink text-cream' : 'border-line bg-paper')}>
             {t(f)}
@@ -54,7 +54,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
       {rows.length === 0 ? (
         <Empty title={t('empty')} />
       ) : (
-        <Card className="divide-y divide-line">
+        <Card data-anfi="list" className="divide-y divide-line">
           {rows.map(({ c, last, pending }) => (
             <Link key={c.id} href={`/bandeja/${c.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-sand/40">
               <div className={cn('size-2.5 shrink-0 rounded-full', pending ? (pending.reason === 'urgente' ? 'bg-terra' : 'bg-gold') : c.handoff ? 'bg-violet' : 'bg-sage')} />

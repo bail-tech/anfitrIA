@@ -32,7 +32,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       </Link>
       <PageHeader title={p.name} subtitle={p.address ?? undefined} />
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <Card className="p-4">
+        <Card data-anfi="knowledge" className="p-4">
           <h2 className="mb-3 font-medium">{t('knowledge')}</h2>
           {items.length === 0 && !(shared ?? []).length && <Empty title={t('missing')} />}
           <KnowledgeList items={items} shared={(shared ?? []) as KnowledgeItem[]} target={{ propertyId: id }} back={back} />
@@ -41,7 +41,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             <UploadForm action="/api/knowledge/import" fields={{ property_id: String(id) }} accept=".csv,.pdf,text/csv,application/pdf" label={t('import')} />
           </div>
         </Card>
-        <Card className="h-fit p-4">
+        <Card data-anfi="settings" className="h-fit p-4">
           <h2 className="mb-3 font-medium">{t('settings')}</h2>
           <form action={updateProperty} className="space-y-3">
             <input type="hidden" name="id" value={p.id} />

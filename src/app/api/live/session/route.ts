@@ -10,7 +10,8 @@ import { features } from '@/lib/env';
 import { fail, sameOrigin } from '@/lib/http';
 import { rateLimit } from '@/lib/rate-limit';
 import { getSession } from '@/lib/supabase/server';
-import { BROWSER_EVENTS, LIVE_MODEL, LIVE_VOICE, VOICE_SESSIONS_PER_HOUR, voiceInstructions } from '@/lib/voice/live';
+import { BROWSER_EVENTS, LIVE_MODEL, VOICE_SESSIONS_PER_HOUR, voiceInstructions } from '@/lib/voice/live';
+import { liveVoiceFor } from '@/lib/voice/voices';
 
 // No .trim() on the SDP: an offer must end with CRLF, and trimming it makes OpenAI fail with "unmarshal SDP: EOF".
 const Body = z.object({ sdp: z.string().min(1).max(20_000), locale: z.enum(['es', 'en']).default('es') });
@@ -46,9 +47,9 @@ export async function POST(request: Request) {
     const result = await (client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY!.trim() })).live.create({
       session: {
         model: LIVE_MODEL,
-        instructions: voiceInstructions(parsed.data.locale, session.profile.name),
+        instructions: voiceInstructions(session.profile.assistant_language === 'auto' ? parsed.data.locale : session.profile.assistant_language, session.profile.name),
         delegation: { type: 'client' },
-        audio: { output: { voice: LIVE_VOICE } },
+        audio: { output: { voice: liveVoiceFor(session.profile) } },
         client: { data_channel: { allowed_client_events: BROWSER_EVENTS } },
         store: false,
       },

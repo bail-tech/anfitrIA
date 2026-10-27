@@ -46,7 +46,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         <Link href="/bandeja" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-ink">
           <ArrowLeft className="size-4" /> {t('title')}
         </Link>
-        <Card className="p-4">
+        <Card data-anfi="thread" className="p-4">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <h1 className="font-display text-xl font-semibold">{reservation?.guest_name ?? conv.guest_ref}</h1>
             <span className="text-sm text-muted">· {property?.name}</span>
@@ -76,6 +76,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             })}
           </div>
         </Card>
+        <div data-anfi="reply" data-anfi-form="reply">
         <ThreadActions
           conversationId={conv.id}
           handoff={conv.handoff}
@@ -83,8 +84,9 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
           ttsAvailable={features.openai()}
           draft={pending ? { id: pending.id, text: pending.text, confidence: pending.confidence, reason: pending.reason, question: pendingQuestion } : null}
         />
+        </div>
       </div>
-      <Card className="h-fit space-y-3 p-4 text-sm">
+      <Card data-anfi="reservation" className="h-fit space-y-3 p-4 text-sm">
         <div className="text-xs font-medium uppercase tracking-wider text-muted">{t('reservation')}</div>
         {reservation ? (
           <>

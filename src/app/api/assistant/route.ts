@@ -13,6 +13,7 @@ export const maxDuration = 120;
 const Body = z.object({
   messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(8000) })).min(1).max(40),
   locale: z.enum(['es', 'en']).default('es'),
+  page: z.object({ path: z.string().max(200).regex(/^\/[\w/-]*$/), sections: z.array(z.string().max(40)).max(40).optional() }).optional(),
 });
 
 export async function POST(request: Request) {
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const emit = (e: AssistantEvent) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(e)}\n\n`));
-      await runAssistant({ db: session.db, profile: session.profile, emit }, parsed.data.messages, session.profile.name, parsed.data.locale);
+      await runAssistant({ db: session.db, profile: session.profile, emit }, parsed.data.messages, session.profile.name, parsed.data.locale, parsed.data.page);
       controller.close();
     },
   });

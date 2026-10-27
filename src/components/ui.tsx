@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn('rounded-2xl border border-line bg-paper/90 shadow-[0_1px_2px_rgba(43,38,32,0.04),0_8px_24px_-12px_rgba(43,38,32,0.12)]', className)}>{children}</div>;
+export function Card({ className, children, ...rest }: { className?: string; children: ReactNode; 'data-anfi'?: string }) {
+  return <div {...rest} className={cn('rounded-2xl border border-line bg-paper/90 shadow-[0_1px_2px_rgba(43,38,32,0.04),0_8px_24px_-12px_rgba(43,38,32,0.12)]', className)}>{children}</div>;
 }
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: ReactNode }) {

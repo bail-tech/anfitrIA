@@ -24,6 +24,9 @@ export function voiceUpdate(item: ChatItem): VoiceUpdate | null {
       return null;
     case 'notice':
       return { kind: 'commentary', content: item.text.slice(0, MAX_APPEND_CHARS) };
+    case 'ui':
+      // The screen changed; the agent's own reply says what it means, so this is context only.
+      return { kind: 'thinking', content: `Screen update done in the browser: ${item.text}` };
     default:
       return null;
   }

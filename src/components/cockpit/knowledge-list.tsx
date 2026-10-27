@@ -34,7 +34,7 @@ export async function KnowledgeList({ items, target, back, shared }: { items: Kn
           </li>
         ))}
       </ul>
-      <form action={addKnowledgeItem} className="grid gap-2 rounded-xl bg-sand/40 p-3 md:grid-cols-[140px_1fr_auto]">
+      <form action={addKnowledgeItem} data-anfi-form="knowledge" className="grid gap-2 rounded-xl bg-sand/40 p-3 md:grid-cols-[140px_1fr_auto]">
         {target.propertyId && <input type="hidden" name="property_id" value={target.propertyId} />}
         {target.buildingId && <input type="hidden" name="building_id" value={target.buildingId} />}
         <input type="hidden" name="back" value={back} />

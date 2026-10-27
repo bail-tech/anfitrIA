@@ -1,0 +1,87 @@
+'use client';
+
+import { Sparkles } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import type { AnfiUi } from './use-anfi-ui';
+
+type Rect = { top: number; left: number; width: number; height: number };
+const PAD = 8;
+const CARD_W = 320;
+
+/** Dims the page around the section Anfi points at, with a note card. Esc or any click closes it. */
+export function Spotlight({ ui }: { ui: AnfiUi }) {
+  const t = useTranslations('assistant');
+  const { spot, exit } = ui;
+  const [rect, setRect] = useState<Rect | null>(null);
+
+  // Scroll the section into view, then follow it every frame (scroll, resize, layout shifts).
+  useEffect(() => {
+    if (!spot) return;
+    const el = document.querySelector(spot.selector);
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+    let raf = 0;
+    let last = '';
+    const track = () => {
+      const r = el.getBoundingClientRect();
+      const key = `${r.top}|${r.left}|${r.width}|${r.height}`;
+      if (key !== last) {
+        last = key;
+        setRect({ top: r.top - PAD, left: r.left - PAD, width: r.width + PAD * 2, height: r.height + PAD * 2 });
+      }
+      raf = requestAnimationFrame(track);
+    };
+    raf = requestAnimationFrame(track);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && exit();
+    window.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('keydown', onKey);
+      setRect(null);
+    };
+  }, [spot, exit]);
+
+  if (!spot || !rect) return null;
+  const below = rect.top + rect.height + 180 < window.innerHeight;
+  const cardTop = below ? rect.top + rect.height + 12 : Math.max(12, rect.top - 12 - 170);
+  const cardLeft = Math.min(Math.max(12, rect.left), window.innerWidth - CARD_W - 12);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[60]" onClick={ui.exit} role="presentation">
+      <div
+        className="pointer-events-none fixed rounded-2xl ring-2 ring-gold motion-safe:transition-all motion-safe:duration-300"
+        style={{ ...rect, boxShadow: '0 0 0 9999px rgba(43,38,32,0.45)' }}
+      />
+      <div
+        role="dialog"
+        aria-live="polite"
+        onClick={(e) => e.stopPropagation()}
+        className="fixed rounded-2xl border border-line bg-paper p-4 text-sm text-ink shadow-2xl motion-safe:transition-all motion-safe:duration-300"
+        style={{ top: cardTop, left: cardLeft, width: `min(${CARD_W}px, calc(100vw - 24px))` }}
+      >
+        <div className="mb-1 flex items-center gap-2 font-medium">
+          <Sparkles className="size-4 text-gold" /> {spot.title}
+          {spot.step && <span className="ml-auto font-mono text-xs text-muted">{spot.step.index + 1}/{spot.step.total}</span>}
+        </div>
+        {spot.note && <p className="text-muted">{spot.note}</p>}
+        <div className="mt-3 flex justify-end gap-2 text-xs">
+          {spot.step ? (
+            <>
+              <button onClick={ui.exit} className="rounded-lg px-2.5 py-1.5 hover:bg-sand">{t('tourExit')}</button>
+              {spot.step.index > 0 && <button onClick={ui.back} className="rounded-lg border border-line px-2.5 py-1.5 hover:bg-sand">{t('tourBack')}</button>}
+              <button onClick={ui.next} className="rounded-lg bg-ink px-3 py-1.5 text-cream" autoFocus>
+                {spot.step.index + 1 < spot.step.total ? t('tourNext') : t('tourDone')}
+              </button>
+            </>
+          ) : (
+            <button onClick={ui.exit} className="rounded-lg bg-ink px-3 py-1.5 text-cream" autoFocus>{t('tourOk')}</button>
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}

@@ -63,7 +63,7 @@ export default async function OverviewPage() {
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle', { count: o.propertyCount })} />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div data-anfi="kpis" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <StatTile label={t('revenueMtd')} value={o.hasPrices ? eur(o.month.revenue, loc) : '—'} icon={<Euro className="size-4" />} delta={o.hasPrices ? delta(o.month.revenue, o.lastMonth.revenue, (n) => eur(n, loc)) : null} hint={o.hasPrices ? undefined : t('connectPms')} />
         <StatTile label={t('activeBookings')} value={String(o.activeBookings)} icon={<CalendarCheck className="size-4" />} />
         <StatTile label={t('occupancy')} value={pct(o.month.occupancy)} icon={<Percent className="size-4" />} delta={delta(o.month.occupancy, o.lastMonth.occupancy, (n) => pct(n))} />
@@ -72,7 +72,7 @@ export default async function OverviewPage() {
         <StatTile label={t('pending')} value={String(pendingTotal)} icon={<CheckSquare className="size-4" />} hint={`${o.pending.drafts} ${ti('pending').toLowerCase()} · ${o.pending.proposals} ${ta('proposals')} · ${o.pending.tasks} ${ta('tasks')}`} />
       </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
+      <div data-anfi="trends" className="mt-4 grid gap-3 md:grid-cols-3">
         <Card className="p-4">
           <div className="mb-3 text-xs text-muted">{t('revenue7')}</div>
           <Bars values={o.week.map((d) => d.revenue)} color="#c79a3c" labels={o.week.map((d) => d.day)} />
@@ -87,7 +87,7 @@ export default async function OverviewPage() {
         </Card>
       </div>
 
-      <Card className="mt-4 grid gap-4 p-4 md:grid-cols-3">
+      <Card data-anfi="today" className="mt-4 grid gap-4 p-4 md:grid-cols-3">
         {(
           [
             ['arrivals', day.arrivals_today],
@@ -107,7 +107,7 @@ export default async function OverviewPage() {
         ))}
       </Card>
 
-      <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_280px]">
+      <div data-anfi="agents" className="mt-6 grid gap-4 xl:grid-cols-[1fr_280px]">
         <div>
           <div className="mb-2 flex items-center justify-between text-sm text-muted">
             <span>{t('agentStatus')}</span>
@@ -158,7 +158,7 @@ export default async function OverviewPage() {
           </Card>
         </div>
 
-        <Card className="h-fit p-4">
+        <Card data-anfi="health" className="h-fit p-4">
           <div className="text-xs font-medium uppercase tracking-wider text-gold">● {t('health')}</div>
           <div className="mt-3 font-display text-xl font-semibold">{features.claude() ? CLAUDE_MODEL_NAME : th('mock')}</div>
           <div className="font-mono text-xs text-muted">{features.claude() ? CLAUDE_MODEL : 'mock · sin ANTHROPIC_API_KEY'}</div>

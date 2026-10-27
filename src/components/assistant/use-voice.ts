@@ -50,7 +50,7 @@ interface Live {
   raf: number;
 }
 
-export function useVoice({ assistant, locale }: { assistant: Assistant; locale: string }) {
+export function useVoice({ assistant, locale, intercept }: { assistant: Assistant; locale: string; intercept?: (text: string) => boolean }) {
   const [active, setActive] = useState(false);
   // NEXT_PUBLIC_VOICE=true once OPENAI_API_KEY is set on the server; false during SSR.
   const supported = useSyncExternalStore(noSubscribe, voiceSupported, () => false);
@@ -60,8 +60,10 @@ export function useVoice({ assistant, locale }: { assistant: Assistant; locale: 
   const assistantRef = useRef(assistant);
   const live = useRef<Live | null>(null);
 
+  const interceptRef = useRef(intercept);
   useEffect(() => {
     assistantRef.current = assistant;
+    interceptRef.current = intercept;
   });
 
 
@@ -100,6 +102,10 @@ export function useVoice({ assistant, locale }: { assistant: Assistant; locale: 
             return;
           }
           l.delegation = id;
+          if (interceptRef.current?.(text)) {
+            append('thinking', 'Handled on screen (tour control). Say nothing more than a word if anything.', id);
+            return;
+          }
           assistantRef.current.items.forEach((item) => l.reported.add(item.id));
           append('thinking', 'Checking that with the backend now.', id);
           void assistantRef.current.send(text);
@@ -217,5 +223,16 @@ export function useVoice({ assistant, locale }: { assistant: Assistant; locale: 
   useEffect(() => () => cleanup(), [cleanup]);
 
   const toggle = useCallback(() => (live.current ? stop() : void start()), [start, stop]);
-  return { active, supported, error, toggle, levels };
+  /** A session's voice and language are fixed when it starts: end it and open a new one. */
+  const restart = useCallback(() => {
+    if (!live.current) return;
+    cleanup();
+    void start();
+  }, [cleanup, start]);
+  /** Narration that is not a chat item (tour steps), spoken on the current delegation. */
+  const say = useCallback((text: string) => {
+    const d = live.current?.delegation;
+    if (d) append('commentary', text, d);
+  }, [append]);
+  return { active, supported, error, toggle, restart, say, levels };
 }

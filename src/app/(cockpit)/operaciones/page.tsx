@@ -60,7 +60,7 @@ export default async function OperationsPage() {
       />
       <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
         <div className="space-y-4">
-          <Card className="p-4">
+          <Card data-anfi="tasks" className="p-4">
             <h2 className="font-medium">
               {t('open')} ({open?.length ?? 0})
             </h2>
@@ -87,7 +87,7 @@ export default async function OperationsPage() {
             </Card>
           ) : null}
         </div>
-        <Card className="h-fit p-4">
+        <Card data-anfi="staff" className="h-fit p-4">
           <h2 className="mb-3 font-medium">{t('staff')}</h2>
           <ul className="mb-3 space-y-2 text-sm">
             {staff.map((s) => (

@@ -26,7 +26,7 @@ export default async function PropertiesPage() {
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-3">
+        <div data-anfi="list" className="space-y-3">
           {properties.length === 0 && <Empty title={t('missing')} />}
           {properties.map((p) => (
             <Link key={p.id} href={`/alojamientos/${p.id}`}>
@@ -45,7 +45,7 @@ export default async function PropertiesPage() {
             </Link>
           ))}
         </div>
-        <Card className="h-fit p-4">
+        <Card data-anfi="new" className="h-fit p-4">
           <h2 className="mb-3 font-medium">{t('new')}</h2>
           <form action={createProperty} className="space-y-2">
             <input name="name" required placeholder={t('name')} className={inputClass} />
@@ -63,7 +63,7 @@ export default async function PropertiesPage() {
         </Card>
       </div>
 
-      <h2 className="mb-3 mt-8 flex items-center gap-2 font-display text-xl font-semibold">
+      <h2 data-anfi="buildings" className="mb-3 mt-8 flex items-center gap-2 font-display text-xl font-semibold">
         <Building2 className="size-5 text-gold" /> {t('buildings')}
       </h2>
       <div className="space-y-4">

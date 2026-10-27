@@ -26,7 +26,7 @@ export default async function ReservationsPage() {
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <Card className="overflow-x-auto">
+        <Card data-anfi="list" className="overflow-x-auto">
           {reservations.length === 0 ? (
             <div className="p-4">
               <Empty title={t('empty')} />
@@ -78,9 +78,9 @@ export default async function ReservationsPage() {
           )}
         </Card>
         <div className="space-y-4">
-          <Card className="p-4">
+          <Card data-anfi="new" className="p-4">
             <h2 className="mb-3 font-medium">{t('new')}</h2>
-            <form action={createReservation} className="space-y-2">
+            <form action={createReservation} data-anfi-form="reservation" className="space-y-2">
               <Field label={t('property')}>
                 <select name="property_id" required className={inputClass}>
                   {properties.map((p) => (
@@ -115,7 +115,7 @@ export default async function ReservationsPage() {
               <button className={buttonClass('primary') + ' w-full'}>{t('create')}</button>
             </form>
           </Card>
-          <Card className="p-4">
+          <Card data-anfi="ical" className="p-4">
             <h2 className="mb-1 font-medium">{t('ical')}</h2>
             <p className="mb-3 text-xs text-muted">{t('icalHint')}</p>
             {properties[0] && <IcalPicker properties={properties} label={t('import')} />}
