@@ -1,12 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { buttonClass, Field, inputClass } from '@/components/ui';
-import { CharacterPoster } from '@/components/character/poster';
 
 export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   const t = useTranslations('auth');
@@ -46,13 +46,11 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   return (
     <div className="grid min-h-screen place-items-center px-4 py-10">
       <div className="grid w-full max-w-4xl overflow-hidden rounded-3xl border border-line bg-paper shadow-xl md:grid-cols-2">
-        <div className="flex flex-col justify-between bg-ink p-8 text-cream">
-          <div>
-            <div className="font-display text-3xl font-semibold">AnfitrIA</div>
-            <p className="mt-2 text-sm text-cream/70">{t('tagline')}</p>
-          </div>
-          <CharacterPoster className="mx-auto my-6 h-56 w-56" />
-          <p className="text-xs text-cream/50">Huéspedes · Operaciones · Precios · Analítica · Marketing</p>
+        <div className="flex flex-col items-center justify-between gap-4 border-b border-line bg-cream p-8 text-center md:border-b-0 md:border-r">
+          {/* multiply drops the artwork's off-white background onto the panel colour */}
+          <Image priority src="/brand/anfitria-logo-360.webp" alt="AnfitrIA" width={360} height={360} className="w-56 mix-blend-multiply md:w-64" />
+          <p className="text-sm text-muted">{t('tagline')}</p>
+          <p className="text-xs text-muted/70">Huéspedes · Operaciones · Precios · Analítica · Marketing</p>
         </div>
         <form onSubmit={submit} className="space-y-4 p-8">
           <h1 className="font-display text-2xl font-semibold">{mode === 'login' ? t('login') : t('signup')}</h1>

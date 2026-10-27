@@ -10,7 +10,6 @@ const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces' });
 export const metadata: Metadata = {
   title: { default: 'AnfitrIA', template: '%s · AnfitrIA' },
   description: 'Conserje con IA supervisada para alquiler vacacional: tu cockpit con voz.',
-  icons: { icon: '/icon.svg' },
 };
 
 export const viewport: Viewport = { themeColor: '#f7f3ec', width: 'device-width', initialScale: 1 };

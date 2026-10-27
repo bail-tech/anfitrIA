@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { BarChart3, Bot, Building2, CalendarDays, ClipboardList, Cog, Inbox, LayoutGrid, LogOut, Megaphone, Menu, MessageSquareText, Sparkles, TrendingUp, Wrench, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -47,12 +48,9 @@ function Nav({ agents, pending, model, signOut, onNavigate }: Props & { onNaviga
   const dot = (k: AgentKey) => <Dot tone={agents[k] ? 'sage' : 'muted'} />;
   return (
     <div className="flex h-full flex-col">
-      <Link href="/" onClick={onNavigate} className="flex items-center gap-3 px-5 py-6">
-        <span className="grid size-9 place-items-center rounded-xl bg-ink font-display text-lg text-cream">A</span>
-        <span>
-          <span className="block font-display text-lg font-semibold leading-none">AnfitrIA</span>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-muted">Cockpit</span>
-        </span>
+      <Link href="/" onClick={onNavigate} className="block px-4 pb-4 pt-5" aria-label="AnfitrIA">
+        <Image priority src="/brand/anfitria-wordmark-480.webp" alt="AnfitrIA" width={480} height={178} className="h-auto w-44 mix-blend-multiply" />
+        <span className="ml-1 text-[10px] uppercase tracking-[0.2em] text-muted">Cockpit</span>
       </Link>
       <nav className="flex-1 overflow-y-auto px-3 pb-4">
         <Group title={t('command')}>
