@@ -108,27 +108,15 @@ export function BlemiStage({ label, mode, focus, signals, layout, onBlemiClick, 
   return (
     <div ref={ref} role="img" aria-label={label} className={`overflow-hidden ${className}`}>
       <div className={`absolute inset-0 ${posterClassName}`}>
-        {support === 'video' ? (
-          <video
-            className="absolute inset-0 h-full w-full object-contain mix-blend-multiply"
-            src="/brand/blemia-logo.mp4"
-            poster="/brand/blemia-logo-poster.jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden
-          />
-        ) : (
-          <Image
-            src="/brand/blemia-logo-3d.webp"
-            alt=""
-            fill
-            priority
-            sizes="(min-width: 1280px) 800px, 100vw"
-            className={`object-contain px-[6%] py-[8%] transition-opacity duration-700 ${ready ? 'opacity-0' : 'opacity-100'}`}
-          />
-        )}
+        {/* AnfitrIA: Blemi alone (no Blemia wordmark or logo video) while loading and on devices without 3D. */}
+        <Image
+          src="/brand/blemia-mascot-v1.png"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 1280px) 360px, 60vw"
+          className={`object-contain px-[18%] py-[10%] transition-opacity duration-700 ${support === 'webgl' && ready ? 'opacity-0' : 'opacity-100'}`}
+        />
       </div>
       {support === 'webgl' && mounted && (
         <SceneBoundary onError={() => setFailed(true)}>
