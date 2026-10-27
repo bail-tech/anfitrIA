@@ -1,0 +1,24 @@
+Built-in imagegen edit — main revision
+
+Use case: precise-object-edit
+Asset type: revised transparent Blemias logo.
+Input images:
+Image 1 is the EDIT TARGET: the complete current Blemias wordmark, two euro symbols in the green B, friendly realistic robot i with its head flying on a blue rocket flame.
+Image 2 is a GEOMETRY REFERENCE ONLY: the original emerald B with two opposing arrows formed by negative space. Ignore its dark background.
+
+Change ONLY the leading emerald B:
+Restore the elegant, balanced, nearly 180-degree rotationally symmetric silhouette of the B in Image 2. It is made of two thick smoothly rounded interlocking green curves, upper and lower lobes with matching visual weight, consistent widths, paired radii and a clean flowing middle seam.
+Make the transaction arrows intrinsic to the letter's shape, exactly in the spirit of Image 2: the upper negative-space channel flows into a right-pointing arrowhead, and the lower negative-space channel flows into a matching left-pointing arrowhead. These two arrows are carved out of the emerald B, with fully transparent cutouts, and naturally connect its upper and lower sections through the flowing structure. The arrowheads are part of the cutout geometry, not icons painted over the letter. Remove the separate dark downward curved arrow from Image 1 completely.
+Retain the euro-payment concept with two SMALL matching euro symbols inset within the solid emerald areas: normal "€" in the upper lobe and the same euro HORIZONTALLY MIRRORED in the lower lobe. Place them in a balanced opposing arrangement with equal size, weight and padding; keep them clearly separate from the arrow channels and let the B-and-arrows silhouette dominate. Both euro symbols should be simple ink-navy insets. Do not turn the euro symbols into arrows or other currencies.
+The result should be a confident, cohesive payment B, with the clean symmetrical opposing-arrow form from the screenshot and subtle euro-transfer details.
+
+Preserve EVERYTHING ELSE from Image 1 as closely as possible: exact single word "Blemias"; navy l-e-m and s; emerald a; robot replacing the i; robot torso and waving arm; friendly realistic ceramic/metal materials; smiling screen face and antenna; detached head's upward-right position and tilt; small metallic thruster and vivid blue/cyan rocket flame; font, size, baseline, layout, and kerning. No duplicate B or extra icon.
+Genuine transparent background. The screenshot's black background must not appear in the output. Crisp clean alpha edges and balanced transparent margins. One horizontal logo only.
+Avoid: an overlaid connecting arrow, uneven lobe sizes, extra arrows beyond the two intrinsic opposing cutouts, changed robot or typography, extra text, watermark, background fill, presentation boards, extra symbols, blood or injury.
+
+Built-in imagegen edit — final refinement
+
+Use case: precise-object-edit.
+Input image: edit target, the current transparent Blemias logo with two opposing arrow cutouts in the leading emerald B.
+Make only a finish-quality correction to the B: completely remove every neon-green fleck, mottled residue, fringe, rough edge and stray pixel from inside both negative-space arrow channels and around the B's silhouette. Both opposing arrows must be perfectly clean EMPTY transparent cutouts with continuous smooth boundaries, as if cut from an expertly drawn vector shape. All interior pixels in the arrow-shaped openings must be fully transparent, not green, not black, not textured, not semi-opaque. Keep matching arrowhead geometry, equal channel widths, equal upper/lower lobe weight and balanced paired curves. The solid emerald B should have smooth flat continuous green fill and crisp anti-aliased outer edges.
+Preserve the exact current design: normal euro inset upper-left, horizontally mirrored euro inset lower-right, opposing arrows intrinsic to the B, all wordmark letters, navy text, emerald a, realistic friendly headless robot i waving, its smiling head flying upward-right on the blue rocket flame. Keep their shapes, colors, materials, positions, size, baseline and spacing unchanged. Keep genuine transparent background throughout. Do not add a separate arrow. Exact word "Blemias" once. No extra text, objects or background. Single finished logo.

@@ -1,0 +1,21 @@
+Built-in imagegen edit — main revision
+
+Use case: precise-object-edit
+Asset type: revised transparent Blemias logo.
+Input image: edit target, the existing Blemias logo with a green B symbol, navy Blem lettering, emerald human i, emerald a, navy s, and detached circular head.
+Make exactly these two design changes:
+1. Use the existing emerald exchange-arrow B symbol as the actual first letter of the name. Remove the separate navy uppercase B entirely. Move the remaining letters "lemias" next to the green B with natural wordmark kerning. The finished logo must read exactly "Blemias" once, with ONE B only: the green exchange-arrow B followed directly by l-e-m-i-a-s. Keep the green B dominant but optically integrated into the word rather than separated like an icon. Align its bottom to the baseline and set its height about 115% of the tall lowercase l.
+2. Turn the playful emerald i character into a little robot whose head has popped off and is flying upward-right. Replace the circular flying dot with a clearly recognizable small rounded-square emerald robot head, tilted about 15 degrees, with two simple ink-navy square eyes, a tiny smiling mouth and a short antenna tipped with a small round dot. Give the body of the i slightly squared robot shoulders, short arms and two small feet, keeping it legible as an i and similar in width to the existing figure. Leave a large clean transparent gap of roughly one robot-head height between torso and head. Use only two tiny diagonal motion dashes trailing below-left of the flying head. Make it playful, charming and abstract, without violent imagery.
+Preserve: the existing arrow-shaped B design, overall horizontal wordmark composition, the font and shapes of l, e, m, a and s, the ink navy #12202D and emerald #10B981 palette, and the highlight of i and a. Everything outside the logo stays genuinely transparent.
+Text (verbatim): "Blemias", B-l-e-m-i-a-s. Single capital B rendered as the green symbol; all other letters lowercase. No duplicate B, no detached extra B symbol, no missing letters. No other text or tagline.
+Style: crisp, clean, minimal flat logo, smooth edges, balanced spacing, strong legibility, cheerful robot visual pun. Single centered lockup with adequate transparent margins.
+Avoid: human round head, wifi symbol, realistic anatomy, blood, wounds, weapons, gore, execution scene, gradients, shadows, 3D, glow, textured edges, background fill, watermark, mockup boards or multiple variants.
+
+Built-in imagegen edit — final refinement
+
+Use case: precise-object-edit.
+Input image: edit target, Blemias logo with green arrow B as its initial letter and a friendly robot head flying away above the i.
+Make ONLY one small correction: remove the small blank rounded rectangular block currently sitting directly on the robot body's shoulders. Leave a headless robot torso with a clean, flat top across its shoulders. No head, neck, plug, pedestal, antenna or raised block should remain attached to the body. The torso, short arms and two feet still form the lowercase i.
+Keep the detached flying robot head exactly as it is: emerald rounded square, two navy eyes, smiling mouth, antenna, tilt, position and two trailing motion marks. It must be the only robot head anywhere in the image.
+Preserve all other pixels/design elements as closely as possible: one green exchange-arrow B followed immediately by navy l-e-m, emerald robot i and a, navy s, exact word "Blemias", horizontal layout, size, kerning, original colors, and genuine transparent background.
+One clean flat logo, no added text, no background, no gradients, no shadows, no watermark, no blood or injury detail.

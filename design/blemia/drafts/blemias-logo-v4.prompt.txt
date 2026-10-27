@@ -1,0 +1,16 @@
+Use case: precise-object-edit
+Asset type: refined transparent Blemias logo.
+Input image: edit target, the current Blemias logo. Keep the single leading emerald B as the first letter of the name, navy l-e-m, robot i, emerald a, and navy s.
+Primary request: make the B unmistakably about euro payments, and make the flying-head robot friendlier and more realistically rendered.
+
+Change 1 — payment B:
+Replace the exchange-arrow treatment inside the leading B with a clean payment-wallet monogram. Preserve a bold, rounded uppercase B silhouette in emerald green. Integrate one clear small euro sign "€" as negative space inside the upper bowl. Give the lower bowl one subtle rounded wallet clasp/card-slot detail, so the letter suggests a digital wallet and payments without becoming a collage. Elegant, simple, recognizably a B first; integrated euro-payment cue second. No separate coin or extra icon. Keep it optically aligned with the l and about 115% of the l's height.
+
+Change 2 — friendly realistic robot:
+Replace the flat stick-figure-like i and flying head with a beautifully rendered small believable robot mascot. Rounded emerald shell with a few white ceramic accents, restrained brushed-metal joints, short articulated arms, little rounded feet, soft studio highlights. The head is a compact rounded cube with an ink-navy glossy display face, two large warm expressive luminous mint eyes and a gentle cheerful smile. Tiny soft antenna. Friendly proportions, approachable and capable, polished product-render quality, no sinister expression. One arm can lift in a small friendly wave while staying within the i's narrow letter space.
+Keep the head detached and flying upward-right, tilted playfully, with a clear transparent gap of at least one head height above the headless torso and two tiny understated trailing motion marks. There must be exactly ONE robot head in the whole image; nothing head-shaped sits on its shoulders. The robot's body and detached head together replace the lowercase i, and the word must still read naturally as Blemias.
+Make the robot realistically volumetric through material detail and gentle internal highlights, while keeping the B and other letters clean, mostly flat and crisp. Avoid bulky visual complexity.
+
+Preserve: exact spelling "Blemias" (B-l-e-m-i-a-s), one capital B only, all other letters lowercase, horizontal composition, navy wordmark typography, emerald IA emphasis, consistent spacing, transparent background and generous margins. Do not add the navy B from older versions. Do not create a separate mascot outside the i position.
+Palette: emerald #10B981 and ink navy #12202D, with subtle white ceramic and silver joint accents on the robot only.
+Avoid: blood, gore, realistic injury, weapons, humans, a second head, scary robot, yellow gold, cryptocurrency or Bitcoin marks, additional text beyond Blemias and the single euro sign in the B, tagline, watermark, background fill, ground plane, cast shadow on a background, presentation boards or multiple logo variants. One finished logo on genuine transparency.

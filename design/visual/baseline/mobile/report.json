@@ -1,0 +1,176 @@
+{
+  "ok": true,
+  "outDir": "/Users/Marcos_Bail_Ingold/Pay0/pay0-gateway/design/visual/baseline/mobile",
+  "size": "390x844",
+  "settle": 24,
+  "isolated": true,
+  "shots": [
+    {
+      "shot": "wordmark-logo",
+      "ok": true,
+      "info": {
+        "calls": 101,
+        "tris": 89714,
+        "programs": 9,
+        "textures": 7,
+        "geometries": 49,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 322,
+            "y0": 190,
+            "x1": 358,
+            "y1": 217
+          },
+          "chest": {
+            "x0": 282,
+            "y0": 183,
+            "x1": 299,
+            "y1": 194
+          },
+          "blemi": {
+            "x0": 264,
+            "y0": 171,
+            "x1": 367,
+            "y1": 223
+          },
+          "letters": {
+            "LetterB": {
+              "x0": 21,
+              "y0": 142,
+              "x1": 101,
+              "y1": 219
+            },
+            "LetterL": {
+              "x0": 97,
+              "y0": 144,
+              "x1": 125,
+              "y1": 221
+            },
+            "LetterEuro": {
+              "x0": 123,
+              "y0": 145,
+              "x1": 184,
+              "y1": 221
+            },
+            "LetterM": {
+              "x0": 188,
+              "y0": 162,
+              "x1": 266,
+              "y1": 221
+            }
+          },
+          "stage": {
+            "x0": 0,
+            "y0": 93,
+            "x1": 390,
+            "y1": 243
+          },
+          "panel": null
+        }
+      },
+      "doc": "Logo story landed: all letters in, the head is the \"a\", the chest screen is the face.",
+      "logs": []
+    },
+    {
+      "shot": "mobile-blemi",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 176,
+            "y0": 118,
+            "x1": 215,
+            "y1": 146
+          },
+          "chest": {
+            "x0": 185,
+            "y0": 159,
+            "x1": 205,
+            "y1": 173
+          },
+          "blemi": {
+            "x0": 165,
+            "y0": 97,
+            "x1": 226,
+            "y1": 206
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 0,
+            "y0": 77,
+            "x1": 390,
+            "y1": 227
+          },
+          "panel": {
+            "x0": 0,
+            "y0": 227,
+            "x1": 390,
+            "y1": 844
+          }
+        }
+      },
+      "doc": "Phone with the chat sheet open: Blemi centred and alone above the sheet. Capture at 390x844.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-paying",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 176,
+            "y0": 134,
+            "x1": 214,
+            "y1": 162
+          },
+          "chest": {
+            "x0": 185,
+            "y0": 176,
+            "x1": 205,
+            "y1": 189
+          },
+          "blemi": {
+            "x0": 164,
+            "y0": 114,
+            "x1": 226,
+            "y1": 222
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 0,
+            "y0": 93,
+            "x1": 390,
+            "y1": 243
+          },
+          "panel": null
+        }
+      },
+      "doc": "Paying: euro eyes, o mouth, euro coin flipping on the chest.",
+      "logs": []
+    }
+  ],
+  "errors": []
+}

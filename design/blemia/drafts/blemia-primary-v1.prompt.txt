@@ -1,0 +1,15 @@
+Use case: logo-brand
+Asset type: primary horizontal Blemia logo, redesigned for immediate legibility and real marketing use.
+Input image: edit target and brand context. Retain the Blemia name, the distinctive opposing-transfer-arrow B idea, and the European banking blue / emerald identity. Rebuild the artwork cleanly.
+
+Design a restrained, beautifully balanced finished brand identity for a trustworthy AI payments company:
+- A compact custom emerald capital B is the actual first letter of Blemia, immediately followed by "lemia". ONE B only. The B must read unmistakably as a letter and also as a transfer symbol: two balanced rounded lobes and two opposing directional channels, upper right-pointing and lower left-pointing, formed entirely by crisp transparent negative space. Consistent geometry, controlled rounded corners, generous clean cutouts, strong silhouette. Equal upper and lower visual weight. The mark should remain distinctive when viewed alone at small app-icon sizes.
+- Set "lemia" in a carefully drawn contemporary humanist sans serif. Medium weight, subtly softened terminals, excellent kerning, calm confidence, premium typography rather than generic heavy rounded bubble text. Restore the normal readable lowercase e; the payments meaning lives in the B. All letters must remain actual letters, including i and a. The dot of i is one small geometric dot. Introduce only a very subtle unique detail in the ia pair through matching corner radii and color. No mascot disguised as letters.
+- Rich royal banking blue #153B75 for "lem"; emerald #00A77B for the B and "ia". Restrained two-color palette, strong contrast on light backgrounds. Flat fills, no gradients, no lighting effects.
+- Treat the B and lettering as one coherent wordmark. Match cap/ascender height optically, shared baseline, deliberate spacing. The B is compact and integrated rather than oversized or detached like an extra emblem. Elegant horizontal proportions, usable at website-header size.
+- This is the PRIMARY logo. Remove the robot, floating/dropped head, euro-shaped e, sparks, rocket flame, 3D extrusion, gloss, bevels and all decorative effects from this version. Those are secondary mascot concepts and must not appear in the main logo.
+
+Text verbatim: "Blemia", spelled B-l-e-m-i-a, exactly once. Capital B and all remaining letters lowercase. No final s, no euro symbol, no tagline, no domain or additional text.
+Composition: one centered horizontal wordmark on a genuinely transparent background with sensible clear space. Large enough to inspect, without excessive empty margins.
+Finish: exceptionally smooth crisp edges, flat vector-like precision rendered as a high-quality raster, simple recognizable silhouette, clear readable brand name. No residual pixel noise or green flecks in the negative-space openings.
+Avoid: copying an existing brand, stock fintech icon, robot or character, coin, currency glyph, extra icon, disconnected letters, presentation board, variants, watermark, shadow, white or colored background.

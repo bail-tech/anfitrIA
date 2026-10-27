@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { nowMs } from '@/components/blemi/clock';
 import type { AssistantEvent } from '@/lib/assistant/tools';
 import type { Proposal } from '@/lib/types';
 
@@ -21,6 +22,9 @@ export function useAssistant(welcome: string, locale: string) {
   const [items, setItems] = useState<ChatItem[]>([{ id: nextId(), kind: 'assistant', text: welcome }]);
   const [state, setState] = useState<AssistantState>('idle');
   const [busy, setBusy] = useState(false);
+  /** For Blemi's screens: the tool running right now, and until when a reply is being "spoken". */
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [talkingUntil, setTalkingUntil] = useState(0);
   const history = useRef<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
   /** Proposal cards still waiting for the host's tap. */
   const pending = useRef(new Set<string>());
@@ -29,10 +33,12 @@ export function useAssistant(welcome: string, locale: string) {
     switch (e.type) {
       case 'text':
         collect.push(e.text);
+        setTalkingUntil(nowMs() + Math.min(6000, 60 * e.text.length));
         setItems((list) => [...list, { id: nextId(), kind: 'assistant', text: e.text }]);
         break;
       case 'tool':
         setState(e.status === 'running' ? 'working' : 'thinking');
+        setActiveTool(e.status === 'running' ? e.name : null);
         setItems((list) => {
           const existing = list.find((i) => i.kind === 'tool' && i.toolId === e.id);
           if (existing) return list.map((i) => (i === existing ? { ...i, status: e.status, detail: e.detail } : i));
@@ -89,6 +95,7 @@ export function useAssistant(welcome: string, locale: string) {
         setState('error');
       } finally {
         setBusy(false);
+        setActiveTool(null);
       }
     },
     [busy, locale, onEvent],
@@ -111,7 +118,7 @@ export function useAssistant(welcome: string, locale: string) {
     history.current.push({ role: 'user', content: note }, { role: 'assistant', content: 'Entendido.' });
   }, []);
 
-  return { items, state, busy, send, decide };
+  return { items, state, busy, send, decide, activeTool, talkingUntil };
 }
 
 export type Assistant = ReturnType<typeof useAssistant>;

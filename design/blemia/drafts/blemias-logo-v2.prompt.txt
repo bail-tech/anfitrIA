@@ -1,0 +1,18 @@
+Built-in imagegen edit — initial prompt
+
+Use case: precise-object-edit
+Asset type: revised transparent Blemias brand logo.
+Input image: edit target, the existing Blemias logo. Preserve the emerald two-arrow B symbol, the name spelling, the horizontal layout, and the navy/emerald palette.
+Primary request: make this logo more fun by turning the lowercase emerald "i" into a tiny playful human whose round dot is its detached head. This is an abstract visual pun about the headless Blemias of mythology and headless agent commerce.
+Specific change: give the i stem a very subtle little human silhouette with rounded shoulders, short relaxed arms and a small split at its bottom suggesting two legs; it must still read immediately as the lowercase letter i inside "Blemias". Lift its circular dot a little higher and tilt/offset it slightly toward the right, making the head visibly detached and jauntily floating away. Add only two tiny restrained curved motion strokes near the floating dot to convey a cheerful pop-off. Keep the circular head simple and faceless. Use clean empty space between the head and torso.
+Style: friendly, witty, minimal fintech wordmark; flat geometric shapes, smooth edges, polished typography and clean alpha edges. The visual joke should work at small sizes. Keep the original logo's professional balance.
+Text (verbatim): "Blemias", B-l-e-m-i-a-s. Keep capital B and all remaining letters lowercase. The "i" and "a" remain emerald #10B981; Blem and s remain deep ink navy #12202D. Do not add or remove letters.
+Invariants: preserve the B exchange mark, overall scale, kerning and other letter shapes as closely as possible; allow a little extra space above the wordmark for the floating head. Preserve genuine background transparency.
+Avoid: blood, gore, wounds, neck anatomy, weapons, execution scenes, realistic people, horror, extra characters, extra text, tagline, watermark, background fill, shadows, glow, gradients or 3D. The decapitation is represented solely by a separated dot on a typographic character. One revised logo, not a presentation board.
+
+Built-in imagegen edit — final refinement
+
+Use case: precise-object-edit.
+Input image: edit target, the transparent Blemias wordmark with a human-shaped emerald i.
+Make one targeted adjustment to the i's detached head: move its circular dot/head upward and slightly right so that there is a very obvious transparent gap, at least three quarters of the circle's diameter, between the head and the body's shoulders. It should look like the head has playfully popped off and is floating away. Remove the two wifi-like curved strokes next to the head; instead use one tiny diagonal trailing dash below-left of the floating circle to suggest the direction of movement. The head stays round and faceless. The gap must remain clear at thumbnail size.
+Preserve everything else: exact text "Blemias", B exchange symbol, horizontal layout, all letter shapes, the playful i torso with arms and two legs, font weight, ink navy and emerald colors, and genuine background transparency. Keep the body aligned on the text baseline. Clean crisp alpha edges, flat minimal logo. No blood, wounds, weapons, realistic human anatomy, extra text or background fill. One logo only.

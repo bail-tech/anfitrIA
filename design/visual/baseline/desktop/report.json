@@ -1,0 +1,654 @@
+{
+  "ok": true,
+  "outDir": "/Users/Marcos_Bail_Ingold/Pay0/pay0-gateway/design/visual/baseline/desktop",
+  "size": "1440x900",
+  "settle": 24,
+  "isolated": true,
+  "shots": [
+    {
+      "shot": "wordmark-logo",
+      "ok": true,
+      "info": {
+        "calls": 101,
+        "tris": 89714,
+        "programs": 9,
+        "textures": 7,
+        "geometries": 49,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 816,
+            "y0": 362,
+            "x1": 894,
+            "y1": 421
+          },
+          "chest": {
+            "x0": 729,
+            "y0": 345,
+            "x1": 766,
+            "y1": 370
+          },
+          "blemi": {
+            "x0": 703,
+            "y0": 319,
+            "x1": 912,
+            "y1": 434
+          },
+          "letters": {
+            "LetterB": {
+              "x0": 152,
+              "y0": 254,
+              "x1": 335,
+              "y1": 427
+            },
+            "LetterL": {
+              "x0": 318,
+              "y0": 260,
+              "x1": 390,
+              "y1": 429
+            },
+            "LetterEuro": {
+              "x0": 374,
+              "y0": 261,
+              "x1": 522,
+              "y1": 429
+            },
+            "LetterM": {
+              "x0": 518,
+              "y0": 298,
+              "x1": 693,
+              "y1": 429
+            }
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 956,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Logo story landed: all letters in, the head is the \"a\", the chest screen is the face.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-idle",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Engaged and idle: letters gone, Blemi alone just left of the wide panel; open eyes, smile, heart.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-thinking",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 548,
+            "y1": 294
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 335,
+            "x1": 528,
+            "y1": 374
+          },
+          "blemi": {
+            "x0": 396,
+            "y0": 154,
+            "x1": 597,
+            "y1": 473
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Thinking: eyes up, wavy mouth, thought dots on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-searching",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 548,
+            "y1": 294
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 335,
+            "x1": 528,
+            "y1": 374
+          },
+          "blemi": {
+            "x0": 396,
+            "y0": 154,
+            "x1": 597,
+            "y1": 473
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Finding services: focused eyes, magnifier over results on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-reading",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 548,
+            "y1": 294
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 335,
+            "x1": 528,
+            "y1": 374
+          },
+          "blemi": {
+            "x0": 396,
+            "y0": 154,
+            "x1": 597,
+            "y1": 473
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Fetching a page: focused eyes, page icon on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-paying",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 548,
+            "y1": 294
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 335,
+            "x1": 528,
+            "y1": 374
+          },
+          "blemi": {
+            "x0": 396,
+            "y0": 154,
+            "x1": 597,
+            "y1": 473
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Paying: euro eyes, o mouth, euro coin flipping on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-paid",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 434,
+            "y0": 215,
+            "x1": 551,
+            "y1": 298
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 335,
+            "x1": 528,
+            "y1": 374
+          },
+          "blemi": {
+            "x0": 400,
+            "y0": 154,
+            "x1": 599,
+            "y1": 471
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Receipt arrived: happy eyes, big smile, check on the chest, screens brighter.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-approval",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Waiting for approval: question eyes, question mark on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-talking",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Reply streaming: talking mouth, speech bars on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-listening",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Voice on, visitor speaking: wide eyes, mic and level bars on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-error",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Run failed: X eyes, warning sign on the chest.",
+      "logs": []
+    },
+    {
+      "shot": "blemi-out-of-credit",
+      "ok": true,
+      "info": {
+        "calls": 91,
+        "tris": 48506,
+        "programs": 8,
+        "textures": 7,
+        "geometries": 47,
+        "dpr": 1,
+        "regions": {
+          "head": {
+            "x0": 433,
+            "y0": 214,
+            "x1": 551,
+            "y1": 297
+          },
+          "chest": {
+            "x0": 470,
+            "y0": 334,
+            "x1": 528,
+            "y1": 373
+          },
+          "blemi": {
+            "x0": 399,
+            "y0": 152,
+            "x1": 599,
+            "y1": 470
+          },
+          "letters": {
+            "LetterB": null,
+            "LetterL": null,
+            "LetterEuro": null,
+            "LetterM": null
+          },
+          "stage": {
+            "x0": 104,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          },
+          "panel": {
+            "x0": 621,
+            "y0": 93,
+            "x1": 1336,
+            "y1": 533
+          }
+        }
+      },
+      "doc": "Out of credit: sad eyes, frown, \"€0\" on the chest.",
+      "logs": []
+    }
+  ],
+  "errors": []
+}

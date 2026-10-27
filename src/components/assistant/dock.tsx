@@ -3,12 +3,17 @@
 import { Bot, CircleAlert, Loader2, MessageCircle, Mic, MicOff, Send, Wrench, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { BlemiStage } from '@/components/blemi/blemi-stage';
+import { useScreenSignals } from '@/components/blemi/use-screen-signals';
 import { CharacterStage } from '@/components/character/stage';
 import type { Mood } from '@/components/character/face';
 import { cn } from '@/lib/utils';
 import { ProposalCard } from './proposal-card';
 import { useAssistant, type AssistantState } from './use-assistant';
 import { useVoice } from './use-voice';
+
+/** Blemi (rigged GLB from Blemia, pixel screens) by default; NEXT_PUBLIC_CHARACTER=anfi for the procedural house. */
+const CHARACTER = process.env.NEXT_PUBLIC_CHARACTER === 'anfi' ? 'anfi' : 'blemi';
 
 const DOT: Record<AssistantState, string> = {
   idle: 'bg-muted/40',
@@ -24,6 +29,7 @@ function DockBody({ onClose }: { onClose?: () => void }) {
   const locale = useLocale();
   const assistant = useAssistant(t('welcome'), locale);
   const voice = useVoice({ assistant, locale });
+  const signals = useScreenSignals(assistant, voice);
   const [text, setText] = useState('');
   const list = useRef<HTMLDivElement>(null);
 
@@ -51,7 +57,11 @@ function DockBody({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex h-full flex-col">
       <div className="relative shrink-0 border-b border-line bg-gradient-to-b from-sand/60 to-paper">
-        <CharacterStage mood={mood} levels={voice.levels} className="mx-auto h-44 w-full max-w-[280px]" />
+        {CHARACTER === 'anfi' ? (
+          <CharacterStage mood={mood} levels={voice.levels} className="mx-auto h-44 w-full max-w-[280px]" />
+        ) : (
+          <BlemiStage label="Blemi" mode="assembled" focus="blemi" signals={signals} className="relative mx-auto h-52 w-full" />
+        )}
         <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-paper/80 px-2.5 py-1 text-xs backdrop-blur">
           <span className={cn('size-2 rounded-full', DOT[assistant.state])} />
           <span className="font-medium">{t('title')}</span>

@@ -1,0 +1,16 @@
+Use case: precise-object-edit
+Asset type: revised transparent Blemias logo.
+Input image: edit target, the existing horizontal Blemias logo with a single emerald payment B, navy l-e-m, a friendly realistic green robot replacing i, emerald a, navy s, and the robot's smiling head floating above-right.
+
+Make these two requested changes:
+
+1. Two euro symbols connected as a transaction inside the B.
+Keep the bold emerald uppercase B as the actual first letter of Blemias. Preserve the existing normal euro sign "€" in its upper bowl. Remove the wallet clasp/button detail from the lower bowl and replace it with a second euro sign of the same size, HORIZONTALLY MIRRORED so its curved opening and horizontal bars face the opposite direction to the upper euro. This is a mirror-image euro, not a rotation and not a different currency. Include ONE clear, elegant curved arrow connecting the upper normal euro to the lower reversed euro, flowing down between the two bowls with a visible arrowhead pointing toward the lower euro. Arrange the connecting path in the green interior of the B, without obscuring either euro symbol or breaking the B's outer silhouette. The pair and connecting arrow should clearly suggest a euro transfer. Render both euro symbols and the arrow consistently as clean deep navy/negative-space insets with smooth edges. Keep the treatment simple and readable, avoiding decorative clutter.
+
+2. Blue rocket propulsion on the flying robot head.
+Keep the same friendly realistic rounded robot head: glossy navy screen with smiling mint eyes and mouth, emerald and white shell, small antenna, cheerful tilt. Add a small plausible brushed-metal rocket nozzle under the flying head. Emit a vivid BLUE rocket flame from it, blue outer flame with a cyan-white hot core, tapering diagonally downward-left, so the head clearly rockets upward-right away from its body. Replace the old two green motion marks with this blue flame. The head itself is the rocket-propelled element; do not add a separate rocket vehicle. Maintain clear air/transparent space between the flying head and the headless robot torso. Keep the torso's friendly raised waving arm, short articulated legs, materials and position in the word unchanged. No extra head on its shoulders.
+The blue flame should be compact enough to remain part of the logo, with restrained realistic shading and no smoke cloud, explosion or lighting background.
+
+Invariants: exact text "Blemias", B-l-e-m-i-a-s; ONE leading capital B, other letters lowercase; existing navy typography and emerald IA emphasis; friendly realistic robot materials and expression; horizontal layout, scale and kerning; genuine transparent alpha background.
+Palette: preserve emerald #10B981, ink navy #12202D, white and silver robot accents; add blue/cyan only to the rocket flame.
+Avoid: extra words, extra symbols outside the B, duplicate letters, dollar signs, Bitcoin signs, red or orange flame, scary expression, injury, blood, weapons, smoke, background fill, floor shadow, watermark or multiple variants. One polished logo on transparency.

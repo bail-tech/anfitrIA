@@ -1,0 +1,10 @@
+Use case: logo-brand
+Asset type: primary horizontal logo for Blemias, a Spanish B2B product that lets AI agents pay for APIs and MCP tools in euros.
+Primary request: create one original, polished logo combining a compact abstract symbol and a beautifully typeset wordmark. The name contains "IA" (inteligencia artificial), so make the consecutive i and a visually distinct through color while keeping the whole name readable as one word.
+Scene/backdrop: genuinely transparent background with a clean alpha channel.
+Subject: a distinctive geometric B symbol made from two interlocking, smoothly rounded paths, suggesting a secure exchange between autonomous agents. Strong silhouette, simple negative space, suitable for a small app icon. Pair it with a custom modern sans-serif wordmark with subtly rounded corners and precise, generous kerning.
+Composition: one centered horizontal symbol-plus-wordmark lockup, symbol on the left and name on the right, optically balanced, generous transparent margins. The logo itself should be large and clearly readable.
+Color palette: flat deep ink navy #12202D for "Blem" and the final "s"; flat emerald #10B981 for the consecutive "ia" and the symbol. Use only these two colors.
+Text (verbatim): "Blemias". Spell exactly B-l-e-m-i-a-s. Preserve the capital B and lowercase remaining letters. Highlight "ia" using emerald; do not add a gap before or after it.
+Style: minimal, confident, trustworthy fintech identity with character; crisp vector-like edges rendered as a high-quality raster asset.
+Constraints: one logo only; no presentation board, no alternative variants, no extra words, no tagline, no domain, no background rectangle, no shadows, no glow, no gradient, no 3D, no watermark. No stock robot head, circuit-brain icon, coin icon, bank building, literal monster, or resemblance to an existing brand. The two-path B should remain a coherent simple mark.

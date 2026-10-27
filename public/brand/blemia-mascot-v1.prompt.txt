@@ -1,0 +1,18 @@
+Use case: stylized-concept
+Asset type: standalone Blemia brand robot mascot, full body, transparent background.
+Input image: visual identity reference ONLY. Match the existing small emerald-and-white robot's materials, limbs, proportions and friendly digital face style. Do not reproduce the logo lettering or separate head.
+
+Primary request: reimagine this exact friendly little robot as a robotic Blemia / Blemmye: a naturally HEADLESS being whose FACE is on its CHEST. It is deliberately built this way, not a damaged or decapitated normal robot.
+
+Anatomy and identity:
+- Absolutely no head above the shoulders, no neck, no antenna on top, no empty neck socket or stump. The upper body ends in a smooth, gently rounded emerald-and-white shoulder bridge, a fully finished sealed chassis.
+- Move the recognizable dark TV-screen face INTO the broad front of the torso. The glowing mint eyes sit across the upper chest and a gentle mint smile sits just below them on the same integrated display. The display follows the torso's curved breastplate with a slim white ceramic rim; it must clearly be a FACE IN THE BODY, not a separate robot head glued to the chest.
+- Remove the old round glowing chest button; the chest display face replaces it.
+- Retain the existing emerald glossy-satin armor, white ceramic forearm and hip accents, silver mechanical elbows and knees, little articulated hands, short sturdy legs and rounded white-and-green feet.
+- Slightly broaden the torso to give the face breathing room. Keep compact, balanced, charming proportions and a strong readable headless silhouette.
+- Friendly wave with one hand; the other arm relaxed. Stand upright in a subtle three-quarter front pose, face aimed toward the viewer. Both feet visible. Approachable, curious and capable.
+
+Rendering: polished realistic 3D product-character render, same aesthetic as the reference, believable ceramic and metal materials, soft restrained studio highlights, precise clean edges. The chest-face has the same warm curved happy-eye shapes and tiny smile as the reference's separate head. Keep it expressive without making it babyish.
+Palette: emerald #10B981, clean white ceramic, brushed silver joints, dark royal/navy-blue chest screen and mint/cyan luminous facial features.
+Composition: ONE full-body character centered on a square canvas, comfortable clear space around the waving hand and feet, large enough to inspect. Genuine transparent alpha background; no ground plane or background shadow.
+Avoid: any conventional head, floating or detached head, separate head on the ground, head-shaped box on top of the body, neck socket, antenna, sparks, rocket, flames, human skin, realistic injury, horror, scary expression, lettering, logo, euro symbol, coins, watermark, presentation board or multiple views. One finished mascot.
