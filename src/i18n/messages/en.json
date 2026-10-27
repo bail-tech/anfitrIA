@@ -279,7 +279,12 @@
     "send": "Send",
     "close": "Close",
     "open": "Open assistant",
-    "asVoice": "as a voice note"
+    "asVoice": "as a voice note",
+    "voiceErr_mic": "No microphone access: allow it in the browser.",
+    "voiceErr_openai_auth": "OpenAI rejected the key (OPENAI_API_KEY). Check it is valid and has permissions.",
+    "voiceErr_openai_quota": "OpenAI out of credit or rate-limited: check billing.",
+    "voiceErr_openai_model": "Your OpenAI account has no access to the voice model.",
+    "voiceErr_other": "Voice could not start. Try again."
   },
   "common": {
     "save": "Save",

@@ -189,11 +189,14 @@ export function useVoice({ assistant, locale }: { assistant: Assistant; locale: 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sdp: peer.localDescription?.sdp, locale }),
       });
-      if (!res.ok) throw new Error(`voice ${res.status}`);
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { code?: string };
+        throw new Error(data.code ?? `voice_${res.status}`);
+      }
       const answer = (await res.json()) as { transport: { sdp: string } };
       await peer.setRemoteDescription({ type: 'answer', sdp: answer.transport.sdp });
-    } catch {
-      setError('session');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'voice_failed');
       cleanup();
     }
   }, [cleanup, locale, onDelegation]);

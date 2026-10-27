@@ -279,7 +279,12 @@
     "send": "Enviar",
     "close": "Cerrar",
     "open": "Abrir asistente",
-    "asVoice": "como nota de voz"
+    "asVoice": "como nota de voz",
+    "voiceErr_mic": "No hay acceso al micrófono: permítelo en el navegador.",
+    "voiceErr_openai_auth": "OpenAI rechazó la clave (OPENAI_API_KEY). Revisa que sea válida y tenga permisos.",
+    "voiceErr_openai_quota": "OpenAI sin saldo o límite alcanzado: revisa la facturación.",
+    "voiceErr_openai_model": "Tu cuenta de OpenAI no tiene acceso al modelo de voz.",
+    "voiceErr_other": "No se pudo iniciar la voz. Inténtalo de nuevo."
   },
   "common": {
     "save": "Guardar",

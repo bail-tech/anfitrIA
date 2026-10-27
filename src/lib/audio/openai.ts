@@ -12,7 +12,7 @@ export const TRANSCRIBE_MODEL = 'gpt-4o-transcribe';
 export const MAX_AUDIO_BYTES = 16 * 1024 * 1024;
 
 let client: OpenAI | null = null;
-const openai = () => (client ??= new OpenAI());
+const openai = () => (client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY?.trim() }));
 
 const EXT: Record<string, string> = { 'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/aac': 'aac', 'audio/amr': 'amr', 'audio/webm': 'webm', 'audio/wav': 'wav' };
 export const extensionFor = (mime: string) => EXT[mime.split(';')[0].trim()] ?? 'ogg';

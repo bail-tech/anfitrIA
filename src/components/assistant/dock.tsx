@@ -112,6 +112,11 @@ function DockBody({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
+      {voice.error && (
+        <p className="shrink-0 border-t border-line bg-terra-soft px-3 py-2 text-xs text-[#9a4220]" role="alert">
+          {t(['mic', 'openai_auth', 'openai_quota', 'openai_model'].includes(voice.error) ? `voiceErr_${voice.error as 'mic'}` : 'voiceErr_other')}
+        </p>
+      )}
       <form onSubmit={submit} className="flex shrink-0 items-center gap-2 border-t border-line p-3">
         <button
           type="button"
