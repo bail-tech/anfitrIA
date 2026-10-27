@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { todayOverview } from '@/lib/assistant/tools';
 import { todayIn } from '@/lib/concierge/stay';
-import { CLAUDE_MODEL, features } from '@/lib/env';
+import { CLAUDE_MODEL, CLAUDE_MODEL_NAME, features } from '@/lib/env';
 import { loadOverview } from '@/lib/metrics';
 import { requireSession } from '@/lib/supabase/server';
 import type { AgentKey, AgentRun } from '@/lib/types';
@@ -160,7 +160,7 @@ export default async function OverviewPage() {
 
         <Card className="h-fit p-4">
           <div className="text-xs font-medium uppercase tracking-wider text-gold">● {t('health')}</div>
-          <div className="mt-3 font-display text-xl font-semibold">{features.claude() ? 'Claude Opus 5.5' : th('mock')}</div>
+          <div className="mt-3 font-display text-xl font-semibold">{features.claude() ? CLAUDE_MODEL_NAME : th('mock')}</div>
           <div className="font-mono text-xs text-muted">{features.claude() ? CLAUDE_MODEL : 'mock · sin ANTHROPIC_API_KEY'}</div>
           <ul className="mt-4 space-y-2 text-sm">
             {(

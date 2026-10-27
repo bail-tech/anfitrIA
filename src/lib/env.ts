@@ -15,4 +15,20 @@ export const features = {
   managedAgents: () => has('ANTHROPIC_API_KEY') && has('ANTHROPIC_ENVIRONMENT_ID'),
 };
 
-export const CLAUDE_MODEL = 'claude-opus-5-5';
+/** The app's model (guest replies and Anfi). Override with CLAUDE_MODEL, e.g. claude-opus-5-5 or claude-sonnet-5-5. */
+export const CLAUDE_MODEL = process.env.CLAUDE_MODEL?.trim() || 'claude-haiku-5-5';
+
+const MODEL_NAMES: Record<string, string> = {
+  'claude-haiku-5-5': 'Claude Haiku 5.5',
+  'claude-sonnet-5-5': 'Claude Sonnet 5.5',
+  'claude-opus-5-5': 'Claude Opus 5.5',
+};
+export const CLAUDE_MODEL_NAME = MODEL_NAMES[CLAUDE_MODEL] ?? CLAUDE_MODEL;
+
+/**
+ * Server-side refusal fallback (`fallbacks: 'default'`) exists on the Opus, Sonnet 5.5 and Fable
+ * models but not on Haiku; send it only where it is accepted.
+ */
+export function fallbackParams(model = CLAUDE_MODEL): { betas: string[]; fallbacks: 'default' } | Record<string, never> {
+  return /^claude-(opus|sonnet-5-5|fable)/.test(model) ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {};
+}

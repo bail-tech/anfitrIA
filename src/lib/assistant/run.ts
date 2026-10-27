@@ -4,7 +4,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import type { BetaMessageParam } from '@anthropic-ai/sdk/resources/beta/messages/messages';
-import { CLAUDE_MODEL, features } from '@/lib/env';
+import { CLAUDE_MODEL, fallbackParams, features } from '@/lib/env';
 import { SHARED_RULES, SKILLS } from '@/lib/skills/generated';
 import { hostTools, listEscalations, todayOverview, type ToolContext } from './tools';
 
@@ -70,8 +70,7 @@ export async function runAssistant(ctx: ToolContext, history: ChatTurn[], hostNa
     const runner = (client ??= new Anthropic()).beta.messages.toolRunner({
       model: CLAUDE_MODEL,
       max_tokens: 16000,
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
+      ...fallbackParams(),
       output_config: { effort: 'medium' },
       cache_control: { type: 'ephemeral' },
       system: systemPrompt(hostName, locale),

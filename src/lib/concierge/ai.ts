@@ -6,7 +6,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { z } from 'zod';
-import { CLAUDE_MODEL, features } from '@/lib/env';
+import { CLAUDE_MODEL, fallbackParams, features } from '@/lib/env';
 import { SHARED_RULES, SKILLS } from '@/lib/skills/generated';
 import { detectLanguage } from './language';
 
@@ -121,8 +121,7 @@ export const claudeAI: GuestAI = {
       const response = await (client ??= new Anthropic()).beta.messages.parse({
         model: CLAUDE_MODEL,
         max_tokens: 4000,
-        betas: ['server-side-fallback-2026-07-01'],
-        fallbacks: 'default',
+        ...fallbackParams(),
         cache_control: { type: 'ephemeral' },
         output_config: { effort: 'low', format: betaZodOutputFormat(ReplySchema) },
         system: SYSTEM,

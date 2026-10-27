@@ -45,3 +45,13 @@ describe('skills bundle', () => {
     expect(prompt).toContain('## Skill: house-manual');
   });
 });
+
+describe('model choice', () => {
+  it('defaults to Haiku and only sends refusal fallbacks to models that accept them', async () => {
+    const { CLAUDE_MODEL, fallbackParams } = await import('@/lib/env');
+    expect(CLAUDE_MODEL).toBe('claude-haiku-5-5');
+    expect(fallbackParams('claude-haiku-5-5')).toEqual({});
+    expect(fallbackParams('claude-opus-5-5')).toEqual({ betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' });
+    expect(fallbackParams('claude-sonnet-5-5')).toHaveProperty('fallbacks', 'default');
+  });
+});
