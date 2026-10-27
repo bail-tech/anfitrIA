@@ -2,7 +2,6 @@
 
 import { Component, useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from 'react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { captureEnabled } from './capture';
 import type { StageLayout } from './layout';
 import type { BlemiMode } from './rig';
@@ -108,15 +107,12 @@ export function BlemiStage({ label, mode, focus, signals, layout, onBlemiClick, 
   return (
     <div ref={ref} role="img" aria-label={label} className={`overflow-hidden ${className}`}>
       <div className={`absolute inset-0 ${posterClassName}`}>
-        {/* AnfitrIA: Blemi alone (no Blemia wordmark or logo video) while loading and on devices without 3D. */}
-        <Image
-          src="/brand/blemia-mascot-v1.png"
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 1280px) 360px, 60vw"
-          className={`object-contain px-[18%] py-[10%] transition-opacity duration-700 ${support === 'webgl' && ready ? 'opacity-0' : 'opacity-100'}`}
-        />
+        {/* AnfitrIA: a plain loading animation while the 3D scene loads; no images. */}
+        {(support === 'pending' || (support === 'webgl' && !ready)) && (
+          <div className="absolute inset-0 grid place-items-center" aria-hidden>
+            <span className="size-8 animate-spin rounded-full border-[3px] border-emerald-500/25 border-t-emerald-500" />
+          </div>
+        )}
       </div>
       {support === 'webgl' && mounted && (
         <SceneBoundary onError={() => setFailed(true)}>
