@@ -320,7 +320,7 @@
     "subtitle": "Your assistant",
     "placeholder": "Ask about your day, a booking or an escalation…",
     "welcome": "Hi! I'm Anfi. Ask me what's on today, which escalations are waiting, or ask me to prepare a reply.",
-    "suggestions": "What's on today?|Which escalations are pending?|Plan the cleanings",
+    "suggestions": "What's on today?|Which escalations are pending?|Give me the app tour",
     "approve": "Approve and send",
     "approveOnly": "Approve",
     "reject": "Reject",
@@ -605,5 +605,14 @@
     "platform_vrbo": "Vrbo",
     "platform_google": "Google",
     "platform_other": "Other"
+  },
+  "welcome": {
+    "title": "Welcome to AnfitrIA, {name}!",
+    "body": "I’m Anfi, your co-host. Shall I show you around in two minutes? I’ll tell you what each part does and where to set it all up.",
+    "point_one": "Where to add your property and bookings",
+    "point_two": "How I answer your guests (and when I ask you)",
+    "point_three": "How to ask me for things by voice",
+    "start": "Start the tour (2 min)",
+    "later": "Not now, maybe later"
   }
 }

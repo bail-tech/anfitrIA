@@ -18,8 +18,8 @@ export interface Spot {
 
 const TIMEOUT_MS = 6000;
 
-function waitFor<T>(check: () => T | null | undefined | false): Promise<T | null> {
-  const until = Date.now() + TIMEOUT_MS;
+function waitFor<T>(check: () => T | null | undefined | false, timeout = TIMEOUT_MS): Promise<T | null> {
+  const until = Date.now() + timeout;
   return new Promise((resolve) => {
     const poll = () => {
       const v = check();
@@ -77,16 +77,27 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
   const tour = useRef<{ steps: TourStep[]; index: number } | null>(null);
   const queue = useRef<Promise<void>>(Promise.resolve());
 
+  /**
+   * Shows a tour step, opening its page first when the tour spans the app. A step whose section
+   * isn't on screen (an empty account, a step with no section) shows as a centred card.
+   */
   const showStep = useCallback(
-    (index: number) => {
+    async (index: number) => {
       const t = tour.current;
       const s = t?.steps[index];
       if (!t || !s) return;
       t.index = index;
-      setSpot({ selector: section(s.section), title: s.title, note: s.note, step: { index, total: t.steps.length } });
+      if (s.path && window.location.pathname !== s.path) {
+        setSpot(null);
+        router.push(s.path);
+        await waitFor(() => window.location.pathname === s.path);
+      }
+      const found = s.section ? await waitFor(() => document.querySelector(section(s.section)), 2500) : null;
+      if (tour.current !== t || t.index !== index) return; // exited or moved on meanwhile
+      setSpot({ selector: found ? section(s.section) : '', title: s.title, note: s.note, step: { index, total: t.steps.length } });
       onNarrate(`${s.title}. ${s.note}`);
     },
-    [onNarrate],
+    [onNarrate, router],
   );
 
   const exit = useCallback(() => {
@@ -97,13 +108,13 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
   const next = useCallback(() => {
     const t = tour.current;
     if (!t) return;
-    if (t.index + 1 < t.steps.length) showStep(t.index + 1);
+    if (t.index + 1 < t.steps.length) void showStep(t.index + 1);
     else exit();
   }, [exit, showStep]);
 
   const back = useCallback(() => {
     const t = tour.current;
-    if (t && t.index > 0) showStep(t.index - 1);
+    if (t && t.index > 0) void showStep(t.index - 1);
   }, [showStep]);
 
   /** "siguiente" / "para" during a tour, typed or spoken, without a round trip to Claude. */
@@ -141,7 +152,7 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
               break;
             case 'tour':
               tour.current = { steps: action.steps, index: 0 };
-              if (await waitFor(() => document.querySelector(section(action.steps[0]?.section ?? '')))) showStep(0);
+              await showStep(0);
               break;
             case 'prefill': {
               const selector = `[data-anfi-form="${CSS.escape(action.form)}"]`;

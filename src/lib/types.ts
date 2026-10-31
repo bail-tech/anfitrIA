@@ -9,6 +9,7 @@ export interface Profile {
   assistant_language: 'auto' | 'es' | 'en' | 'fr' | 'de' | 'it';
   voice: string;
   voice_custom_id: string | null;
+  onboarded_at: string | null;
 }
 
 export interface Property {

@@ -477,3 +477,11 @@ export async function deleteReview(form: FormData) {
   await db.from('reviews').delete().eq('id', str(form, 'id'));
   revalidatePath('/resenas');
 }
+
+// Onboarding ------------------------------------------------------------------------
+
+/** The welcome card was answered (tour or later): don't show it again. */
+export async function markOnboarded() {
+  const { db, profile } = await requireSession();
+  await db.from('profiles').update({ onboarded_at: new Date().toISOString() }).eq('id', profile.id);
+}

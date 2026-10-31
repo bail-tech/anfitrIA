@@ -320,7 +320,7 @@
     "subtitle": "Tu asistente",
     "placeholder": "Pregúntame por tu día, una reserva o una escalada…",
     "welcome": "¡Hola! Soy Anfi. Pregúntame qué tienes hoy, qué escaladas esperan o pídeme que prepare una respuesta.",
-    "suggestions": "¿Qué tengo hoy?|¿Qué escaladas hay pendientes?|Planifica las limpiezas",
+    "suggestions": "¿Qué tengo hoy?|¿Qué escaladas hay pendientes?|Hazme el tour de la app",
     "approve": "Aprobar y enviar",
     "approveOnly": "Aprobar",
     "reject": "Rechazar",
@@ -605,5 +605,14 @@
     "platform_vrbo": "Vrbo",
     "platform_google": "Google",
     "platform_other": "Otra"
+  },
+  "welcome": {
+    "title": "¡Bienvenido a AnfitrIA, {name}!",
+    "body": "Soy Anfi, tu coanfitrión. ¿Te enseño la app en dos minutos? Te digo qué hace cada parte y dónde dejarlo todo listo.",
+    "point_one": "Dónde añadir tu alojamiento y tus reservas",
+    "point_two": "Cómo respondo a tus huéspedes (y cuándo te pregunto)",
+    "point_three": "Cómo pedirme cosas hablando",
+    "start": "Empezar el tour (2 min)",
+    "later": "Ahora no, lo veo luego"
   }
 }

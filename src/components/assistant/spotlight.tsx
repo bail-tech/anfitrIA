@@ -7,6 +7,8 @@ import { createPortal } from 'react-dom';
 import type { AnfiUi } from './use-anfi-ui';
 
 type Rect = { top: number; left: number; width: number; height: number };
+/** A step with nothing to point at: the card sits in the middle of a dimmed screen. */
+const CENTER = 'center' as const;
 const PAD = 8;
 const CARD_W = 320;
 
@@ -14,13 +16,24 @@ const CARD_W = 320;
 export function Spotlight({ ui }: { ui: AnfiUi }) {
   const t = useTranslations('assistant');
   const { spot, exit } = ui;
-  const [rect, setRect] = useState<Rect | null>(null);
+  const [rect, setRect] = useState<Rect | typeof CENTER | null>(null);
 
   // Scroll the section into view, then follow it every frame (scroll, resize, layout shifts).
   useEffect(() => {
     if (!spot) return;
-    const el = document.querySelector(spot.selector);
-    if (!el) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && exit();
+    window.addEventListener('keydown', onKey);
+    const el = spot.selector ? document.querySelector(spot.selector) : null;
+    if (!el) {
+      // Nothing to measure: show the centred card straight away (no frame needed).
+      let live = true;
+      queueMicrotask(() => live && setRect(CENTER));
+      return () => {
+        live = false;
+        window.removeEventListener('keydown', onKey);
+        setRect(null);
+      };
+    }
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     el.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
     let raf = 0;
@@ -35,8 +48,6 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
       raf = requestAnimationFrame(track);
     };
     raf = requestAnimationFrame(track);
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && exit();
-    window.addEventListener('keydown', onKey);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('keydown', onKey);
@@ -45,16 +56,21 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
   }, [spot, exit]);
 
   if (!spot || !rect) return null;
-  const below = rect.top + rect.height + 180 < window.innerHeight;
-  const cardTop = below ? rect.top + rect.height + 12 : Math.max(12, rect.top - 12 - 170);
-  const cardLeft = Math.min(Math.max(12, rect.left), window.innerWidth - CARD_W - 12);
+  const centered = rect === CENTER;
+  const below = !centered && rect.top + rect.height + 180 < window.innerHeight;
+  const cardTop = centered ? Math.max(12, window.innerHeight / 2 - 110) : below ? rect.top + rect.height + 12 : Math.max(12, rect.top - 12 - 170);
+  const cardLeft = centered ? Math.max(12, window.innerWidth / 2 - CARD_W / 2) : Math.min(Math.max(12, rect.left), window.innerWidth - CARD_W - 12);
 
   return createPortal(
     <div className="fixed inset-0 z-[60]" onClick={ui.exit} role="presentation">
-      <div
-        className="pointer-events-none fixed rounded-2xl ring-2 ring-brand motion-safe:transition-all motion-safe:duration-300"
-        style={{ ...rect, boxShadow: '0 0 0 9999px rgba(43,38,32,0.45)' }}
-      />
+      {centered ? (
+        <div className="pointer-events-none fixed inset-0 bg-[rgba(43,38,32,0.45)]" />
+      ) : (
+        <div
+          className="pointer-events-none fixed rounded-2xl ring-2 ring-brand motion-safe:transition-all motion-safe:duration-300"
+          style={{ ...rect, boxShadow: '0 0 0 9999px rgba(43,38,32,0.45)' }}
+        />
+      )}
       <div
         role="dialog"
         aria-live="polite"

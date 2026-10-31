@@ -2,6 +2,7 @@ import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { AssistantDock } from '@/components/assistant/dock';
+import { WelcomeTour } from '@/components/assistant/welcome-tour';
 import { Sidebar } from '@/components/cockpit/sidebar';
 import { CLAUDE_MODEL, features } from '@/lib/env';
 import { requireSession } from '@/lib/supabase/server';
@@ -49,7 +50,8 @@ export default async function CockpitLayout({ children }: { children: React.Reac
         </header>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 lg:px-8">{children}</main>
       </div>
-      <AssistantDock prefs={{ assistant_language: profile.assistant_language, voice: profile.voice, voice_custom_id: profile.voice_custom_id }} />
+      <AssistantDock hostName={profile.name} prefs={{ assistant_language: profile.assistant_language, voice: profile.voice, voice_custom_id: profile.voice_custom_id }} />
+      {!profile.onboarded_at && <WelcomeTour name={profile.name} />}
     </div>
   );
 }

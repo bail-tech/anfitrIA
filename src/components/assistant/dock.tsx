@@ -9,7 +9,9 @@ import { CharacterStage } from '@/components/character/stage';
 import type { Mood } from '@/components/character/face';
 import { cn } from '@/lib/utils';
 import { ProposalCard } from './proposal-card';
+import { appTour } from '@/lib/assistant/app-tour';
 import { ASK_EVENT } from './ask-anfi';
+import { APP_TOUR_EVENT } from './welcome-tour';
 import { AnfiSettings, type AnfiPrefs } from './settings';
 import { Spotlight } from './spotlight';
 import { useAnfiUi } from './use-anfi-ui';
@@ -30,8 +32,9 @@ const DOT: Record<AssistantState, string> = {
 
 /** The last "Ask Anfi" press handled, so remounting the dock (mobile sheet) doesn't act on it twice. */
 let handledAsk = 0;
+let handledTour = 0;
 
-function DockBody({ onClose, onMinimize, prefs: initialPrefs, ask = 0 }: { onClose?: () => void; onMinimize?: () => void; prefs: AnfiPrefs; ask?: number }) {
+function DockBody({ onClose, onMinimize, prefs: initialPrefs, ask = 0, tour = 0, hostName }: { onClose?: () => void; onMinimize?: () => void; prefs: AnfiPrefs; ask?: number; tour?: number; hostName: string }) {
   const t = useTranslations('assistant');
   const locale = useLocale();
   const say = useRef<(text: string) => void>(() => undefined);
@@ -50,6 +53,14 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs, ask = 0 }: { onClo
     if (voice.supported && !voice.active) voice.toggle();
     else input.current?.focus();
   }, [ask, voice]);
+
+  // The welcome tour (after sign-up, or "Hazme el tour"): the whole app, page by page.
+  useEffect(() => {
+    if (!tour || tour === handledTour) return;
+    handledTour = tour;
+    const { title, steps } = appTour(locale, hostName);
+    ui.run({ kind: 'tour', path: '/', title, steps });
+  }, [tour, ui, locale, hostName]);
   const signals = useScreenSignals(assistant, voice);
   const [text, setText] = useState('');
   const input = useRef<HTMLInputElement>(null);
@@ -180,11 +191,21 @@ const subscribeDesktop = (cb: () => void) => {
   return () => mq.removeEventListener('change', cb);
 };
 
-export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
+export function AssistantDock({ prefs, hostName }: { prefs: AnfiPrefs; hostName: string }) {
   const t = useTranslations('assistant');
   const [sheet, setSheet] = useState<'closed' | 'open' | 'mini'>('closed');
   const minimize = useCallback(() => setSheet((s) => (s === 'open' ? 'mini' : s)), []);
   const [ask, setAsk] = useState(0);
+  const [tour, setTour] = useState(0);
+  useEffect(() => {
+    const onTour = () => {
+      setTour((n) => n + 1);
+      // On a phone the sheet shrinks to its bar, so the page being explained stays visible.
+      if (!window.matchMedia(DESKTOP).matches) setSheet('mini');
+    };
+    window.addEventListener(APP_TOUR_EVENT, onTour);
+    return () => window.removeEventListener(APP_TOUR_EVENT, onTour);
+  }, []);
   useEffect(() => {
     const onAsk = () => {
       setAsk((n) => n + 1);
@@ -198,7 +219,7 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
   if (desktop) {
     return (
       <aside className="sticky top-0 h-screen w-[360px] shrink-0 border-l border-line bg-paper/95 print:hidden">
-        <DockBody prefs={prefs} ask={ask} />
+        <DockBody prefs={prefs} ask={ask} tour={tour} hostName={hostName} />
       </aside>
     );
   }
@@ -221,7 +242,7 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <DockBody prefs={prefs} ask={ask} onClose={() => setSheet('closed')} onMinimize={minimize} />
+            <DockBody prefs={prefs} ask={ask} tour={tour} hostName={hostName} onClose={() => setSheet('closed')} onMinimize={minimize} />
           </div>
         </div>
       )}

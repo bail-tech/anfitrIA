@@ -46,3 +46,19 @@ describe('page registry', () => {
     expect(routeFor('https://evil.example')).toBeNull();
   });
 });
+
+describe('welcome tour', () => {
+  it('only visits registered pages and sections that exist', async () => {
+    const { APP_TOUR_PATHS, APP_TOUR_SECTIONS, appTour } = await import('@/lib/assistant/app-tour');
+    for (const path of APP_TOUR_PATHS) expect(pageForPath(path), path).not.toBeNull();
+    for (const { path, section } of APP_TOUR_SECTIONS) {
+      const page = pageForPath(path)!.page;
+      expect(page.sections.map((s) => s.id), `${path}#${section}`).toContain(section);
+    }
+    expect(readFileSync(path.join(SRC, 'components/assistant/ask-anfi.tsx'), 'utf8')).toContain('data-anfi="ask-anfi"');
+    const es = appTour('es', 'Lucía Ortega');
+    expect(es.steps[0].title).toBe('¡Hola, Lucía! Soy Anfi 👋');
+    expect(appTour('en', '').steps[0].title).toBe('Hi there! I’m Anfi 👋');
+    expect(es.steps.every((s) => s.path && s.note.length > 20)).toBe(true);
+  });
+});

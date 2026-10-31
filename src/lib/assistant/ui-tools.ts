@@ -6,6 +6,7 @@
 import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { z } from 'zod';
 import { describe, FORM_HINTS, FORMS, lang, pageByKey, pageForPath, PAGES, routeFor, type FormId, type GuidePage } from './guide';
+import { appTour } from './app-tour';
 import type { ToolContext } from './tools';
 
 export interface PageContext {
@@ -14,7 +15,8 @@ export interface PageContext {
   sections?: string[];
 }
 
-export type TourStep = { section: string; title: string; note: string };
+/** A tour stop; `path` lets one tour span several pages, and an empty `section` shows a centred card. */
+export type TourStep = { section: string; title: string; note: string; path?: string };
 
 export type UiAction =
   | { kind: 'navigate'; path: string; title: string }
@@ -111,6 +113,17 @@ export function uiTools(ctx: ToolContext, page: PageContext | undefined, locale:
         const steps = target.sections.map((s) => ({ section: s.id, title: s.name[i], note: s.actions ? `${s.shows[i]} ${s.actions[i]}` : s.shows[i] }));
         emitUi(ctx, 'start_tour', { kind: 'tour', path, title: target.title[i], steps });
         return `Tour of ${target.title[i]} started with ${steps.length} steps: ${steps.map((s) => s.title).join(', ')}.`;
+      },
+    }),
+    betaZodTool({
+      name: 'start_app_tour',
+      description: 'The welcome tour of the whole app: Anfi walks the host page by page through what each part does and what to set up first. Use it for "explícame la app", "hazme el tour", or a host who seems new. After calling it, say one short sentence only; the tour narrates itself.',
+      inputSchema: z.object({}),
+      run: async () => {
+        const { title, steps } = appTour(locale, ctx.profile.name);
+        emitUi(ctx, 'start_tour', { kind: 'tour', path: '/', title, steps });
+        current = { path: '/', page: pageByKey('overview') ?? null };
+        return `Welcome tour started (${steps.length} stops across the app).`;
       },
     }),
     betaZodTool({

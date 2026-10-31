@@ -16,6 +16,7 @@ export function AskAnfi() {
   return (
     <button
       type="button"
+      data-anfi="ask-anfi"
       onClick={() => window.dispatchEvent(new CustomEvent(ASK_EVENT))}
       title={t('askAnfiHint')}
       className="flex items-center gap-2 rounded-xl bg-brand px-3.5 py-2 text-sm font-semibold text-ink shadow-sm hover:bg-brand/90 print:hidden"
