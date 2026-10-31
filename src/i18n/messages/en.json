@@ -16,7 +16,8 @@
     "operational": "System operational",
     "menu": "Menu",
     "journey": "Guest journey",
-    "registrations": "Guest registration"
+    "registrations": "Guest registration",
+    "reports": "Reports"
   },
   "agents": {
     "guest": "Guests",
@@ -265,7 +266,23 @@
     "smoobuSecret": "API secret",
     "connectAndImport": "Connect and import",
     "conn_syncing": "Importing…",
-    "lastSync": "last sync {when}"
+    "lastSync": "last sync {when}",
+    "mcpTitle": "Your AnfitrIA in Claude or ChatGPT",
+    "mcpHint": "Create a personal key and connect AnfitrIA as an MCP server: ask about your day, availability or an escalation from your assistant. Guest replies arrive here as cards to approve.",
+    "keyName": "Key name",
+    "keyNamePh": "e.g. Claude on my laptop",
+    "keyCreate": "Create key",
+    "keyOnce": "Copy the key now: you won't see it again.",
+    "keyField_key": "Key (Authorization: Bearer …)",
+    "keyField_url": "MCP server URL",
+    "keyField_claude": "Claude Code (terminal)",
+    "keyChatgpt": "In ChatGPT or Claude Desktop, add a custom MCP connector with this URL and the key as a Bearer token.",
+    "keyDone": "I've saved it",
+    "copy": "Copy",
+    "keyError": "Couldn't create the key.",
+    "keyUsed": "last used {when}",
+    "keyNeverUsed": "not used yet",
+    "keyRevoke": "Revoke"
   },
   "audit": {
     "title": "Audit log",
@@ -391,7 +408,9 @@
     "positiveBadge": "If it went well",
     "new": "New message",
     "titlePh": "Title (e.g. Arrival instructions)",
-    "bodyPh": "Message text…"
+    "bodyPh": "Message text…",
+    "asVoice": "Send as a voice note in Anfi's voice (WhatsApp)",
+    "voiceBadge": "🎙️ Voice note"
   },
   "checkin": {
     "title": "Guest registration",
@@ -485,5 +504,36 @@
     "status_accepted": "Accepted",
     "status_error": "Has errors",
     "status_cancelled": "Cancelled"
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Monthly statement per property, for the owner.",
+    "print": "Print / PDF",
+    "property": "Property",
+    "month": "Month",
+    "fee": "Management fee (%)",
+    "feePh": "Fee %",
+    "cleaning": "Cost per cleaning (€)",
+    "cleaningPh": "Cleaning €",
+    "show": "Show",
+    "noProperties": "You don't have properties yet.",
+    "statement": "Owner statement",
+    "gross": "Gross revenue",
+    "occupancy": "Occupancy",
+    "adr": "Average rate (ADR)",
+    "nights": "Nights",
+    "vsPrevious": "{delta} vs. previous month",
+    "guest": "Guest",
+    "dates": "Stay",
+    "channel": "Channel",
+    "nightsInMonth": "Nights in month",
+    "revenue": "Revenue",
+    "channelFee": "Channel fee",
+    "noBookings": "No bookings this month.",
+    "channelFees": "Channel fees",
+    "managementFee": "Management fee ({pct} %)",
+    "cleanings": "Cleanings ({n})",
+    "net": "Net to owner",
+    "footnote": "Stays across two months are split by night. Amounts come from the booking data (PMS or entered by hand)."
   }
 }

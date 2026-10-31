@@ -16,7 +16,8 @@
     "operational": "Sistema operativo",
     "menu": "Menú",
     "journey": "Viaje del huésped",
-    "registrations": "Registro de viajeros"
+    "registrations": "Registro de viajeros",
+    "reports": "Informes"
   },
   "agents": {
     "guest": "Huéspedes",
@@ -265,7 +266,23 @@
     "smoobuSecret": "Secreto de la API",
     "connectAndImport": "Conectar e importar",
     "conn_syncing": "Importando…",
-    "lastSync": "última sincronización {when}"
+    "lastSync": "última sincronización {when}",
+    "mcpTitle": "Tu AnfitrIA en Claude o ChatGPT",
+    "mcpHint": "Crea una clave personal y conecta AnfitrIA como servidor MCP: pregunta por tu día, la disponibilidad o una escalada desde tu asistente. Las respuestas a huéspedes llegan aquí como tarjetas para aprobar.",
+    "keyName": "Nombre de la clave",
+    "keyNamePh": "p. ej. Claude en mi portátil",
+    "keyCreate": "Crear clave",
+    "keyOnce": "Copia la clave ahora: no la volverás a ver.",
+    "keyField_key": "Clave (Authorization: Bearer …)",
+    "keyField_url": "URL del servidor MCP",
+    "keyField_claude": "Claude Code (terminal)",
+    "keyChatgpt": "En ChatGPT o Claude Desktop, añade un conector MCP personalizado con esta URL y la clave como token Bearer.",
+    "keyDone": "Ya la he guardado",
+    "copy": "Copiar",
+    "keyError": "No se pudo crear la clave.",
+    "keyUsed": "último uso {when}",
+    "keyNeverUsed": "sin usar todavía",
+    "keyRevoke": "Revocar"
   },
   "audit": {
     "title": "Auditoría",
@@ -391,7 +408,9 @@
     "positiveBadge": "Si fue bien",
     "new": "Nuevo mensaje",
     "titlePh": "Título (p. ej. Instrucciones de llegada)",
-    "bodyPh": "Texto del mensaje…"
+    "bodyPh": "Texto del mensaje…",
+    "asVoice": "Enviar como nota de voz con la voz de Anfi (WhatsApp)",
+    "voiceBadge": "🎙️ Nota de voz"
   },
   "checkin": {
     "title": "Registro de viajeros",
@@ -485,5 +504,36 @@
     "status_accepted": "Aceptado",
     "status_error": "Con errores",
     "status_cancelled": "Anulado"
+  },
+  "reports": {
+    "title": "Informes",
+    "subtitle": "Liquidación mensual por alojamiento, para el propietario.",
+    "print": "Imprimir / PDF",
+    "property": "Alojamiento",
+    "month": "Mes",
+    "fee": "Comisión de gestión (%)",
+    "feePh": "Comisión %",
+    "cleaning": "Coste por limpieza (€)",
+    "cleaningPh": "Limpieza €",
+    "show": "Ver",
+    "noProperties": "Aún no tienes alojamientos.",
+    "statement": "Liquidación del propietario",
+    "gross": "Ingresos brutos",
+    "occupancy": "Ocupación",
+    "adr": "Tarifa media (ADR)",
+    "nights": "Noches",
+    "vsPrevious": "{delta} vs. mes anterior",
+    "guest": "Huésped",
+    "dates": "Estancia",
+    "channel": "Canal",
+    "nightsInMonth": "Noches en el mes",
+    "revenue": "Ingresos",
+    "channelFee": "Comisión canal",
+    "noBookings": "Sin reservas este mes.",
+    "channelFees": "Comisiones de canal",
+    "managementFee": "Comisión de gestión ({pct} %)",
+    "cleanings": "Limpiezas ({n})",
+    "net": "Neto para el propietario",
+    "footnote": "Las estancias entre dos meses se reparten por noches. Importes según los datos de reservas (PMS o introducidos a mano)."
   }
 }

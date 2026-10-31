@@ -6,8 +6,12 @@
  * send right now (WhatsApp outside its 24-hour window) it leaves a card for the host instead.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { ChannelError, sendToGuest } from '@/lib/channels';
-import { appUrl } from '@/lib/env';
+import { randomUUID } from 'node:crypto';
+import { ChannelError, sendAudioToGuest, sendToGuest } from '@/lib/channels';
+import { inServiceWindow } from '@/lib/channels/whatsapp';
+import { ensureRegistration } from '@/lib/compliance/registrations';
+import { appUrl, features } from '@/lib/env';
+import { ttsVoiceFor } from '@/lib/voice/voices';
 import type { Conversation, MessageTemplate, Property, Reservation, TemplateAnchor, TemplateKind } from '@/lib/types';
 
 /** Half the cron period: with a daily run, a due time is caught by the run before or after it. */
@@ -97,6 +101,20 @@ async function findConversation(db: SupabaseClient, p: Property, r: Reservation)
   return list.find((c) => c.channel === 'whatsapp') ?? list.find((c) => c.channel !== 'sim') ?? list[0] ?? null;
 }
 
+/** A journey message as a WhatsApp voice note in the account owner's chosen voice (stored like the host's own). */
+async function sendVoiceNote(db: SupabaseClient, orgId: number, conv: Conversation, text: string, language: string) {
+  if (!inServiceWindow(conv.last_guest_message_at)) throw new ChannelError('More than 24 h since the guest last wrote: audio needs an open conversation', 'window_closed');
+  // Loaded lazily: TTS is server-only, and tests import this module.
+  const { speak } = await import('@/lib/audio/openai');
+  const { data: owner } = await db.from('profiles').select('voice').eq('org_id', orgId).eq('role', 'owner').order('created_at').limit(1).maybeSingle<{ voice: string }>();
+  const audio = await speak(text, language, ttsVoiceFor(owner?.voice));
+  const path = `${orgId}/${conv.id}/${randomUUID()}.ogg`;
+  const upload = await db.storage.from('voice-notes').upload(path, audio, { contentType: 'audio/ogg' });
+  if (upload.error) throw new Error(`storage: ${upload.error.message}`);
+  const externalId = await sendAudioToGuest(conv, audio, 'audio/ogg');
+  await db.from('messages').insert({ conversation_id: conv.id, direction: 'out', text, transcript: text, kind: 'audio', media_path: path, external_id: externalId });
+}
+
 export async function runLifecycle(db: SupabaseClient, orgId: number, now = new Date()): Promise<{ sent: number; carded: number }> {
   const { data: templates } = await db.from('message_templates').select('*').eq('org_id', orgId).eq('approved', true).neq('kind', 'saved_reply');
   if (!templates?.length) return { sent: 0, carded: 0 };
@@ -115,17 +133,21 @@ export async function runLifecycle(db: SupabaseClient, orgId: number, now = new 
         const conv = await findConversation(db, p, r);
         if (!conv) continue; // no conversation with this guest yet
         if (t.positive_only && !(await stayWentWell(db, conv.id))) continue;
-        const { data: reg } = t.body.includes('{checkin_link}')
-          ? await db.from('guest_registrations').select('token').eq('reservation_id', r.id).maybeSingle<{ token: string }>()
-          : { data: null };
+        // The guest's registration link: created the first time a message needs it.
+        const reg = t.body.includes('{checkin_link}') ? await ensureRegistration(db, r, orgId) : null;
         const text = renderTemplate(t.body, r, p, { checkin_link: reg ? `${appUrl()}/checkin/${reg.token}` : '' });
+        const voice = t.as_voice && conv.channel === 'whatsapp' && features.openai();
         try {
-          const externalId = await sendToGuest(conv, text, { checkWindow: true });
-          await db.from('messages').insert({ conversation_id: conv.id, direction: 'out', text, external_id: externalId });
+          if (voice) await sendVoiceNote(db, orgId, conv, text, t.language);
+          else {
+            const externalId = await sendToGuest(conv, text, { checkWindow: true });
+            await db.from('messages').insert({ conversation_id: conv.id, direction: 'out', text, external_id: externalId });
+          }
           sent++;
         } catch (e) {
           if (!(e instanceof ChannelError)) throw e;
-          await db.from('proposals').insert({ org_id: orgId, agent: 'guest', kind: 'guest_message', conversation_id: conv.id, title: `${t.title || t.kind} para ${r.guest_name}`, payload: { text, draft_id: null, as_voice: false, learn_category: null, reason: e.code } });
+          // Approving the card sends it the same way (as a voice note if the message asks for one).
+          await db.from('proposals').insert({ org_id: orgId, agent: 'guest', kind: 'guest_message', conversation_id: conv.id, title: `${t.title || t.kind} para ${r.guest_name}`, payload: { text, draft_id: null, as_voice: Boolean(voice), learn_category: null, reason: e.code } });
           carded++;
         }
         await db.from('audit_logs').insert({ org_id: orgId, actor: 'ai', action: 'lifecycle_message', detail: key, conversation_id: conv.id });

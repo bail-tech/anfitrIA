@@ -44,3 +44,16 @@ describe('Smoobu mapping', () => {
     expect(bookingIdOf('+34600000000')).toBeNaN();
   });
 });
+
+describe('personal MCP keys', () => {
+  it('generates prefixed keys that are recognised and hashed, never stored in clear', async () => {
+    const { generateKey, hashKey, looksLikeKey } = await import('@/lib/mcp/api-keys');
+    const { key, prefix, hash } = generateKey();
+    expect(key).toMatch(/^anf_pk_[A-Za-z0-9_-]{32}$/);
+    expect(looksLikeKey(key)).toBe(true);
+    expect(looksLikeKey('anf1.1.run.123.sig')).toBe(false);
+    expect(prefix).toBe(key.slice(0, 12));
+    expect(hash).toBe(hashKey(key));
+    expect(hash).not.toContain(key);
+  });
+});

@@ -173,6 +173,7 @@ export interface MessageTemplate {
   anchor: TemplateAnchor | null;
   min_nights: number | null;
   positive_only: boolean;
+  as_voice: boolean;
   title: string;
   language: string;
   body: string;

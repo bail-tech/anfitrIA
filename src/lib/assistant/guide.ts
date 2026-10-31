@@ -41,6 +41,17 @@ export const PAGES: GuidePage[] = [
     ],
   },
   {
+    key: 'reports',
+    route: '/informes',
+    file: 'informes/page.tsx',
+    title: ['Informes', 'Reports'],
+    purpose: ['La liquidación mensual de cada alojamiento para su propietario: ingresos, comisiones, limpiezas y neto.', "Each property's monthly statement for its owner: revenue, fees, cleanings and net."],
+    sections: [
+      { id: 'filters', name: ['Filtros', 'Filters'], shows: ['Alojamiento, mes, comisión de gestión y coste por limpieza.', 'Property, month, management fee and cost per cleaning.'] },
+      { id: 'statement', name: ['Liquidación', 'Statement'], shows: ['Reservas del mes, KPIs frente al mes anterior y el neto para el propietario.', "The month's bookings, KPIs vs the previous month and the net to the owner."], actions: ['Imprímela o guárdala en PDF para enviarla.', 'Print it or save it as PDF to send.'] },
+    ],
+  },
+  {
     key: 'inbox',
     route: '/bandeja',
     file: 'bandeja/page.tsx',
@@ -162,6 +173,7 @@ export const PAGES: GuidePage[] = [
     purpose: ['Equipo, integraciones y plantillas de mensajes.', 'Team, integrations and message templates.'],
     sections: [
       { id: 'team', name: ['Equipo', 'Team'], shows: ['Miembros y sus roles; invitaciones.', 'Members and their roles; invitations.'] },
+      { id: 'mcp', name: ['AnfitrIA en Claude o ChatGPT', 'AnfitrIA in Claude or ChatGPT'], shows: ['Claves personales para usar AnfitrIA desde tu asistente de IA (MCP).', 'Personal keys to use AnfitrIA from your AI assistant (MCP).'], actions: ['Crea una clave y pégala en Claude o ChatGPT; revócala cuando quieras.', 'Create a key and paste it into Claude or ChatGPT; revoke it any time.'] },
       { id: 'connections', name: ['Conexiones', 'Connections'], shows: ['SES.Hospedajes y tu PMS (Smoobu): credenciales y estado.', 'SES.Hospedajes and your PMS (Smoobu): credentials and status.'] },
       { id: 'integrations', name: ['Integraciones', 'Integrations'], shows: ['Qué está conectado: Claude, voz, WhatsApp, agentes.', 'What is connected: Claude, voice, WhatsApp, agents.'] },
       { id: 'templates', name: ['Mensajes programados', 'Scheduled messages'], shows: ['Acceso al Viaje del huésped, donde viven los mensajes automáticos.', 'A link to the Guest journey, where automatic messages live.'] },

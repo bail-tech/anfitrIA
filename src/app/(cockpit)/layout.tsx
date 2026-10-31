@@ -26,7 +26,7 @@ export default async function CockpitLayout({ children }: { children: React.Reac
     <div className="flex min-h-screen">
       <Sidebar agents={agents} pending={pendingDrafts ?? 0} model={features.claude() ? CLAUDE_MODEL : 'mock'} signOut={signOut} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-end gap-3 border-b border-line bg-cream/85 px-4 backdrop-blur lg:justify-between lg:px-8">
+        <header className="sticky top-0 z-20 flex h-14 print:hidden items-center justify-end gap-3 border-b border-line bg-cream/85 px-4 backdrop-blur lg:justify-between lg:px-8">
           <div className="hidden text-sm lg:block">
             <span className="font-medium">{org?.name ?? 'AnfitrIA'}</span>
             <span className="text-muted"> · {profile.name}</span>

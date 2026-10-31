@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { Badge, buttonClass, Card, Dot, inputClass, PageHeader } from '@/components/ui';
-import { features } from '@/lib/env';
+import { appUrl, features } from '@/lib/env';
 import { requireSession } from '@/lib/supabase/server';
 import type { Profile } from '@/lib/types';
-import { inviteMember, saveSesSettings, saveSmoobuSettings } from '../actions';
+import { NewApiKey } from '@/components/cockpit/api-keys';
+import { inviteMember, revokeApiKey, saveSesSettings, saveSmoobuSettings } from '../actions';
 
 export const metadata = { title: 'Ajustes' };
 
@@ -16,6 +17,7 @@ export default async function SettingsPage() {
     profile.role === 'owner' ? db.from('invitations').select('*').is('accepted_at', null) : Promise.resolve({ data: [] }),
     db.from('integrations').select('provider, status, config, last_error, last_sync_at').in('provider', ['ses', 'smoobu']),
   ]);
+  const { data: keys } = await db.from('api_keys').select('id, name, prefix, created_at, last_used_at').is('revoked_at', null).order('created_at', { ascending: false });
   type Connection = { provider: string; status: string; config: Record<string, string> | null; last_error: string | null; last_sync_at: string | null };
   const conn = (provider: string) => ((connections ?? []) as Connection[]).find((c) => c.provider === provider);
   const ses = conn('ses');
@@ -128,6 +130,30 @@ export default async function SettingsPage() {
             </fieldset>
             {owner ? <button className={buttonClass('primary', 'sm')}>{t('connectAndImport')}</button> : <p className="text-xs text-muted">{t('ownerOnly')}</p>}
           </form>
+        </Card>
+
+        <Card data-anfi="mcp" className="space-y-3 p-4 lg:col-span-2">
+          <div>
+            <h2 className="font-medium">{t('mcpTitle')}</h2>
+            <p className="text-xs text-muted">{t('mcpHint')}</p>
+          </div>
+          {(keys ?? []).length > 0 && (
+            <ul className="divide-y divide-line text-sm">
+              {(keys ?? []).map((k) => (
+                <li key={k.id} className="flex items-center justify-between gap-3 py-2">
+                  <span>
+                    {k.name} <span className="font-mono text-xs text-muted">{k.prefix}…</span>
+                    <span className="block text-xs text-muted">{k.last_used_at ? t('keyUsed', { when: k.last_used_at.slice(0, 16).replace('T', ' ') }) : t('keyNeverUsed')}</span>
+                  </span>
+                  <form action={revokeApiKey}>
+                    <input type="hidden" name="id" value={k.id} />
+                    <button className={buttonClass('ghost', 'sm') + ' text-terra-ink'}>{t('keyRevoke')}</button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          )}
+          <NewApiKey mcpUrl={`${appUrl()}/api/mcp`} />
         </Card>
 
         <Card data-anfi="templates" className="flex flex-wrap items-center justify-between gap-3 p-4 lg:col-span-2">

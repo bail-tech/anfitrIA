@@ -215,6 +215,7 @@ function templateFields(form: FormData) {
     send_offset_hours: offset,
     min_nights: minNights && minNights > 0 ? Math.round(minNights) : null,
     positive_only: form.get('positive_only') === 'on',
+    as_voice: form.get('as_voice') === 'on',
     property_id: num(form, 'property_id'),
     approved: form.get('approved') === 'on',
   };
@@ -359,5 +360,14 @@ export async function saveSmoobuSettings(form: FormData) {
       await admin.from('integrations').update({ status: 'error', last_error: e instanceof Error ? e.message.slice(0, 300) : 'sync failed' }).eq('id', row.id);
     }
   });
+  revalidatePath('/ajustes');
+}
+
+// Personal MCP keys -----------------------------------------------------------
+
+export async function revokeApiKey(form: FormData) {
+  const { db } = await requireSession();
+  // RLS: a host can only revoke their own keys.
+  await db.from('api_keys').update({ revoked_at: new Date().toISOString() }).eq('id', str(form, 'id'));
   revalidatePath('/ajustes');
 }

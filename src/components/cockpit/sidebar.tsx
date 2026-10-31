@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { BarChart3, Bot, Building2, CalendarDays, ClipboardList, Cog, Inbox, LayoutGrid, LogOut, Megaphone, Menu, Route, ShieldCheck, MessageSquareText, Sparkles, TrendingUp, Wrench, X } from 'lucide-react';
+import { BarChart3, Bot, Building2, CalendarDays, ClipboardList, Cog, FileText, Inbox, LayoutGrid, LogOut, Megaphone, Menu, Route, ShieldCheck, MessageSquareText, Sparkles, TrendingUp, Wrench, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -56,6 +56,7 @@ function Nav({ agents, pending, model, signOut, onNavigate }: Props & { onNaviga
         <Group title={t('command')}>
           <NavLink href="/" icon={LayoutGrid} label={t('overview')} onNavigate={onNavigate} />
           <NavLink href="/agentes" icon={Bot} label={t('agents')} onNavigate={onNavigate} />
+          <NavLink href="/informes" icon={FileText} label={t('reports')} onNavigate={onNavigate} />
           <NavLink
             href="/bandeja"
             icon={Inbox}
@@ -101,10 +102,10 @@ export function Sidebar(props: Props) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 border-r border-line bg-paper/80 backdrop-blur lg:block">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 border-r border-line bg-paper/80 backdrop-blur lg:block print:hidden">
         <Nav {...props} />
       </aside>
-      <button onClick={() => setOpen(true)} className="fixed left-3 top-3 z-30 rounded-xl border border-line bg-paper p-2 lg:hidden" aria-label={t('menu')}>
+      <button onClick={() => setOpen(true)} className="fixed left-3 top-3 z-30 rounded-xl border border-line bg-paper p-2 lg:hidden print:hidden" aria-label={t('menu')}>
         <Menu className="size-5" />
       </button>
       {open && (

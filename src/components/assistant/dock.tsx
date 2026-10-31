@@ -175,14 +175,14 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
   const desktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP).matches, () => false);
   if (desktop) {
     return (
-      <aside className="sticky top-0 h-screen w-[360px] shrink-0 border-l border-line bg-paper/95">
+      <aside className="sticky top-0 h-screen w-[360px] shrink-0 border-l border-line bg-paper/95 print:hidden">
         <DockBody prefs={prefs} />
       </aside>
     );
   }
   return (
     <>
-      <button onClick={() => setSheet('open')} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-brand px-4 py-3 text-sm font-semibold text-ink shadow-lg" aria-label={t('open')}>
+      <button onClick={() => setSheet('open')} className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full bg-brand print:hidden px-4 py-3 text-sm font-semibold text-ink shadow-lg" aria-label={t('open')}>
         <MessageCircle className="size-4" /> {t('title')}
       </button>
       {sheet !== 'closed' && (

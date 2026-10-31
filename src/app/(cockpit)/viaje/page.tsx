@@ -55,6 +55,9 @@ export default async function JourneyPage() {
       <label className="flex items-center gap-2 text-xs text-muted">
         <input type="checkbox" name="positive_only" defaultChecked={tpl?.positive_only} /> {t('positiveOnly')}
       </label>
+      <label className="flex items-center gap-2 text-xs text-muted">
+        <input type="checkbox" name="as_voice" defaultChecked={tpl?.as_voice} /> {t('asVoice')}
+      </label>
       <div className="flex items-center justify-between gap-2">
         <label className="flex items-center gap-2 font-medium">
           <input type="checkbox" name="approved" defaultChecked={tpl?.approved} /> {t('approve')}
@@ -101,6 +104,7 @@ export default async function JourneyPage() {
                 <div className="flex flex-wrap gap-1">
                   {tpl.min_nights && <Badge>{t('nightsBadge', { n: tpl.min_nights })}</Badge>}
                   {tpl.positive_only && <Badge tone="gold">{t('positiveBadge')}</Badge>}
+                  {tpl.as_voice && <Badge tone="violet">{t('voiceBadge')}</Badge>}
                 </div>
                 <details>
                   <summary className="cursor-pointer text-xs text-muted hover:text-ink">{t('edit')}</summary>
