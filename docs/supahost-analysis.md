@@ -73,7 +73,7 @@ An "AI co-host" for short-term rentals, run by APMI Inc. The founders are Vera P
 | Business metrics and agents (pricing, analytics, marketing) | Partial (reviews beta) | ✔ cockpit KPIs plus Managed Agents | **Our edge** |
 | OTA and PMS connections | ~40 PMS, Airbnb, Booking beta | iCal import only, plus WhatsApp | **Biggest gap** |
 | Scheduled guest journey | ✔ board, conditions | Partial: templates, daily lifecycle cron | Gap |
-| Spanish police registration and tourist tax | ✔ SES.Hospedajes, Mossos, Ertzaintza | ✘ | Gap (critical in Spain) |
+| Spanish police registration and tourist tax | ✔ SES.Hospedajes, Mossos, Ertzaintza | ✔ SES.Hospedajes (built in Phase 0) | Done for Spain; no other countries (decision below) |
 | Smart locks | ✔ 500+ models | ✘ | Gap |
 | Upsells with Stripe | ✔ | ✘ | Gap |
 | Review requests and replies | ✔ | Skill only (`reviews`) | Gap |
@@ -88,7 +88,7 @@ An "AI co-host" for short-term rentals, run by APMI Inc. The founders are Vera P
 
 ### Phase 0 — Close the dealbreakers (4–6 weeks)
 1. **Connect real channels.** Start with one PMS that has a public API: Hostaway or Smoobu (strong in Spain). Use the Airbnb and Booking messaging they sync. Keep iCal as the fallback.
-2. **Spanish compliance.** Send guest registration to SES.Hospedajes, plus the regional variants for Mossos and Ertzaintza, and calculate tourist tax. Even the Spain-only version is a sales hook.
+2. **Spanish compliance.** Send guest registration to SES.Hospedajes. *Built in Phase 0 and kept as is.* **Decision (31 Oct 2026): no further country-specific integrations** (regional variants, tourist tax, e-invoicing, or other countries' systems such as Uruguay's). Each country has its own system; AnfitrIA stays country-agnostic.
 3. **Learn from history.** On import, distil past conversations into knowledge items with sources. We already store embeddings; this adds an extraction step with `propose_knowledge`, which keeps the host's approval.
 4. **Guest Journey board.** Our `message_templates` move onto a per-property board with times relative to booking or check-in, and conditions (positive sentiment, length of stay).
 
