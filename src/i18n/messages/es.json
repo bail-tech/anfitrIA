@@ -372,7 +372,9 @@
     "prefilled": "Rellenado por Anfi: revisa y pulsa el botón tú",
     "askAnfi": "Pedir a Anfi",
     "askAnfiHint": "Háblale a Anfi: te rellena lo de esta página y tú lo revisas",
-    "askPlaceholder": "Dile qué quieres añadir o rellenar aquí…"
+    "askPlaceholder": "Dile qué quieres añadir o rellenar aquí…",
+    "tourMute": "Silenciar a Anfi",
+    "tourUnmute": "Que Anfi lo lea en voz alta"
   },
   "common": {
     "save": "Guardar",

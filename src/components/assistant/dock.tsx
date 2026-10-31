@@ -39,12 +39,39 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs, ask = 0, tour = 0,
   const locale = useLocale();
   const say = useRef<(text: string) => void>(() => undefined);
   const narrate = useCallback((text: string) => say.current(text), []);
-  const ui = useAnfiUi({ onNarrate: narrate, onMinimize, prefilledLabel: t('prefilled') });
+  // Tour narration without a live call: Anfi reads each stop aloud in the host's chosen voice.
+  const narration = useRef<{ audio: HTMLAudioElement | null; abort: AbortController | null }>({ audio: null, abort: null });
+  const stopNarration = useCallback(() => {
+    narration.current.abort?.abort();
+    narration.current.audio?.pause();
+    narration.current = { audio: null, abort: null };
+  }, []);
+  const readAloud = useCallback(
+    (text: string) => {
+      stopNarration();
+      const abort = new AbortController();
+      narration.current.abort = abort;
+      fetch('/api/voice/say', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, lang: locale === 'en' ? 'en' : 'es' }), signal: abort.signal })
+        .then((res) => (res.ok ? res.blob() : null))
+        .then((blob) => {
+          if (!blob || abort.signal.aborted) return;
+          const audio = new Audio(URL.createObjectURL(blob));
+          narration.current.audio = audio;
+          void audio.play().catch(() => undefined);
+        })
+        .catch(() => undefined);
+    },
+    [locale, stopNarration],
+  );
+  const ui = useAnfiUi({ onNarrate: narrate, onStopNarration: stopNarration, onMinimize, prefilledLabel: t('prefilled') });
   const assistant = useAssistant(t('welcome'), locale, ui.run);
   const voice = useVoice({ assistant, locale, intercept: ui.command });
   useEffect(() => {
-    say.current = voice.say;
+    // In a live call Anfi narrates through the call; otherwise it reads aloud (when voice is set up).
+    say.current = voice.active ? voice.say : voice.supported ? readAloud : () => undefined;
   });
+
+  useEffect(() => stopNarration, [stopNarration]);
 
   // "Ask Anfi" from a page header: start talking (or type when voice isn't available).
   useEffect(() => {

@@ -71,9 +71,12 @@ const NEXT = /^(siguiente|sigue|continúa|continua|adelante|next|continue|go on)
 const BACK = /^(atrás|atras|anterior|vuelve|back|previous)$/;
 const STOP = /^(para|parar|stop|salir|sal|termina|basta|fin|exit|enough)$/;
 
-export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate: (text: string) => void; onMinimize?: () => void; prefilledLabel: string }) {
+export function useAnfiUi({ onNarrate, onStopNarration, onMinimize, prefilledLabel }: { onNarrate: (text: string) => void; onStopNarration?: () => void; onMinimize?: () => void; prefilledLabel: string }) {
   const router = useRouter();
   const [spot, setSpot] = useState<Spot | null>(null);
+  /** Tour narration on/off (the 🔊 button in the tour card). */
+  const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
   const tour = useRef<{ steps: TourStep[]; index: number } | null>(null);
   const queue = useRef<Promise<void>>(Promise.resolve());
 
@@ -95,7 +98,7 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
       const found = s.section ? await waitFor(() => document.querySelector(section(s.section)), 2500) : null;
       if (tour.current !== t || t.index !== index) return; // exited or moved on meanwhile
       setSpot({ selector: found ? section(s.section) : '', title: s.title, note: s.note, step: { index, total: t.steps.length } });
-      onNarrate(`${s.title}. ${s.note}`);
+      if (!mutedRef.current) onNarrate(`${s.title}. ${s.note}`);
     },
     [onNarrate, router],
   );
@@ -103,7 +106,14 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
   const exit = useCallback(() => {
     tour.current = null;
     setSpot(null);
-  }, []);
+    onStopNarration?.();
+  }, [onStopNarration]);
+
+  const toggleMute = useCallback(() => {
+    mutedRef.current = !mutedRef.current;
+    setMuted(mutedRef.current);
+    if (mutedRef.current) onStopNarration?.();
+  }, [onStopNarration]);
 
   const next = useCallback(() => {
     const t = tour.current;
@@ -173,7 +183,7 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
     [onMinimize, prefilledLabel, router, showStep],
   );
 
-  return { spot, run, next, back, exit, command };
+  return { spot, run, next, back, exit, command, muted, toggleMute };
 }
 
 export type AnfiUi = ReturnType<typeof useAnfiUi>;

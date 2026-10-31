@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Volume2, VolumeX } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -80,7 +80,14 @@ export function Spotlight({ ui }: { ui: AnfiUi }) {
       >
         <div className="mb-1 flex items-center gap-2 font-medium">
           <Sparkles className="size-4 text-brand" /> {spot.title}
-          {spot.step && <span className="ml-auto font-mono text-xs text-muted">{spot.step.index + 1}/{spot.step.total}</span>}
+          {spot.step && (
+            <span className="ml-auto flex items-center gap-1.5">
+              <button onClick={ui.toggleMute} aria-label={ui.muted ? t('tourUnmute') : t('tourMute')} title={ui.muted ? t('tourUnmute') : t('tourMute')} className="rounded-md p-1 text-muted hover:bg-sand hover:text-ink">
+                {ui.muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+              </button>
+              <span className="font-mono text-xs text-muted">{spot.step.index + 1}/{spot.step.total}</span>
+            </span>
+          )}
         </div>
         {spot.note && <p className="text-muted">{spot.note}</p>}
         <div className="mt-3 flex justify-end gap-2 text-xs">
