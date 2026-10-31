@@ -12,11 +12,14 @@ function withFallback(base: Messages, messages: Messages): Messages {
   return merged;
 }
 
-/** The cockpit has no locale in its URLs: the locale comes from a cookie, then the browser. */
-export default getRequestConfig(async () => {
+/**
+ * The cockpit has no locale in its URLs: the locale comes from a cookie, then the browser.
+ * A page can still ask for one explicitly (the guest check-in page, which has ?lang).
+ */
+export default getRequestConfig(async ({ locale: requested }) => {
   const cookie = (await cookies()).get(LOCALE_COOKIE)?.value;
   const accept = (await headers()).get('accept-language')?.slice(0, 2);
-  const locale: Locale = isLocale(cookie) ? cookie : isLocale(accept) ? accept : defaultLocale;
+  const locale: Locale = isLocale(requested) ? requested : isLocale(cookie) ? cookie : isLocale(accept) ? accept : defaultLocale;
   const es: Messages = (await import('./messages/es.json')).default;
   if (locale === 'es') return { locale, messages: es };
   const own: Messages = (await import(`./messages/${locale}.json`)).default;

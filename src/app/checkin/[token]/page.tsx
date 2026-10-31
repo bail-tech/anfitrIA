@@ -1,6 +1,7 @@
 import { CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { CheckinForm, type CheckinLabels } from '@/components/checkin/checkin-form';
@@ -14,7 +15,10 @@ export const metadata = { title: 'Registro de viajeros', robots: { index: false,
 export default async function CheckinPage({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ lang?: string }> }) {
   const token = (await params).token;
   if (!/^[0-9a-f]{36}$/.test(token) || !features.serviceRole()) notFound();
-  const lang = (await searchParams).lang === 'en' ? 'en' : 'es';
+  const asked = (await searchParams).lang;
+  // Guests are often foreign: without ?lang, follow the browser (Spanish browsers get Spanish).
+  const browser = (await headers()).get('accept-language')?.slice(0, 2).toLowerCase();
+  const lang = asked === 'en' || asked === 'es' ? asked : browser === 'es' ? 'es' : 'en';
   const t = await getTranslations({ locale: lang, namespace: 'checkin' });
 
   const db = createAdminSupabase();
