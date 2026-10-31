@@ -8,7 +8,7 @@ export type LiveVoice = (typeof LIVE_VOICES)[number];
 
 export const TTS_VOICES = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse', 'marin', 'cedar', 'fable', 'onyx', 'nova'] as const;
 
-export const DEFAULT_VOICE: LiveVoice = 'coral';
+export const DEFAULT_VOICE: LiveVoice = 'bossa';
 
 export const ASSISTANT_LANGUAGES = ['auto', 'es', 'en', 'fr', 'de', 'it'] as const;
 export type AssistantLanguage = (typeof ASSISTANT_LANGUAGES)[number];

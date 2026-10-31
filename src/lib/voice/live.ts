@@ -5,7 +5,7 @@
  */
 
 export const LIVE_MODEL = 'gpt-live-1';
-export const LIVE_VOICE = 'coral';
+export const LIVE_VOICE = 'bossa';
 /** The browser may only feed context back and close; it cannot re-prompt the session. */
 export const BROWSER_EVENTS = ['session.thinking.append', 'session.commentary.append', 'session.close'];
 /** Voice is billed per second. */
