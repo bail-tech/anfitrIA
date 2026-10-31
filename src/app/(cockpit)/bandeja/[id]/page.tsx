@@ -3,13 +3,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ThreadActions } from '@/components/inbox/thread-actions';
-import { Badge, Card } from '@/components/ui';
+import { Badge, buttonClass, Card, inputClass } from '@/components/ui';
 import { inServiceWindow } from '@/lib/channels/whatsapp';
 import { stayPhase, todayIn } from '@/lib/concierge/stay';
 import { features } from '@/lib/env';
 import { requireSession } from '@/lib/supabase/server';
 import type { Conversation, Draft, Message, Property, Reservation } from '@/lib/types';
 import { cn, relativeTime } from '@/lib/utils';
+import { assignConversation } from '../../actions';
 
 export const metadata = { title: 'Conversación' };
 
@@ -21,10 +22,11 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   const id = Number((await params).id);
   const { data: conv } = await db.from('conversations').select('*').eq('id', id).maybeSingle<Conversation>();
   if (!conv) notFound();
-  const [{ data: property }, { data: msgs }, { data: reservation }] = await Promise.all([
+  const [{ data: property }, { data: msgs }, { data: reservation }, { data: members }] = await Promise.all([
     db.from('properties').select('*').eq('id', conv.property_id).single<Property>(),
     db.from('messages').select('*').eq('conversation_id', id).order('id'),
     conv.reservation_id ? db.from('reservations').select('*').eq('id', conv.reservation_id).maybeSingle<Reservation>() : Promise.resolve({ data: null }),
+    db.from('profiles').select('id, name').order('name'),
   ]);
   const messages = (msgs ?? []) as Message[];
   const { data: drafts } = messages.length ? await db.from('drafts').select('*').in('inbound_message_id', messages.map((m) => m.id)) : { data: [] };
@@ -50,7 +52,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <h1 className="font-display text-xl font-semibold">{reservation?.guest_name ?? conv.guest_ref}</h1>
             <span className="text-sm text-muted">· {property?.name}</span>
-            <Badge tone={conv.channel === 'whatsapp' ? 'sage' : 'neutral'}>{t(conv.channel === 'whatsapp' ? 'whatsapp' : 'sim')}</Badge>
+            <Badge tone={conv.channel === 'sim' ? 'neutral' : 'sage'}>{t(conv.channel === 'whatsapp' ? 'whatsapp' : conv.channel === 'smoobu' ? 'smoobu' : 'sim')}</Badge>
             {conv.handoff && <Badge tone="violet">{t('live')}</Badge>}
           </div>
           <div className="space-y-3">
@@ -87,6 +89,19 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         </div>
       </div>
       <Card data-anfi="reservation" className="h-fit space-y-3 p-4 text-sm">
+        <form data-anfi="assign" action={assignConversation} className="space-y-1.5">
+          <input type="hidden" name="id" value={conv.id} />
+          <label htmlFor="assignee" className="text-xs font-medium uppercase tracking-wider text-muted">{t('assigned')}</label>
+          <div className="flex gap-2">
+            <select id="assignee" name="profile_id" defaultValue={conv.assigned_profile ?? ''} className={inputClass + ' h-9 py-1'}>
+              <option value="">{t('unassigned')}</option>
+              {(members ?? []).map((m) => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
+            </select>
+            <button className={buttonClass('ghost', 'sm')}>{t('assign')}</button>
+          </div>
+        </form>
         <div className="text-xs font-medium uppercase tracking-wider text-muted">{t('reservation')}</div>
         {reservation ? (
           <>

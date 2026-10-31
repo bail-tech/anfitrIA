@@ -11,6 +11,7 @@ import type { GuestAI } from './ai';
 import { embed, isZero, toVector } from './embeddings';
 import { detectLanguage, holdingMessage } from './language';
 import { fillPrivate, forModel, privateWindowOpen } from './privacy';
+import { proposeUpsells } from '@/lib/upsells';
 import { buildStayContext, pickReservation, todayIn } from './stay';
 import { computeTiming, describeTiming, looksLikeTimingRequest } from './timing';
 
@@ -129,6 +130,13 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   await db.from('conversations').update(convPatch).eq('id', conversation.id);
   conversation = { ...conversation, ...convPatch };
 
+  // Extras the guest asks for (early check-in, parking…) become priced offer cards for the host.
+  try {
+    await proposeUpsells(db, { orgId, propertyId: property.id, conversationId: conversation.id, reservationId: reservation?.id ?? null, guestName: reservation?.guest_name ?? null, language: inbound.language, text });
+  } catch (e) {
+    console.error('upsell detection failed', e);
+  }
+
   // Live handoff: a person has taken over; the AI stays out and only notifies.
   if (conversation.handoff) {
     await db.from('audit_logs').insert({ org_id: orgId, actor: 'ai', action: 'handoff_inbound', conversation_id: conversation.id });
@@ -239,6 +247,13 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   const externalId = await deps.send(conversation, holding);
   await db.from('messages').insert({ conversation_id: conversation.id, direction: 'out', text: holding, language: reply.language, external_id: externalId });
   await db.from('audit_logs').insert({ org_id: orgId, actor: 'ai', action: 'escalated', conversation_id: conversation.id, detail: reason });
+  if (!conversation.assigned_profile) {
+    const { data: org } = await db.from('organizations').select('escalation_profile').eq('id', orgId).maybeSingle<{ escalation_profile: string | null }>();
+    if (org?.escalation_profile) {
+      await db.from('conversations').update({ assigned_profile: org.escalation_profile }).eq('id', conversation.id);
+      conversation = { ...conversation, assigned_profile: org.escalation_profile };
+    }
+  }
   const preview = text.length <= 80 ? text : `${text.slice(0, 77)}…`;
   await db.from('notifications').insert({
     org_id: orgId,

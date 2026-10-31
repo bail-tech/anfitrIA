@@ -17,6 +17,7 @@ interface GuestMessagePayload {
   draft_id: number | null;
   as_voice: boolean;
   learn_category: string | null;
+  upsell?: { item_id: string; name: string; price: number; currency: string; reservation_id: number | null };
 }
 
 export async function decideProposal(db: SupabaseClient, profile: Profile, id: string, decision: Decision, editedText?: string): Promise<Proposal> {
@@ -56,6 +57,11 @@ export async function decideProposal(db: SupabaseClient, profile: Profile, id: s
             if (msg) learn = { category: payload.learn_category, question: msg.text };
           }
           await sendHostReply(db, profile, { conversationId: p.conversation_id, text, draftId: payload.draft_id, learn });
+        }
+        // An extra offered to the guest: tracked until the host marks it accepted or declined.
+        if (payload.upsell) {
+          const u = payload.upsell;
+          await db.from('upsell_offers').insert({ org_id: profile.org_id, item_id: u.item_id, conversation_id: p.conversation_id, reservation_id: u.reservation_id, name: u.name, price: u.price, currency: u.currency });
         }
         return finish('applied', { sent_text: text });
       }

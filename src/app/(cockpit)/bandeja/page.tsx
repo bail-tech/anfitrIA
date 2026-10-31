@@ -7,10 +7,10 @@ import { cn, relativeTime } from '@/lib/utils';
 
 export const metadata = { title: 'Bandeja' };
 
-type Filter = 'pending' | 'live' | 'all';
+type Filter = 'pending' | 'mine' | 'live' | 'all';
 
 export default async function InboxPage({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
-  const { db } = await requireSession();
+  const { db, profile } = await requireSession();
   const t = await getTranslations('inbox');
   const locale = await getLocale();
   const filter: Filter = ((await searchParams).f as Filter) ?? 'pending';
@@ -20,6 +20,8 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
     db.from('properties').select('id, name'),
     db.from('reservations').select('id, guest_name'),
   ]);
+  const { data: members } = await db.from('profiles').select('id, name');
+  const initials = new Map((members ?? []).map((m) => [m.id as string, (m.name as string).trim().slice(0, 1).toUpperCase() || '?']));
   const conversations = (convs ?? []) as Conversation[];
   const ids = conversations.map((c) => c.id);
   const { data: msgs } = ids.length ? await db.from('messages').select('id, conversation_id, direction, text, kind, created_at').in('conversation_id', ids).order('id', { ascending: false }).limit(1000) : { data: [] };
@@ -37,10 +39,10 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
       const pending = mine.map((m) => pendingByMsg.get(m.id)).find(Boolean) ?? null;
       return { c, last, pending };
     })
-    .filter((r) => (filter === 'pending' ? r.pending : filter === 'live' ? r.c.handoff : true))
+    .filter((r) => (filter === 'pending' ? r.pending : filter === 'mine' ? r.c.assigned_profile === profile.id : filter === 'live' ? r.c.handoff : true))
     .sort((a, b) => Number(Boolean(b.pending)) - Number(Boolean(a.pending)) || (b.last?.created_at ?? '').localeCompare(a.last?.created_at ?? ''));
 
-  const tabs: Filter[] = ['pending', 'live', 'all'];
+  const tabs: Filter[] = ['pending', 'mine', 'live', 'all'];
   return (
     <>
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
@@ -62,9 +64,10 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
                 <div className="flex items-center gap-2 text-sm">
                   <span className="font-medium">{c.reservation_id ? gname.get(c.reservation_id) : c.guest_ref}</span>
                   <span className="text-muted">· {pname.get(c.property_id)}</span>
-                  <Badge tone={c.channel === 'whatsapp' ? 'sage' : 'neutral'}>{t(c.channel === 'whatsapp' ? 'whatsapp' : 'sim')}</Badge>
+                  <Badge tone={c.channel === 'sim' ? 'neutral' : 'sage'}>{t(c.channel === 'whatsapp' ? 'whatsapp' : c.channel === 'smoobu' ? 'smoobu' : 'sim')}</Badge>
                   {pending && <Badge tone={pending.reason === 'urgente' ? 'terra' : 'gold'}>{t(`reason_${pending.reason ?? 'sin_info'}` as 'reason_auto')}</Badge>}
                   {c.handoff && <Badge tone="violet">{t('live')}</Badge>}
+                  {c.assigned_profile && <span title={t('assigned')} className="grid size-5 place-items-center rounded-full bg-brand-soft text-[10px] font-semibold text-brand-ink">{initials.get(c.assigned_profile) ?? '?'}</span>}
                 </div>
                 <p className="truncate text-sm text-muted">
                   {last?.direction === 'out' ? '↩ ' : ''}

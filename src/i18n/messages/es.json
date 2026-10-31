@@ -17,7 +17,9 @@
     "menu": "Menú",
     "journey": "Viaje del huésped",
     "registrations": "Registro de viajeros",
-    "reports": "Informes"
+    "reports": "Informes",
+    "extras": "Extras",
+    "reviews": "Reseñas"
   },
   "agents": {
     "guest": "Huéspedes",
@@ -118,7 +120,12 @@
     "reservation": "Reserva",
     "noReservation": "Sin reserva vinculada",
     "sent": "Enviado",
-    "error": "No se pudo enviar"
+    "error": "No se pudo enviar",
+    "mine": "Mías",
+    "assigned": "Asignada a",
+    "unassigned": "Sin asignar",
+    "assign": "Asignar",
+    "smoobu": "Smoobu"
   },
   "properties": {
     "title": "Alojamientos",
@@ -282,7 +289,10 @@
     "keyError": "No se pudo crear la clave.",
     "keyUsed": "último uso {when}",
     "keyNeverUsed": "sin usar todavía",
-    "keyRevoke": "Revocar"
+    "keyRevoke": "Revocar",
+    "escalationsTo": "Las escaladas van a",
+    "escalationsToHint": "Si nadie lleva la conversación, se asigna a esta persona cuando la IA escala.",
+    "nobody": "Nadie (sin asignar)"
   },
   "audit": {
     "title": "Auditoría",
@@ -535,5 +545,62 @@
     "cleanings": "Limpiezas ({n})",
     "net": "Neto para el propietario",
     "footnote": "Las estancias entre dos meses se reparten por noches. Importes según los datos de reservas (PMS o introducidos a mano)."
+  },
+  "extras": {
+    "title": "Extras",
+    "subtitle": "Lo que puedes ofrecer a tus huéspedes: entrada anticipada, salida tardía, parking…",
+    "how": "Cuando un huésped pide algo de tu catálogo, te aparece una tarjeta con la oferta y su precio. Al aprobarla se la enviamos; el cobro lo gestionas tú como siempre.",
+    "seed": "Crear catálogo sugerido",
+    "catalog": "Catálogo",
+    "empty": "Aún no hay extras.",
+    "name": "Nombre",
+    "namePh": "p. ej. Entrada anticipada",
+    "price": "Precio",
+    "scope": "Alojamientos",
+    "allProperties": "Todos los alojamientos",
+    "keywords": "Palabras clave",
+    "keywordsPh": "Palabras que lo detectan, separadas por comas (early check-in, llegar antes…)",
+    "active": "Activo",
+    "paused": "Pausado",
+    "save": "Guardar",
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "new": "Nuevo extra",
+    "offers": "Ofertas enviadas",
+    "monthTotal": "Este mes: {n} aceptadas · {total}",
+    "noOffers": "Aún no se ha ofrecido ningún extra.",
+    "offered": "Ofrecido",
+    "accepted": "Aceptado",
+    "declined": "Rechazado"
+  },
+  "reviews": {
+    "title": "Reseñas",
+    "subtitle": "Pega una reseña y Anfi te prepara la respuesta pública, con tu tono y los datos del alojamiento.",
+    "new": "Nueva reseña",
+    "property": "Alojamiento",
+    "platform": "Plataforma",
+    "rating": "Puntuación",
+    "guest": "Huésped",
+    "guestPh": "Nombre",
+    "text": "Reseña",
+    "textPh": "Pega aquí el texto de la reseña…",
+    "draft": "Preparar respuesta",
+    "hint": "Las reseñas negativas reciben una respuesta calmada y concreta; los datos que falten salen como [CHECK: …] para que los completes.",
+    "empty": "Aún no hay reseñas.",
+    "anonymous": "Huésped",
+    "reply": "Respuesta",
+    "postedIt": "Ya la publiqué",
+    "copy": "Copiar",
+    "save": "Guardar",
+    "redraft": "Volver a redactar",
+    "delete": "Borrar",
+    "status_draft": "Borrador",
+    "status_replied": "Respondida",
+    "platform_airbnb": "Airbnb",
+    "platform_booking": "Booking.com",
+    "platform_vrbo": "Vrbo",
+    "platform_google": "Google",
+    "platform_other": "Otra"
   }
 }

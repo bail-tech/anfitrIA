@@ -72,6 +72,7 @@ export interface Conversation {
   property_id: number;
   guest_ref: string;
   channel: string;
+  assigned_profile: string | null;
   reservation_id: number | null;
   handoff: boolean;
   last_guest_message_at: string | null;

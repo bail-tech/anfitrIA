@@ -12,6 +12,8 @@ import { after } from 'next/server';
 import { runOperations } from '@/lib/agents/operations';
 import { JOURNEY_DEFAULTS } from '@/lib/agents/journey-defaults';
 import { learnFromHistory } from '@/lib/agents/learn';
+import { draftReviewReply } from '@/lib/agents/review-reply';
+import { DEFAULT_UPSELLS } from '@/lib/upsells';
 import { addKnowledge } from '@/lib/concierge/host';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
 import { ensureRegistration, refreshLotes, sesCredentials, submitRegistration } from '@/lib/compliance/registrations';
@@ -370,4 +372,108 @@ export async function revokeApiKey(form: FormData) {
   // RLS: a host can only revoke their own keys.
   await db.from('api_keys').update({ revoked_at: new Date().toISOString() }).eq('id', str(form, 'id'));
   revalidatePath('/ajustes');
+}
+
+// Team -----------------------------------------------------------------------------
+
+/** Assigns a conversation to a team member (empty = unassigned). RLS keeps it inside the organisation. */
+export async function assignConversation(form: FormData) {
+  const { db, profile } = await requireSession();
+  const id = num(form, 'id');
+  const to = str(form, 'profile_id') || null;
+  if (!id) return;
+  if (to) {
+    const { data: member } = await db.from('profiles').select('id').eq('id', to).maybeSingle();
+    if (!member) return;
+  }
+  await db.from('conversations').update({ assigned_profile: to }).eq('id', id);
+  await db.from('audit_logs').insert({ org_id: profile.org_id, actor: 'host', actor_profile: profile.id, action: 'conversation_assigned', conversation_id: id, detail: to ?? 'unassigned' });
+  revalidatePath(`/bandeja/${id}`);
+  revalidatePath('/bandeja');
+}
+
+/** Owner only: who receives escalated conversations that nobody owns yet. */
+export async function setEscalationRouting(form: FormData) {
+  const { db, profile } = await requireSession();
+  if (profile.role !== 'owner') return;
+  await db.from('organizations').update({ escalation_profile: str(form, 'profile_id') || null }).eq('id', profile.org_id);
+  revalidatePath('/ajustes');
+}
+
+// Upsells ---------------------------------------------------------------------------
+
+export async function saveUpsellItem(form: FormData) {
+  const { db } = await requireSession();
+  const id = str(form, 'id');
+  const price = Number(str(form, 'price').replace(',', '.'));
+  const fields = {
+    name: str(form, 'name').slice(0, 80),
+    price: Number.isFinite(price) && price >= 0 ? Math.round(price * 100) / 100 : 0,
+    keywords: str(form, 'keywords').split(',').map((k) => k.trim()).filter(Boolean).slice(0, 20),
+    property_id: num(form, 'property_id'),
+    active: form.get('active') === 'on',
+  };
+  if (!fields.name) return;
+  if (id) await db.from('upsell_items').update(fields).eq('id', id);
+  else await db.from('upsell_items').insert(fields);
+  revalidatePath('/extras');
+}
+
+export async function deleteUpsellItem(form: FormData) {
+  const { db } = await requireSession();
+  await db.from('upsell_items').delete().eq('id', str(form, 'id'));
+  revalidatePath('/extras');
+}
+
+/** The suggested catalogue, in the panel language. */
+export async function seedUpsells() {
+  const { db } = await requireSession();
+  const locale = (await cookies()).get(LOCALE_COOKIE)?.value === 'en' ? 'en' : 'es';
+  await db.from('upsell_items').insert(DEFAULT_UPSELLS[locale].map((u) => ({ ...u, active: true })));
+  revalidatePath('/extras');
+}
+
+export async function setOfferStatus(form: FormData) {
+  const { db } = await requireSession();
+  const status = str(form, 'status');
+  if (status !== 'accepted' && status !== 'declined' && status !== 'offered') return;
+  await db.from('upsell_offers').update({ status, decided_at: status === 'offered' ? null : new Date().toISOString() }).eq('id', str(form, 'id'));
+  revalidatePath('/extras');
+}
+
+// Reviews ---------------------------------------------------------------------------
+
+const PLATFORMS = ['airbnb', 'booking', 'vrbo', 'google', 'other'] as const;
+
+/** Stores a pasted review and drafts the public reply. */
+export async function addReview(form: FormData) {
+  const { db } = await requireSession();
+  const propertyId = num(form, 'property_id');
+  const text = str(form, 'text').slice(0, 5000);
+  if (!propertyId || !text) return;
+  const rating = num(form, 'rating');
+  const review = { property_id: propertyId, rating: rating && rating >= 1 && rating <= 5 ? rating : null, guest_name: str(form, 'guest_name') || null, text };
+  const reply = await draftReviewReply(db, review);
+  await db.from('reviews').insert({ ...review, platform: PLATFORMS.find((p) => p === str(form, 'platform')) ?? 'airbnb', reply });
+  revalidatePath('/resenas');
+}
+
+export async function saveReviewReply(form: FormData) {
+  const { db } = await requireSession();
+  const replied = form.get('replied') === 'on';
+  await db.from('reviews').update({ reply: str(form, 'reply').slice(0, 5000), status: replied ? 'replied' : 'draft', replied_at: replied ? new Date().toISOString() : null }).eq('id', str(form, 'id'));
+  revalidatePath('/resenas');
+}
+
+export async function redraftReview(form: FormData) {
+  const { db } = await requireSession();
+  const { data: r } = await db.from('reviews').select('property_id, rating, guest_name, text').eq('id', str(form, 'id')).single();
+  if (r) await db.from('reviews').update({ reply: await draftReviewReply(db, r) }).eq('id', str(form, 'id'));
+  revalidatePath('/resenas');
+}
+
+export async function deleteReview(form: FormData) {
+  const { db } = await requireSession();
+  await db.from('reviews').delete().eq('id', str(form, 'id'));
+  revalidatePath('/resenas');
 }

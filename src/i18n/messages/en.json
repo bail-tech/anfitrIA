@@ -17,7 +17,9 @@
     "menu": "Menu",
     "journey": "Guest journey",
     "registrations": "Guest registration",
-    "reports": "Reports"
+    "reports": "Reports",
+    "extras": "Extras",
+    "reviews": "Reviews"
   },
   "agents": {
     "guest": "Guests",
@@ -118,7 +120,12 @@
     "reservation": "Booking",
     "noReservation": "No linked booking",
     "sent": "Sent",
-    "error": "Could not send"
+    "error": "Could not send",
+    "mine": "Mine",
+    "assigned": "Assigned to",
+    "unassigned": "Unassigned",
+    "assign": "Assign",
+    "smoobu": "Smoobu"
   },
   "properties": {
     "title": "Properties",
@@ -282,7 +289,10 @@
     "keyError": "Couldn't create the key.",
     "keyUsed": "last used {when}",
     "keyNeverUsed": "not used yet",
-    "keyRevoke": "Revoke"
+    "keyRevoke": "Revoke",
+    "escalationsTo": "Escalations go to",
+    "escalationsToHint": "If nobody owns the conversation, it's assigned to this person when the AI escalates.",
+    "nobody": "Nobody (unassigned)"
   },
   "audit": {
     "title": "Audit log",
@@ -535,5 +545,62 @@
     "cleanings": "Cleanings ({n})",
     "net": "Net to owner",
     "footnote": "Stays across two months are split by night. Amounts come from the booking data (PMS or entered by hand)."
+  },
+  "extras": {
+    "title": "Extras",
+    "subtitle": "What you can offer your guests: early check-in, late check-out, parking…",
+    "how": "When a guest asks for something in your catalogue, you get a card with the offer and its price. Approve it and we send it; you collect payment as you always do.",
+    "seed": "Create the suggested catalogue",
+    "catalog": "Catalogue",
+    "empty": "No extras yet.",
+    "name": "Name",
+    "namePh": "e.g. Early check-in",
+    "price": "Price",
+    "scope": "Properties",
+    "allProperties": "All properties",
+    "keywords": "Keywords",
+    "keywordsPh": "Words that detect it, comma-separated (early check-in, arrive early…)",
+    "active": "Active",
+    "paused": "Paused",
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "new": "New extra",
+    "offers": "Offers sent",
+    "monthTotal": "This month: {n} accepted · {total}",
+    "noOffers": "No extras offered yet.",
+    "offered": "Offered",
+    "accepted": "Accepted",
+    "declined": "Declined"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "subtitle": "Paste a review and Anfi drafts the public reply, in your tone and with the property's facts.",
+    "new": "New review",
+    "property": "Property",
+    "platform": "Platform",
+    "rating": "Rating",
+    "guest": "Guest",
+    "guestPh": "Name",
+    "text": "Review",
+    "textPh": "Paste the review text here…",
+    "draft": "Draft reply",
+    "hint": "Negative reviews get a calm, specific reply; missing facts show as [CHECK: …] for you to fill in.",
+    "empty": "No reviews yet.",
+    "anonymous": "Guest",
+    "reply": "Reply",
+    "postedIt": "I've posted it",
+    "copy": "Copy",
+    "save": "Save",
+    "redraft": "Redraft",
+    "delete": "Delete",
+    "status_draft": "Draft",
+    "status_replied": "Replied",
+    "platform_airbnb": "Airbnb",
+    "platform_booking": "Booking.com",
+    "platform_vrbo": "Vrbo",
+    "platform_google": "Google",
+    "platform_other": "Other"
   }
 }

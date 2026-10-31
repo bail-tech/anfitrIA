@@ -72,6 +72,7 @@ export const PAGES: GuidePage[] = [
     sections: [
       { id: 'thread', name: ['Mensajes', 'Messages'], shows: ['El hilo completo, notas de voz incluidas, con el motivo de cada escalada.', 'The full thread, voice notes included, with why each message escalated.'] },
       { id: 'reply', name: ['Respuesta', 'Reply'], shows: ['El borrador de la IA, editable.', "The AI's draft, editable."], actions: ['Edítalo y pulsa Enviar, o envíalo como nota de voz. También puedes tomar el control (modo en directo).', 'Edit it and press Send, or send it as a voice note. You can also take over (live mode).'] },
+      { id: 'assign', name: ['Asignación', 'Assignment'], shows: ['Quién del equipo lleva esta conversación.', 'Who on the team owns this conversation.'], actions: ['Asígnala a alguien o déjala sin asignar.', 'Assign it to someone or leave it unassigned.'] },
       { id: 'reservation', name: ['Reserva', 'Booking'], shows: ['Fechas, huéspedes y alojamiento de esta reserva.', 'Dates, guests and property for this booking.'] },
     ],
   },
@@ -122,6 +123,28 @@ export const PAGES: GuidePage[] = [
       { id: 'new', name: ['Nuevo mensaje', 'New message'], shows: ['Formulario para programar un mensaje nuevo.', 'Form to schedule a new message.'] },
     ],
     tasks: [['Activar un mensaje: Viaje del huésped → abrir el mensaje → marcar Aprobado → Guardar.', 'Turn a message on: Guest journey → open it → tick Approved → Save.']],
+  },
+  {
+    key: 'extras',
+    route: '/extras',
+    file: 'extras/page.tsx',
+    title: ['Extras', 'Extras'],
+    purpose: ['Lo que vendes además de la estancia (entrada anticipada, parking…). Cuando un huésped lo pide, te llega una oferta con precio para aprobar.', 'What you sell besides the stay (early check-in, parking…). When a guest asks, you get a priced offer to approve.'],
+    sections: [
+      { id: 'catalog', name: ['Catálogo', 'Catalogue'], shows: ['Cada extra con su precio, alojamientos y palabras que lo detectan.', 'Each extra with its price, properties and the words that detect it.'], actions: ['Añade, edita o pausa extras.', 'Add, edit or pause extras.'] },
+      { id: 'offers', name: ['Ofertas', 'Offers'], shows: ['Las ofertas enviadas y lo aceptado este mes.', "Offers sent and this month's accepted total."], actions: ['Marca cada oferta como aceptada o rechazada.', 'Mark each offer accepted or declined.'] },
+    ],
+  },
+  {
+    key: 'reviews',
+    route: '/resenas',
+    file: 'resenas/page.tsx',
+    title: ['Reseñas', 'Reviews'],
+    purpose: ['Respuestas públicas a las reseñas de tus huéspedes, redactadas por Anfi para que las revises y publiques.', "Public replies to your guests' reviews, drafted by Anfi for you to review and post."],
+    sections: [
+      { id: 'new', name: ['Nueva reseña', 'New review'], shows: ['Formulario para pegar una reseña.', 'Form to paste a review.'] },
+      { id: 'list', name: ['Reseñas y respuestas', 'Reviews and replies'], shows: ['Cada reseña con su respuesta editable.', 'Each review with its editable reply.'], actions: ['Edita, copia y marca como publicada.', 'Edit, copy and mark as posted.'] },
+    ],
   },
   {
     key: 'registrations',

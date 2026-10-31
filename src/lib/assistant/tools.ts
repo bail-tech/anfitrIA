@@ -7,6 +7,7 @@ import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { learnFromHistory } from '@/lib/agents/learn';
+import { draftReviewReply } from '@/lib/agents/review-reply';
 import { runOperations } from '@/lib/agents/operations';
 import { embed, isZero, toVector } from '@/lib/concierge/embeddings';
 import { forModel } from '@/lib/concierge/privacy';
@@ -233,6 +234,18 @@ export function hostTools(ctx: ToolContext) {
           if (!r.proposal) return `Nothing proposed (${r.reason}; ${r.exchanges} answered exchanges found).`;
           ctx.emit({ type: 'proposal', proposal: r.proposal });
           return `Card ${r.proposal.id} created from ${r.exchanges} past answers; waiting for the host's approval.`;
+        }),
+    }),
+    betaZodTool({
+      name: 'draft_review_reply',
+      description: "Draft the host's public reply to a guest review and save it on the Reviews page for the host to edit and post. Never posts anything.",
+      inputSchema: z.object({ property_id: z.number().int(), text: z.string().min(1).max(5000), rating: z.number().int().min(1).max(5).optional(), guest_name: z.string().optional(), platform: z.enum(['airbnb', 'booking', 'vrbo', 'google', 'other']).optional() }),
+      run: (input) =>
+        step(ctx, 'draft_review_reply', async () => {
+          const review = { property_id: input.property_id, rating: input.rating ?? null, guest_name: input.guest_name ?? null, text: input.text };
+          const reply = await draftReviewReply(db, review);
+          const { error } = await db.from('reviews').insert({ ...review, org_id: ctx.profile.org_id, platform: input.platform ?? 'airbnb', reply });
+          return error ? `Could not save: ${error.message}` : `Draft saved on the Reviews page. Reply:\n${reply}`;
         }),
     }),
     betaZodTool({

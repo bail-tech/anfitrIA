@@ -5,7 +5,7 @@ import { appUrl, features } from '@/lib/env';
 import { requireSession } from '@/lib/supabase/server';
 import type { Profile } from '@/lib/types';
 import { NewApiKey } from '@/components/cockpit/api-keys';
-import { inviteMember, revokeApiKey, saveSesSettings, saveSmoobuSettings } from '../actions';
+import { inviteMember, revokeApiKey, saveSesSettings, saveSmoobuSettings, setEscalationRouting } from '../actions';
 
 export const metadata = { title: 'Ajustes' };
 
@@ -17,6 +17,7 @@ export default async function SettingsPage() {
     profile.role === 'owner' ? db.from('invitations').select('*').is('accepted_at', null) : Promise.resolve({ data: [] }),
     db.from('integrations').select('provider, status, config, last_error, last_sync_at').in('provider', ['ses', 'smoobu']),
   ]);
+  const { data: org } = await db.from('organizations').select('escalation_profile').maybeSingle<{ escalation_profile: string | null }>();
   const { data: keys } = await db.from('api_keys').select('id, name, prefix, created_at, last_used_at').is('revoked_at', null).order('created_at', { ascending: false });
   type Connection = { provider: string; status: string; config: Record<string, string> | null; last_error: string | null; last_sync_at: string | null };
   const conn = (provider: string) => ((connections ?? []) as Connection[]).find((c) => c.provider === provider);
@@ -39,6 +40,19 @@ export default async function SettingsPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card data-anfi="team" className="p-4">
           <h2 className="mb-3 font-medium">{t('team')}</h2>
+          <form action={setEscalationRouting} className="mb-3 space-y-1.5 rounded-xl bg-sand/40 p-3">
+            <label htmlFor="escalations-to" className="text-sm font-medium">{t('escalationsTo')}</label>
+            <p className="text-xs text-muted">{t('escalationsToHint')}</p>
+            <fieldset disabled={profile.role !== 'owner'} className="flex gap-2">
+              <select id="escalations-to" name="profile_id" defaultValue={org?.escalation_profile ?? ''} className={inputClass + ' h-9 py-1'}>
+                <option value="">{t('nobody')}</option>
+                {((members ?? []) as Profile[]).map((m) => (
+                  <option key={m.id} value={m.id}>{m.name}</option>
+                ))}
+              </select>
+              <button className={buttonClass('ghost', 'sm')}>{t('save')}</button>
+            </fieldset>
+          </form>
           <ul className="mb-3 divide-y divide-line text-sm">
             {((members ?? []) as Profile[]).map((m) => (
               <li key={m.id} className="flex items-center justify-between py-2">
