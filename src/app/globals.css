@@ -59,6 +59,43 @@ body {
   animation: pulse-dot 1.4s ease-in-out infinite;
 }
 
+/* Landing: product miniatures come alive as they scroll in, and Anfi bobs and talks. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-rise { animation: rise 0.5s ease-out both; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-bob { animation: bob 4s ease-in-out infinite; }
+@keyframes talk {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.animate-talk { animation: talk 0.45s ease-in-out infinite; }
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+.animate-wave { animation: wave 1s ease-in-out infinite; transform-origin: center; }
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.25; }
+  30% { opacity: 1; }
+}
+.animate-typing { animation: typing 1.2s ease-in-out infinite; }
+
+/* Items in a landing section appear as it scrolls in; Anfi outlines the section he's talking about. */
+[data-reveal] .reveal-item { opacity: 0; }
+[data-reveal].is-visible .reveal-item { animation: rise 0.5s ease-out both; }
+.pitch-focus {
+  outline: 3px solid rgb(29 191 142 / 0.55);
+  outline-offset: 10px;
+  border-radius: 28px;
+  transition: outline-color 0.3s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

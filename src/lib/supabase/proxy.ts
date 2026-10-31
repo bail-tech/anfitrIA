@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC = ['/login', '/signup', '/auth', '/anfi', '/api/channels', '/api/cron', '/api/mcp', '/api/health', '/checkin', '/api/checkin', '/inicio', '/respuestas', '/robots.txt', '/sitemap.xml'];
+const PUBLIC = ['/login', '/signup', '/auth', '/anfi', '/api/channels', '/api/cron', '/api/mcp', '/api/health', '/checkin', '/api/checkin', '/inicio', '/respuestas', '/robots.txt', '/sitemap.xml', '/api/pitch'];
 
 /** Refreshes the Supabase session cookie on every request and gates the cockpit. */
 export async function updateSession(request: NextRequest) {
