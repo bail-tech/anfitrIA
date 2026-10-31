@@ -369,7 +369,10 @@
     "tourExit": "Salir",
     "tourDone": "Terminar",
     "tourOk": "Entendido",
-    "prefilled": "Rellenado por Anfi: revisa y pulsa el botón tú"
+    "prefilled": "Rellenado por Anfi: revisa y pulsa el botón tú",
+    "askAnfi": "Pedir a Anfi",
+    "askAnfiHint": "Háblale a Anfi: te rellena lo de esta página y tú lo revisas",
+    "askPlaceholder": "Dile qué quieres añadir o rellenar aquí…"
   },
   "common": {
     "save": "Guardar",

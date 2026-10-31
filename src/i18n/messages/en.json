@@ -369,7 +369,10 @@
     "tourExit": "Exit",
     "tourDone": "Finish",
     "tourOk": "Got it",
-    "prefilled": "Filled in by Anfi: review it and press the button yourself"
+    "prefilled": "Filled in by Anfi: review it and press the button yourself",
+    "askAnfi": "Ask Anfi",
+    "askAnfiHint": "Talk to Anfi: it fills in what's on this page and you review it",
+    "askPlaceholder": "Tell it what to add or fill in here…"
   },
   "common": {
     "save": "Save",

@@ -215,9 +215,30 @@ export const PAGES: GuidePage[] = [
 /** Forms Anfi may fill (never submit), with the fields it may set. */
 export const FORMS = {
   reply: { page: 'conversation', fields: ['text'] },
-  reservation: { page: 'reservations', fields: ['guest_name', 'guest_ref', 'check_in', 'check_out', 'guests', 'nightly_rate', 'source'] },
+  reservation: { page: 'reservations', fields: ['property_id', 'guest_name', 'guest_ref', 'check_in', 'check_out', 'guests', 'nightly_rate', 'source'] },
   knowledge: { page: 'property', fields: ['category', 'content'] },
+  property: { page: 'properties', fields: ['name', 'address', 'building_id'] },
+  building: { page: 'properties', fields: ['name'] },
+  task: { page: 'operations', fields: ['title', 'property_id', 'due_at'] },
+  staff: { page: 'operations', fields: ['name', 'phone', 'role'] },
+  invite: { page: 'settings', fields: ['email', 'role'] },
+  journey: { page: 'journey', fields: ['title', 'body', 'offset', 'anchor', 'property_id', 'min_nights', 'positive_only', 'as_voice', 'approved'] },
+  extra: { page: 'extras', fields: ['name', 'price', 'property_id', 'keywords', 'active'] },
+  review: { page: 'reviews', fields: ['property_id', 'platform', 'rating', 'guest_name', 'text'] },
+  report: { page: 'reports', fields: ['property', 'month', 'fee', 'cleaning'] },
 } as const satisfies Record<string, { page: string; fields: readonly string[] }>;
+
+/** Notes for Anfi on values that aren't obvious from the field name. */
+export const FORM_HINTS: Partial<Record<keyof typeof FORMS, string>> = {
+  reservation: 'dates YYYY-MM-DD; source direct|booking|airbnb|other; property_id may be the property name',
+  task: 'due_at YYYY-MM-DDThh:mm; property_id may be the property name',
+  staff: 'role cleaning|maintenance|other',
+  invite: 'role member|owner',
+  journey: 'offset = hours from the anchor (negative = before); anchor booking|check_in|check_out; positive_only/as_voice/approved true|false; leave approved false unless the host says to turn it on; placeholders {guest_name} {property_name} {check_in} {check_out} {check_in_time} {check_out_time} {checkin_link}',
+  extra: 'price in euros; keywords = comma-separated words in Spanish and English that show a guest wants it',
+  review: 'platform airbnb|booking|vrbo|google|other; rating 1-5',
+  report: 'month YYYY-MM; fee = management fee %; cleaning = cost per cleaning in euros; then the host presses Show',
+};
 export type FormId = keyof typeof FORMS;
 
 export const lang = (locale: string) => (locale === 'en' ? 1 : 0);

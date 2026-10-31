@@ -10,3 +10,6 @@ coverage
 
 .vercel
 .env*
+
+# Local notes with credentials (demo accounts)
+*.local.md

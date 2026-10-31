@@ -41,6 +41,32 @@ function setField(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
   el.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
+const YES = /^(true|on|yes|si|sí|1)$/i;
+
+/**
+ * Fills one field from what Anfi said: checkboxes from yes/no, dropdowns by value or by the text
+ * the host sees ("Born Loft" picks that property), everything else as typed text.
+ */
+export function fillField(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, raw: string) {
+  const value = raw.trim();
+  if (el instanceof HTMLInputElement && el.type === 'checkbox') {
+    el.checked = YES.test(value);
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return;
+  }
+  if (el instanceof HTMLSelectElement) {
+    const options = [...el.options];
+    const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    const match =
+      options.find((o) => o.value === value) ??
+      options.find((o) => norm(o.text) === norm(value)) ??
+      options.find((o) => norm(value) && norm(o.text).includes(norm(value)));
+    if (match) setField(el, match.value);
+    return;
+  }
+  setField(el, value);
+}
+
 const NEXT = /^(siguiente|sigue|continúa|continua|adelante|next|continue|go on)$/;
 const BACK = /^(atrás|atras|anterior|vuelve|back|previous)$/;
 const STOP = /^(para|parar|stop|salir|sal|termina|basta|fin|exit|enough)$/;
@@ -123,7 +149,7 @@ export function useAnfiUi({ onNarrate, onMinimize, prefilledLabel }: { onNarrate
               if (!form) break;
               for (const [name, value] of Object.entries(action.fields)) {
                 const el = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`[name="${CSS.escape(name)}"]`);
-                if (el && el.type !== 'hidden' && el.type !== 'checkbox') setField(el, value);
+                if (el && el.type !== 'hidden') fillField(el, value);
               }
               tour.current = null;
               setSpot({ selector, title: prefilledLabel, note: '' });

@@ -41,7 +41,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
     <>
       <div className="print:hidden">
         <PageHeader title={t('title')} subtitle={t('subtitle')} actions={<PrintButton label={t('print')} />} />
-        <form data-anfi="filters" className="mb-5 grid gap-2 sm:grid-cols-[1fr_160px_120px_140px_auto]">
+        <form data-anfi="filters" data-anfi-form="report" className="mb-5 grid gap-2 sm:grid-cols-[1fr_160px_120px_140px_auto]">
           <select name="property" defaultValue={property.id} className={inputClass} aria-label={t('property')}>
             {properties.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>

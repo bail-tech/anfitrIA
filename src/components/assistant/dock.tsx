@@ -9,6 +9,7 @@ import { CharacterStage } from '@/components/character/stage';
 import type { Mood } from '@/components/character/face';
 import { cn } from '@/lib/utils';
 import { ProposalCard } from './proposal-card';
+import { ASK_EVENT } from './ask-anfi';
 import { AnfiSettings, type AnfiPrefs } from './settings';
 import { Spotlight } from './spotlight';
 import { useAnfiUi } from './use-anfi-ui';
@@ -27,7 +28,10 @@ const DOT: Record<AssistantState, string> = {
   error: 'bg-terra',
 };
 
-function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () => void; onMinimize?: () => void; prefs: AnfiPrefs }) {
+/** The last "Ask Anfi" press handled, so remounting the dock (mobile sheet) doesn't act on it twice. */
+let handledAsk = 0;
+
+function DockBody({ onClose, onMinimize, prefs: initialPrefs, ask = 0 }: { onClose?: () => void; onMinimize?: () => void; prefs: AnfiPrefs; ask?: number }) {
   const t = useTranslations('assistant');
   const locale = useLocale();
   const say = useRef<(text: string) => void>(() => undefined);
@@ -38,8 +42,17 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
   useEffect(() => {
     say.current = voice.say;
   });
+
+  // "Ask Anfi" from a page header: start talking (or type when voice isn't available).
+  useEffect(() => {
+    if (!ask || ask === handledAsk) return;
+    handledAsk = ask;
+    if (voice.supported && !voice.active) voice.toggle();
+    else input.current?.focus();
+  }, [ask, voice]);
   const signals = useScreenSignals(assistant, voice);
   const [text, setText] = useState('');
+  const input = useRef<HTMLInputElement>(null);
   const [prefs, setPrefs] = useState(initialPrefs);
   const list = useRef<HTMLDivElement>(null);
 
@@ -150,7 +163,7 @@ function DockBody({ onClose, onMinimize, prefs: initialPrefs }: { onClose?: () =
         >
           {voice.active ? <MicOff className="size-4" /> : <Mic className="size-4" />}
         </button>
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t('placeholder')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-brand" />
+        <input ref={input} value={text} onChange={(e) => setText(e.target.value)} placeholder={ask ? t('askPlaceholder') : t('placeholder')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 text-sm outline-none focus:border-brand" />
         <button disabled={!text.trim() || assistant.busy} aria-label={t('send')} className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand text-ink disabled:opacity-40">
           {assistant.busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         </button>
@@ -171,12 +184,21 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
   const t = useTranslations('assistant');
   const [sheet, setSheet] = useState<'closed' | 'open' | 'mini'>('closed');
   const minimize = useCallback(() => setSheet((s) => (s === 'open' ? 'mini' : s)), []);
+  const [ask, setAsk] = useState(0);
+  useEffect(() => {
+    const onAsk = () => {
+      setAsk((n) => n + 1);
+      if (!window.matchMedia(DESKTOP).matches) setSheet('open');
+    };
+    window.addEventListener(ASK_EVENT, onAsk);
+    return () => window.removeEventListener(ASK_EVENT, onAsk);
+  }, []);
   // Mount one dock only, so a hidden one never keeps a 3D canvas or a voice session alive.
   const desktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP).matches, () => false);
   if (desktop) {
     return (
       <aside className="sticky top-0 h-screen w-[360px] shrink-0 border-l border-line bg-paper/95 print:hidden">
-        <DockBody prefs={prefs} />
+        <DockBody prefs={prefs} ask={ask} />
       </aside>
     );
   }
@@ -199,7 +221,7 @@ export function AssistantDock({ prefs }: { prefs: AnfiPrefs }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <DockBody prefs={prefs} onClose={() => setSheet('closed')} onMinimize={minimize} />
+            <DockBody prefs={prefs} ask={ask} onClose={() => setSheet('closed')} onMinimize={minimize} />
           </div>
         </div>
       )}

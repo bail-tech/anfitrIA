@@ -70,7 +70,7 @@ export default async function SettingsPage() {
                   {t('invited')}: {(invites ?? []).map((i) => i.email).join(', ')}
                 </div>
               )}
-              <form action={inviteMember} className="flex gap-2">
+              <form action={inviteMember} data-anfi-form="invite" className="flex gap-2">
                 <input name="email" type="email" required placeholder={t('email')} className={inputClass} />
                 <select name="role" className={inputClass + ' w-36'}>
                   <option value="member">{t('member')}</option>

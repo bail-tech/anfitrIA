@@ -51,6 +51,6 @@ describe('Anfi UI tools', () => {
     await call('navigate', { page: 'reservations' });
     const result = await call('prefill', { form: 'reservation', fields: { guest_name: 'Ana', guests: 2, consent: 'on', property_id: '9' } });
     expect(result).toMatch(/Nothing was saved or sent/);
-    expect(ui().at(-1)).toEqual({ kind: 'prefill', path: '/reservas', form: 'reservation', fields: { guest_name: 'Ana', guests: '2' } });
+    expect(ui().at(-1)).toEqual({ kind: 'prefill', path: '/reservas', form: 'reservation', fields: { guest_name: 'Ana', guests: '2', property_id: '9' } });
   });
 });

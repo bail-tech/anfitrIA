@@ -37,7 +37,7 @@ export default async function ExtrasPage() {
   const revenue = accepted.reduce((s, o) => s + Number(o.price), 0);
 
   const itemForm = (item?: UpsellItem) => (
-    <form action={saveUpsellItem} className="grid gap-2 text-sm sm:grid-cols-[1fr_90px_1fr]">
+    <form action={saveUpsellItem} data-anfi-form={item ? undefined : 'extra'} className="grid gap-2 text-sm sm:grid-cols-[1fr_90px_1fr]">
       {item && <input type="hidden" name="id" value={item.id} />}
       <input name="name" defaultValue={item?.name} required maxLength={80} placeholder={t('namePh')} aria-label={t('name')} className={inputClass} />
       <input name="price" defaultValue={item ? Number(item.price) : ''} required inputMode="decimal" placeholder="€" aria-label={t('price')} className={inputClass} />

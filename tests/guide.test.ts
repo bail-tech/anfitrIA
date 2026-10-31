@@ -22,7 +22,8 @@ describe('page registry', () => {
 
   it('every prefillable form is marked in the code', () => {
     const sources = allSources(SRC);
-    for (const id of Object.keys(FORMS)) expect(sources).toContain(`data-anfi-form="${id}"`);
+    // Plain attribute, or an expression that marks only the 'new' instance of a shared form.
+    for (const id of Object.keys(FORMS)) expect(sources, id).toMatch(new RegExp(`data-anfi-form=("${id}"|\{[^}]*'${id}'\})`));
   });
 
   it('keys and section ids are unique', () => {

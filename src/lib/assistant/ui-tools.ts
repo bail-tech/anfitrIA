@@ -5,7 +5,7 @@
  */
 import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { z } from 'zod';
-import { describe, FORMS, lang, pageByKey, pageForPath, PAGES, routeFor, type FormId, type GuidePage } from './guide';
+import { describe, FORM_HINTS, FORMS, lang, pageByKey, pageForPath, PAGES, routeFor, type FormId, type GuidePage } from './guide';
 import type { ToolContext } from './tools';
 
 export interface PageContext {
@@ -25,6 +25,9 @@ export type UiAction =
 const PAGE_KEYS = PAGES.map((p) => p.key) as [string, ...string[]];
 const FORM_IDS = Object.keys(FORMS) as [FormId, ...FormId[]];
 const json = (v: unknown) => JSON.stringify(v, null, 1);
+const FORM_LIST = Object.entries(FORMS)
+  .map(([id, f]) => `${id} on ${f.page} (${f.fields.join(', ')}${FORM_HINTS[id as FormId] ? `; ${FORM_HINTS[id as FormId]}` : ''})`)
+  .join('; ');
 
 let seq = 0;
 function emitUi(ctx: ToolContext, name: string, action: UiAction) {
@@ -113,7 +116,7 @@ export function uiTools(ctx: ToolContext, page: PageContext | undefined, locale:
     betaZodTool({
       name: 'prefill',
       description:
-        'Fill a form on screen for the host to review. It never submits: the host presses the button. Forms: reply (fields: text) on a conversation page; reservation (guest_name, guest_ref, check_in, check_out YYYY-MM-DD, guests, nightly_rate, source direct|booking|airbnb|other) on reservations; knowledge (category, content) on a property page. Navigate there first.',
+        `Fill a form on screen for the host to review. It never submits: the host presses the button. Use it whenever the host asks to add, create or write something that has a form on the current page. Navigate there first if needed. Forms: ${FORM_LIST}.`,
       inputSchema: z.object({ form: z.enum(FORM_IDS), fields: z.record(z.string(), z.union([z.string(), z.number()])) }),
       run: async ({ form, fields }) => {
         const spec = FORMS[form];

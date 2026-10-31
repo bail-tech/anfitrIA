@@ -47,7 +47,7 @@ export default async function PropertiesPage() {
         </div>
         <Card data-anfi="new" className="h-fit p-4">
           <h2 className="mb-3 font-medium">{t('new')}</h2>
-          <form action={createProperty} className="space-y-2">
+          <form action={createProperty} data-anfi-form="property" className="space-y-2">
             <input name="name" required placeholder={t('name')} className={inputClass} />
             <input name="address" placeholder={t('address')} className={inputClass} />
             <select name="building_id" className={inputClass} defaultValue="">
@@ -75,7 +75,7 @@ export default async function PropertiesPage() {
             <KnowledgeList items={items.filter((k) => k.building_id === b.id)} target={{ buildingId: b.id }} back="/alojamientos" />
           </Card>
         ))}
-        <form action={createBuilding} className="flex max-w-md gap-2">
+        <form action={createBuilding} data-anfi-form="building" className="flex max-w-md gap-2">
           <input name="name" required placeholder={t('newBuilding')} className={inputClass} />
           <button className={buttonClass('ghost')}>{t('create')}</button>
         </form>

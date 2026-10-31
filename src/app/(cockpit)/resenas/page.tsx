@@ -35,7 +35,7 @@ export default async function ReviewsPage() {
       <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
         <Card data-anfi="new" className="h-fit p-4">
           <h2 className="mb-3 font-medium">{t('new')}</h2>
-          <form action={addReview} className="space-y-2 text-sm">
+          <form action={addReview} data-anfi-form="review" className="space-y-2 text-sm">
             <select name="property_id" required className={inputClass} aria-label={t('property')}>
               {(props ?? []).map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>

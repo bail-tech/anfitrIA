@@ -30,7 +30,7 @@ export default async function JourneyPage() {
   };
 
   const templateForm = (tpl?: MessageTemplate) => (
-    <form action={saveTemplate} className="space-y-2 text-sm">
+    <form action={saveTemplate} data-anfi-form={tpl ? undefined : 'journey'} className="space-y-2 text-sm">
       {tpl && <input type="hidden" name="id" value={tpl.id} />}
       {tpl && <input type="hidden" name="kind" value={tpl.kind} />}
       <input name="title" defaultValue={tpl?.title} placeholder={t('titlePh')} className={inputClass} />

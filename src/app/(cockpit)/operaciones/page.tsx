@@ -65,7 +65,7 @@ export default async function OperationsPage() {
               {t('open')} ({open?.length ?? 0})
             </h2>
             {open?.length ? <ul className="divide-y divide-line">{(open as Task[]).map((task) => <TaskRow key={task.id} task={task} />)}</ul> : <div className="mt-3"><Empty title={t('empty')} /></div>}
-            <form action={createTask} className="mt-3 grid gap-2 rounded-xl bg-sand/40 p-3 md:grid-cols-[1fr_160px_160px_auto]">
+            <form action={createTask} data-anfi-form="task" className="mt-3 grid gap-2 rounded-xl bg-sand/40 p-3 md:grid-cols-[1fr_160px_160px_auto]">
               <input name="title" required placeholder={t('title_field')} className={inputClass} />
               <select name="property_id" className={inputClass}>
                 <option value="">—</option>
@@ -104,7 +104,7 @@ export default async function OperationsPage() {
               </li>
             ))}
           </ul>
-          <form action={addStaff} className="space-y-2">
+          <form action={addStaff} data-anfi-form="staff" className="space-y-2">
             <input name="name" required placeholder="Nombre" className={inputClass} />
             <input name="phone" placeholder="+34…" className={inputClass} />
             <select name="role" className={inputClass}>
