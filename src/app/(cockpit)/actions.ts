@@ -5,12 +5,21 @@
  * them to their organisation) and revalidate the page they change.
  */
 import { revalidatePath } from 'next/cache';
+import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { after } from 'next/server';
 import { runOperations } from '@/lib/agents/operations';
+import { JOURNEY_DEFAULTS } from '@/lib/agents/journey-defaults';
+import { learnFromHistory } from '@/lib/agents/learn';
 import { addKnowledge } from '@/lib/concierge/host';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
-import { createServerSupabase, requireSession } from '@/lib/supabase/server';
+import { ensureRegistration, refreshLotes, sesCredentials, submitRegistration } from '@/lib/compliance/registrations';
+import { fetchCatalog, SesError } from '@/lib/compliance/ses';
+import { listApartments, registerWebhook } from '@/lib/channels/smoobu';
+import { appUrl } from '@/lib/env';
+import { smoobuCredentials, syncSmoobu, type SmoobuIntegration } from '@/lib/integrations/smoobu-sync';
+import { createAdminSupabase, createServerSupabase, requireSession } from '@/lib/supabase/server';
 import type { AgentKey } from '@/lib/types';
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? '').trim();
@@ -61,9 +70,27 @@ export async function updateProperty(form: FormData) {
       cleaning_minutes: num(form, 'cleaning_minutes') ?? 180,
       default_language: str(form, 'default_language') || 'es',
       whatsapp_phone_number_id: str(form, 'whatsapp_phone_number_id') || null,
+      ses_establishment_code: str(form, 'ses_establishment_code').replace(/\s/g, '') || null,
     })
     .eq('id', id);
   revalidatePath(`/alojamientos/${id}`);
+}
+
+/** Distils the host's past answers into a knowledge card to approve; the result shows as a banner. */
+export async function learnForProperty(form: FormData) {
+  const { db, profile } = await requireSession();
+  const id = num(form, 'id');
+  if (!id) return;
+  let outcome: string;
+  try {
+    const r = await learnFromHistory(db, profile.org_id, id);
+    outcome = r.proposal ? 'ok' : (r.reason ?? 'nothing_new');
+  } catch (e) {
+    console.error('learn failed', e);
+    outcome = 'error';
+  }
+  revalidatePath('/agentes');
+  redirect(`/alojamientos/${id}?learn=${outcome}`);
 }
 
 export async function deleteProperty(form: FormData) {
@@ -172,10 +199,49 @@ export async function toggleAgent(form: FormData) {
   revalidatePath('/', 'layout');
 }
 
+const ANCHORS = ['booking', 'check_in', 'check_out'] as const;
+const JOURNEY_KINDS = ['booking_confirmed', 'pre_arrival', 'check_in', 'during_stay', 'checkout', 'post_stay'] as const;
+
+/** A journey message's fields from the board form; offsets are capped at a month either way. */
+function templateFields(form: FormData) {
+  const anchor = ANCHORS.find((a) => a === str(form, 'anchor')) ?? 'check_in';
+  const offset = Math.max(-720, Math.min(720, Math.round(Number(str(form, 'offset')) || 0)));
+  const minNights = num(form, 'min_nights');
+  return {
+    title: str(form, 'title').slice(0, 80),
+    body: str(form, 'body').slice(0, 2000),
+    anchor,
+    kind: JOURNEY_KINDS.find((k) => k === str(form, 'kind')) ?? (anchor === 'booking' ? 'booking_confirmed' : anchor === 'check_in' ? (offset < 0 ? 'pre_arrival' : 'during_stay') : offset <= 0 ? 'checkout' : 'post_stay'),
+    send_offset_hours: offset,
+    min_nights: minNights && minNights > 0 ? Math.round(minNights) : null,
+    positive_only: form.get('positive_only') === 'on',
+    property_id: num(form, 'property_id'),
+    approved: form.get('approved') === 'on',
+  };
+}
+
 export async function saveTemplate(form: FormData) {
   const { db } = await requireSession();
-  await db.from('message_templates').update({ body: str(form, 'body'), approved: form.get('approved') === 'on' }).eq('id', str(form, 'id'));
-  revalidatePath('/ajustes');
+  const id = str(form, 'id');
+  const fields = templateFields(form);
+  if (!fields.body) return;
+  if (id) await db.from('message_templates').update(fields).eq('id', id);
+  else await db.from('message_templates').insert(fields);
+  revalidatePath('/viaje');
+}
+
+export async function deleteTemplate(form: FormData) {
+  const { db } = await requireSession();
+  await db.from('message_templates').delete().eq('id', str(form, 'id'));
+  revalidatePath('/viaje');
+}
+
+/** Adds the suggested journey (unapproved) in the panel language. */
+export async function seedJourney() {
+  const { db } = await requireSession();
+  const locale = (await cookies()).get(LOCALE_COOKIE)?.value === 'en' ? 'en' : 'es';
+  await db.from('message_templates').insert(JOURNEY_DEFAULTS[locale].map((d) => ({ ...d, language: locale, approved: false })));
+  revalidatePath('/viaje');
 }
 
 export async function inviteMember(form: FormData) {
@@ -189,4 +255,109 @@ export async function markNotificationsRead() {
   const { db } = await requireSession();
   await db.from('notifications').update({ read: true }).eq('read', false);
   revalidatePath('/', 'layout');
+}
+
+// Guest registration (SES.Hospedajes) -------------------------------------------
+
+/** Creates the guest's registration link for a reservation. */
+export async function createRegistration(form: FormData) {
+  const { db, profile } = await requireSession();
+  const id = num(form, 'reservation_id');
+  if (id) await ensureRegistration(db, { id }, profile.org_id);
+  revalidatePath('/registros');
+}
+
+/** Files a registration with SES.Hospedajes; errors are stored on the registration. */
+export async function submitRegistrationAction(form: FormData) {
+  const { db, profile } = await requireSession();
+  try {
+    await submitRegistration(db, createAdminSupabase(), profile.org_id, str(form, 'id'));
+  } catch (e) {
+    // A 400/412 (missing data, not configured) is shown from the registration's error field.
+    if (e instanceof SesError && (e.code === 400 || e.code === 412)) await db.from('guest_registrations').update({ error: e.message }).eq('id', str(form, 'id'));
+    else console.error('SES filing failed', e);
+  }
+  revalidatePath('/registros');
+}
+
+export async function refreshRegistrations() {
+  const { db, profile } = await requireSession();
+  try {
+    await refreshLotes(db, createAdminSupabase(), profile.org_id);
+  } catch (e) {
+    console.error('SES lote check failed', e);
+  }
+  revalidatePath('/registros');
+}
+
+/** Owner only: SES.Hospedajes web-service credentials (the password goes to Vault). */
+export async function saveSesSettings(form: FormData) {
+  const { profile } = await requireSession();
+  if (profile.role !== 'owner') return;
+  const admin = createAdminSupabase();
+  const config = { env: str(form, 'env') === 'prod' ? 'prod' : 'pre', arrendador: str(form, 'arrendador').slice(0, 10), usuario: str(form, 'usuario').slice(0, 50) };
+  const { data: row, error } = await admin
+    .from('integrations')
+    .upsert({ org_id: profile.org_id, provider: 'ses', status: 'configured', account: config.arrendador, config }, { onConflict: 'org_id,provider' })
+    .select('id')
+    .single();
+  if (error || !row) throw new Error(error?.message ?? 'could not save');
+  const password = String(form.get('password') ?? '');
+  if (password) await admin.rpc('integration_set_secret', { p_integration: row.id, p_secret: password });
+  // A cheap call that proves the credentials work.
+  let status = 'connected';
+  let lastError: string | null = null;
+  try {
+    const creds = await sesCredentials(admin, profile.org_id);
+    if (!creds) throw new Error('Falta la contraseña');
+    await fetchCatalog(creds, 'TIPO_DOCUMENTO');
+  } catch (e) {
+    status = 'error';
+    lastError = e instanceof Error ? e.message : String(e);
+  }
+  await admin.from('integrations').update({ status, last_error: lastError, last_sync_at: new Date().toISOString() }).eq('id', row.id);
+  revalidatePath('/ajustes');
+}
+
+// PMS: Smoobu ------------------------------------------------------------------
+
+/** Owner only: connects Smoobu (key + secret in Vault), then imports and subscribes in the background. */
+export async function saveSmoobuSettings(form: FormData) {
+  const { profile } = await requireSession();
+  if (profile.role !== 'owner') return;
+  const admin = createAdminSupabase();
+  const apiKey = str(form, 'api_key');
+  const secret = String(form.get('api_secret') ?? '').trim();
+  const { data: current } = await admin.from('integrations').select('id, config, webhook_token').eq('org_id', profile.org_id).eq('provider', 'smoobu').maybeSingle();
+  const { data: row, error } = await admin
+    .from('integrations')
+    .upsert(
+      { org_id: profile.org_id, provider: 'smoobu', status: 'configured', account: null, config: { apiKey: apiKey || current?.config?.apiKey }, webhook_token: current?.webhook_token ?? randomBytes(20).toString('hex') },
+      { onConflict: 'org_id,provider' },
+    )
+    .select('id, org_id, config, webhook_token, last_sync_at')
+    .single<SmoobuIntegration>();
+  if (error || !row) throw new Error(error?.message ?? 'could not save');
+  if (secret) await admin.rpc('integration_set_secret', { p_integration: row.id, p_secret: secret });
+
+  const creds = await smoobuCredentials(admin, row);
+  try {
+    if (!creds) throw new Error('Falta la clave o el secreto de la API');
+    await listApartments(creds);
+  } catch (e) {
+    await admin.from('integrations').update({ status: 'error', last_error: e instanceof Error ? e.message : String(e) }).eq('id', row.id);
+    revalidatePath('/ajustes');
+    return;
+  }
+  await admin.from('integrations').update({ status: 'syncing', last_error: null }).eq('id', row.id);
+  after(async () => {
+    try {
+      await syncSmoobu(admin, row, creds!);
+      const base = appUrl();
+      if (base.startsWith('https://')) await registerWebhook(creds!, `${base}/api/channels/smoobu/${row.webhook_token}`);
+    } catch (e) {
+      await admin.from('integrations').update({ status: 'error', last_error: e instanceof Error ? e.message.slice(0, 300) : 'sync failed' }).eq('id', row.id);
+    }
+  });
+  revalidatePath('/ajustes');
 }

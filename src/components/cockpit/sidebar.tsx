@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { BarChart3, Bot, Building2, CalendarDays, ClipboardList, Cog, Inbox, LayoutGrid, LogOut, Megaphone, Menu, MessageSquareText, Sparkles, TrendingUp, Wrench, X } from 'lucide-react';
+import { BarChart3, Bot, Building2, CalendarDays, ClipboardList, Cog, Inbox, LayoutGrid, LogOut, Megaphone, Menu, Route, ShieldCheck, MessageSquareText, Sparkles, TrendingUp, Wrench, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -74,6 +74,8 @@ function Nav({ agents, pending, model, signOut, onNavigate }: Props & { onNaviga
         <Group title={t('automation')}>
           <NavLink href="/alojamientos" icon={Building2} label={t('properties')} onNavigate={onNavigate} />
           <NavLink href="/reservas" icon={CalendarDays} label={t('reservations')} onNavigate={onNavigate} />
+          <NavLink href="/viaje" icon={Route} label={t('journey')} onNavigate={onNavigate} />
+          <NavLink href="/registros" icon={ShieldCheck} label={t('registrations')} onNavigate={onNavigate} />
           <NavLink href="/simulador" icon={Sparkles} label={t('simulator')} onNavigate={onNavigate} />
           <NavLink href="/auditoria" icon={ClipboardList} label={t('audit')} onNavigate={onNavigate} />
           <NavLink href="/ajustes" icon={Cog} label={t('settings')} onNavigate={onNavigate} />

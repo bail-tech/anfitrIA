@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
@@ -7,11 +7,11 @@ import { UploadForm } from '@/components/cockpit/upload-form';
 import { buttonClass, Card, Empty, Field, inputClass, PageHeader } from '@/components/ui';
 import { requireSession } from '@/lib/supabase/server';
 import type { Building, KnowledgeItem, Property } from '@/lib/types';
-import { deleteProperty, updateProperty } from '../../actions';
+import { deleteProperty, learnForProperty, updateProperty } from '../../actions';
 
 export const metadata = { title: 'Alojamiento' };
 
-export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PropertyPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ learn?: string }> }) {
   const { db, profile } = await requireSession();
   const t = await getTranslations('properties');
   const id = Number((await params).id);
@@ -24,6 +24,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
   ]);
   const items = (own ?? []) as KnowledgeItem[];
   const back = `/alojamientos/${id}`;
+  const learn = (await searchParams).learn;
 
   return (
     <>
@@ -37,6 +38,18 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
           {items.length === 0 && !(shared ?? []).length && <Empty title={t('missing')} />}
           <KnowledgeList items={items} shared={(shared ?? []) as KnowledgeItem[]} target={{ propertyId: id }} back={back} />
           <div className="mt-4 border-t border-line pt-4">
+            <form action={learnForProperty} className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-brand-soft/50 p-3">
+              <input type="hidden" name="id" value={id} />
+              <p className="text-xs text-brand-ink">{t('learnHint')}</p>
+              <button className={buttonClass('gold', 'sm')}>
+                <Sparkles className="size-4" /> {t('learn')}
+              </button>
+            </form>
+            {learn && (
+              <p className={`mb-3 rounded-xl px-3 py-2 text-xs ${learn.startsWith('ok') ? 'bg-sage-soft text-[#0b5e44]' : 'bg-sand text-muted'}`} role="status">
+                {learn.startsWith('ok') ? t.rich('learn_ok', { link: (c) => <Link href="/agentes" className="underline">{c}</Link> }) : t(`learn_${learn as 'error'}`)}
+              </p>
+            )}
             <p className="mb-2 text-xs text-muted">{t('importHint')}</p>
             <UploadForm action="/api/knowledge/import" fields={{ property_id: String(id) }} accept=".csv,.pdf,text/csv,application/pdf" label={t('import')} />
           </div>
@@ -89,6 +102,9 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             </Field>
             <Field label={t('whatsappNumber')}>
               <input name="whatsapp_phone_number_id" defaultValue={p.whatsapp_phone_number_id ?? ''} className={inputClass} />
+            </Field>
+            <Field label={t('sesCode')} hint={t('sesCodeHint')}>
+              <input name="ses_establishment_code" defaultValue={p.ses_establishment_code ?? ''} maxLength={10} pattern="[A-Za-z0-9]{1,10}" className={inputClass} />
             </Field>
             <button className={buttonClass('primary') + ' w-full'}>{t('save')}</button>
           </form>

@@ -1,5 +1,6 @@
 /** Daily at 07:00 UTC (Vercel cron): scheduled guest messages, plus the daily pricing and weekly analytics agents. */
 import { runLifecycle } from '@/lib/agents/lifecycle';
+import { refreshLotes } from '@/lib/compliance/registrations';
 import { startManagedRun, type ManagedAgentKey } from '@/lib/agents/managed';
 import { features } from '@/lib/env';
 import { cronAuthorized } from '@/lib/http';
@@ -20,6 +21,16 @@ export async function GET(request: Request) {
       results[`lifecycle:${org}`] = await runLifecycle(db, org, now);
     } catch (e) {
       results[`lifecycle:${org}`] = { error: e instanceof Error ? e.message : String(e) };
+    }
+  }
+
+  // SES.Hospedajes: check filed guest registrations until the Ministry answers.
+  const { data: filed } = await db.from('guest_registrations').select('org_id').eq('status', 'sent');
+  for (const org of [...new Set((filed ?? []).map((r) => r.org_id as number))]) {
+    try {
+      results[`ses:${org}`] = await refreshLotes(db, db, org);
+    } catch (e) {
+      results[`ses:${org}`] = { error: e instanceof Error ? e.message : String(e) };
     }
   }
 

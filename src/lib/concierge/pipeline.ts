@@ -18,7 +18,7 @@ import { computeTiming, describeTiming, looksLikeTimingRequest } from './timing'
 export const DEFAULT_THRESHOLD = 0.55;
 const HISTORY = 6;
 
-export type Channel = 'sim' | 'whatsapp';
+export type Channel = 'sim' | 'whatsapp' | 'smoobu';
 
 export interface InboundInput {
   property: Property;
@@ -118,7 +118,12 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   // WhatsApp sends numbers without "+"; bookings may store them with it.
   const bare = guestRef.replace(/^\+/, '');
   const { data: guestReservations } = await db.from('reservations').select('*').eq('property_id', property.id).in('guest_ref', [bare, `+${bare}`]);
-  const reservation = pickReservation((guestReservations ?? []) as Reservation[], today);
+  let reservation = pickReservation((guestReservations ?? []) as Reservation[], today);
+  // PMS conversations are keyed by booking, not phone: use the booking they were created for.
+  if (!reservation && conversation.reservation_id) {
+    const { data: linked } = await db.from('reservations').select('*').eq('id', conversation.reservation_id).maybeSingle<Reservation>();
+    reservation = linked ?? null;
+  }
   const convPatch: Partial<Conversation> = { last_guest_message_at: now.toISOString() };
   if (reservation && conversation.reservation_id !== reservation.id) convPatch.reservation_id = reservation.id;
   await db.from('conversations').update(convPatch).eq('id', conversation.id);

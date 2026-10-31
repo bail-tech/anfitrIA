@@ -6,7 +6,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { features } from '@/lib/env';
+import { features, appUrl } from '@/lib/env';
 import { issueRunToken } from '@/lib/mcp/token';
 
 export const MANAGED_AGENTS = {
@@ -19,9 +19,6 @@ export type ManagedAgentKey = keyof typeof MANAGED_AGENTS;
 /** Hard cap per run, in USD (Managed Agents session budget). */
 const RUN_BUDGET_USD = '3.00';
 
-export function appUrl(): string {
-  return process.env.APP_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
-}
 
 export class AgentNotConfigured extends Error {}
 

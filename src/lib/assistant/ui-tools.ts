@@ -77,7 +77,7 @@ export function uiTools(ctx: ToolContext, page: PageContext | undefined, locale:
     betaZodTool({
       name: 'navigate',
       description:
-        'Open a cockpit page for the host. Pages: overview, inbox, conversation (id = conversation id), properties, property (id = property id), reservations, operations, simulator, agents, settings, audit. Take ids only from other tool results.',
+        'Open a cockpit page for the host. Pages: overview, inbox, conversation (id = conversation id), properties, property (id = property id), reservations, journey (scheduled guest messages), registrations (SES guest registration), operations, simulator, agents, settings, audit. Take ids only from other tool results.',
       inputSchema: z.object({ page: z.enum(PAGE_KEYS), id: z.number().int().positive().optional() }),
       run: async ({ page: key, id }) => {
         const path = goTo(key, id);

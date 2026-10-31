@@ -1,20 +1,26 @@
+import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { Badge, buttonClass, Card, Dot, inputClass, PageHeader } from '@/components/ui';
 import { features } from '@/lib/env';
 import { requireSession } from '@/lib/supabase/server';
-import type { MessageTemplate, Profile } from '@/lib/types';
-import { inviteMember, saveTemplate } from '../actions';
+import type { Profile } from '@/lib/types';
+import { inviteMember, saveSesSettings, saveSmoobuSettings } from '../actions';
 
 export const metadata = { title: 'Ajustes' };
 
 export default async function SettingsPage() {
   const { db, profile } = await requireSession();
   const t = await getTranslations('settings');
-  const [{ data: members }, { data: invites }, { data: templates }] = await Promise.all([
+  const [{ data: members }, { data: invites }, { data: connections }] = await Promise.all([
     db.from('profiles').select('*').order('created_at'),
     profile.role === 'owner' ? db.from('invitations').select('*').is('accepted_at', null) : Promise.resolve({ data: [] }),
-    db.from('message_templates').select('*').order('kind'),
+    db.from('integrations').select('provider, status, config, last_error, last_sync_at').in('provider', ['ses', 'smoobu']),
   ]);
+  type Connection = { provider: string; status: string; config: Record<string, string> | null; last_error: string | null; last_sync_at: string | null };
+  const conn = (provider: string) => ((connections ?? []) as Connection[]).find((c) => c.provider === provider);
+  const ses = conn('ses');
+  const smoobu = conn('smoobu');
+  const owner = profile.role === 'owner';
 
   const integrations = [
     { name: 'Claude (Anthropic)', on: features.claude(), env: 'ANTHROPIC_API_KEY' },
@@ -78,27 +84,60 @@ export default async function SettingsPage() {
           </ul>
         </Card>
 
-        <Card data-anfi="templates" className="p-4 lg:col-span-2">
-          <h2 className="mb-1 font-medium">{t('templates')}</h2>
-          <p className="mb-3 text-xs text-muted">{t('templatesHint')} · {'{guest_name} {check_in} {check_out} {check_in_time} {check_out_time} {property_name}'}</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            {((templates ?? []) as MessageTemplate[]).map((tpl) => (
-              <form key={tpl.id} action={saveTemplate} className="space-y-2 rounded-xl bg-sand/40 p-3">
-                <input type="hidden" name="id" value={tpl.id} />
-                <div className="flex items-center justify-between text-sm font-medium">
-                  {t(`kind_${tpl.kind}`)}
-                  {tpl.approved && <Badge tone="sage">{t('approved')}</Badge>}
-                </div>
-                <textarea name="body" defaultValue={tpl.body} rows={4} className={inputClass} />
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" name="approved" defaultChecked={tpl.approved} /> {t('approve')}
-                  </label>
-                  <button className={buttonClass('primary', 'sm')}>{t('save')}</button>
-                </div>
-              </form>
-            ))}
+        <Card data-anfi="connections" id="ses" className="space-y-4 p-4 lg:col-span-2">
+          <h2 className="font-medium">{t('connections')}</h2>
+          <form action={saveSesSettings} className="space-y-3 rounded-xl bg-sand/40 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="text-sm font-medium">SES.Hospedajes</div>
+                <p className="text-xs text-muted">{t('sesHint')}</p>
+              </div>
+              <span className="flex items-center gap-1.5 text-xs text-muted">
+                <Dot tone={ses?.status === 'connected' ? 'sage' : ses?.status === 'error' ? 'terra' : 'muted'} /> {t(`conn_${ses?.status ?? 'none'}`)}
+              </span>
+            </div>
+            {ses?.last_error && <p className="text-xs text-terra-ink">{ses.last_error}</p>}
+            <fieldset disabled={!owner} className="grid gap-2 sm:grid-cols-4">
+              <input name="arrendador" defaultValue={ses?.config?.arrendador ?? ''} required maxLength={10} placeholder={t('sesArrendador')} aria-label={t('sesArrendador')} className={inputClass} />
+              <input name="usuario" defaultValue={ses?.config?.usuario ?? ''} required maxLength={50} placeholder={t('sesUser')} aria-label={t('sesUser')} autoComplete="off" className={inputClass} />
+              <input name="password" type="password" placeholder={ses ? t('sesPasswordKeep') : t('sesPassword')} aria-label={t('sesPassword')} autoComplete="new-password" required={!ses} className={inputClass} />
+              <select name="env" defaultValue={ses?.config?.env ?? 'pre'} aria-label={t('sesEnv')} className={inputClass}>
+                <option value="pre">{t('sesPre')}</option>
+                <option value="prod">{t('sesProd')}</option>
+              </select>
+            </fieldset>
+            {owner ? <button className={buttonClass('primary', 'sm')}>{t('saveAndTest')}</button> : <p className="text-xs text-muted">{t('ownerOnly')}</p>}
+          </form>
+
+          <form action={saveSmoobuSettings} id="smoobu" className="space-y-3 rounded-xl bg-sand/40 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="text-sm font-medium">Smoobu (PMS)</div>
+                <p className="text-xs text-muted">{t('smoobuHint')}</p>
+              </div>
+              <span className="flex items-center gap-1.5 text-xs text-muted">
+                <Dot tone={smoobu?.status === 'connected' ? 'sage' : smoobu?.status === 'error' ? 'terra' : smoobu?.status === 'syncing' ? 'gold' : 'muted'} pulse={smoobu?.status === 'syncing'} />
+                {t(`conn_${smoobu?.status ?? 'none'}`)}
+                {smoobu?.last_sync_at && smoobu.status === 'connected' && <span>· {t('lastSync', { when: smoobu.last_sync_at.slice(0, 16).replace('T', ' ') })}</span>}
+              </span>
+            </div>
+            {smoobu?.last_error && <p className="text-xs text-terra-ink">{smoobu.last_error}</p>}
+            <fieldset disabled={!owner} className="grid gap-2 sm:grid-cols-2">
+              <input name="api_key" defaultValue={smoobu?.config?.apiKey ?? ''} required placeholder={t('smoobuKey')} aria-label={t('smoobuKey')} autoComplete="off" className={inputClass + ' font-mono'} />
+              <input name="api_secret" type="password" placeholder={smoobu ? t('sesPasswordKeep') : t('smoobuSecret')} aria-label={t('smoobuSecret')} autoComplete="new-password" required={!smoobu} className={inputClass} />
+            </fieldset>
+            {owner ? <button className={buttonClass('primary', 'sm')}>{t('connectAndImport')}</button> : <p className="text-xs text-muted">{t('ownerOnly')}</p>}
+          </form>
+        </Card>
+
+        <Card data-anfi="templates" className="flex flex-wrap items-center justify-between gap-3 p-4 lg:col-span-2">
+          <div>
+            <h2 className="mb-1 font-medium">{t('templates')}</h2>
+            <p className="text-xs text-muted">{t('templatesMoved')}</p>
           </div>
+          <Link href="/viaje" className={buttonClass('ghost', 'sm')}>
+            {t('openJourney')}
+          </Link>
         </Card>
       </div>
     </>

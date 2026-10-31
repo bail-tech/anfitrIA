@@ -15,6 +15,11 @@ export const features = {
   managedAgents: () => has('ANTHROPIC_API_KEY') && has('ANTHROPIC_ENVIRONMENT_ID'),
 };
 
+/** The public URL of the app (links sent to guests, MCP server URL for the agents). */
+export function appUrl(): string {
+  return process.env.APP_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
+}
+
 /** The app's model (guest replies and Anfi). Override with CLAUDE_MODEL, e.g. claude-opus-5-5 or claude-sonnet-5-5. */
 export const CLAUDE_MODEL = process.env.CLAUDE_MODEL?.trim() || 'claude-haiku-5-5';
 

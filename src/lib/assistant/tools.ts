@@ -6,6 +6,7 @@
 import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { learnFromHistory } from '@/lib/agents/learn';
 import { runOperations } from '@/lib/agents/operations';
 import { embed, isZero, toVector } from '@/lib/concierge/embeddings';
 import { forModel } from '@/lib/concierge/privacy';
@@ -220,6 +221,18 @@ export function hostTools(ctx: ToolContext) {
             payload: { property_id: input.property_id ?? null, building_id: input.building_id ?? null, items: input.items },
           });
           return `Proposal ${p.id} created; waiting for the host's approval.`;
+        }),
+    }),
+    betaZodTool({
+      name: 'learn_from_history',
+      description: "Read how the host has answered guests at a property and propose the property facts found there (wifi, access, rules, tips) as one knowledge card for the host to approve.",
+      inputSchema: z.object({ property_id: z.number().int() }),
+      run: ({ property_id }) =>
+        step(ctx, 'learn_from_history', async () => {
+          const r = await learnFromHistory(db, ctx.profile.org_id, property_id);
+          if (!r.proposal) return `Nothing proposed (${r.reason}; ${r.exchanges} answered exchanges found).`;
+          ctx.emit({ type: 'proposal', proposal: r.proposal });
+          return `Card ${r.proposal.id} created from ${r.exchanges} past answers; waiting for the host's approval.`;
         }),
     }),
     betaZodTool({

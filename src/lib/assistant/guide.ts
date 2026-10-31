@@ -101,6 +101,30 @@ export const PAGES: GuidePage[] = [
     ],
   },
   {
+    key: 'journey',
+    route: '/viaje',
+    file: 'viaje/page.tsx',
+    title: ['Viaje del huésped', 'Guest journey'],
+    purpose: ['Los mensajes que salen solos en cada momento de la estancia: reserva, llegada, estancia, salida y después.', 'Messages that go out on their own at each moment of the stay: booking, arrival, stay, check-out and after.'],
+    sections: [
+      { id: 'board', name: ['Tablero', 'Board'], shows: ['Cada mensaje en su etapa, con cuándo sale y sus condiciones.', 'Each message in its stage, with when it goes out and its conditions.'], actions: ['Abre uno para editar el texto, la hora o aprobarlo.', 'Open one to edit its text or timing, or approve it.'] },
+      { id: 'new', name: ['Nuevo mensaje', 'New message'], shows: ['Formulario para programar un mensaje nuevo.', 'Form to schedule a new message.'] },
+    ],
+    tasks: [['Activar un mensaje: Viaje del huésped → abrir el mensaje → marcar Aprobado → Guardar.', 'Turn a message on: Guest journey → open it → tick Approved → Save.']],
+  },
+  {
+    key: 'registrations',
+    route: '/registros',
+    file: 'registros/page.tsx',
+    title: ['Registro de viajeros', 'Guest registration'],
+    purpose: ['El parte de viajeros obligatorio en España (SES.Hospedajes): el huésped rellena sus datos con un enlace y tú lo envías al Ministerio.', 'The guest report required in Spain (SES.Hospedajes): the guest fills in their details from a link and you file it with the Ministry.'],
+    sections: [
+      { id: 'setup', name: ['Estado de la conexión', 'Connection status'], shows: ['Si SES.Hospedajes está conectado y qué alojamientos no tienen código.', 'Whether SES.Hospedajes is connected and which properties lack a code.'] },
+      { id: 'list', name: ['Reservas y registros', 'Bookings and registrations'], shows: ['Cada reserva con el estado de su registro, el enlace para el huésped y el plazo.', 'Each booking with its registration status, the guest link and the deadline.'], actions: ['Crea el enlace, envía a SES o descarga el XML.', 'Create the link, file with SES or download the XML.'] },
+    ],
+    tasks: [['Registrar a un huésped: Registro de viajeros → Crear enlace → el huésped lo rellena → Enviar a SES.', 'Register a guest: Guest registration → Create guest link → the guest fills it in → File with SES.']],
+  },
+  {
     key: 'operations',
     route: '/operaciones',
     file: 'operaciones/page.tsx',
@@ -138,8 +162,9 @@ export const PAGES: GuidePage[] = [
     purpose: ['Equipo, integraciones y plantillas de mensajes.', 'Team, integrations and message templates.'],
     sections: [
       { id: 'team', name: ['Equipo', 'Team'], shows: ['Miembros y sus roles; invitaciones.', 'Members and their roles; invitations.'] },
+      { id: 'connections', name: ['Conexiones', 'Connections'], shows: ['SES.Hospedajes y tu PMS (Smoobu): credenciales y estado.', 'SES.Hospedajes and your PMS (Smoobu): credentials and status.'] },
       { id: 'integrations', name: ['Integraciones', 'Integrations'], shows: ['Qué está conectado: Claude, voz, WhatsApp, agentes.', 'What is connected: Claude, voice, WhatsApp, agents.'] },
-      { id: 'templates', name: ['Plantillas', 'Templates'], shows: ['Mensajes automáticos de antes, durante y después de la estancia.', 'Automatic messages before, during and after the stay.'] },
+      { id: 'templates', name: ['Mensajes programados', 'Scheduled messages'], shows: ['Acceso al Viaje del huésped, donde viven los mensajes automáticos.', 'A link to the Guest journey, where automatic messages live.'] },
     ],
   },
   {

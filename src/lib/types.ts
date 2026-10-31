@@ -12,6 +12,8 @@ export interface Profile {
 }
 
 export interface Property {
+  ses_establishment_code: string | null;
+  external_ref: string | null;
   id: number;
   org_id: number;
   building_id: number | null;
@@ -161,10 +163,16 @@ export interface Staff {
   role: 'cleaning' | 'maintenance' | 'other';
 }
 
+export type TemplateKind = 'booking_confirmed' | 'pre_arrival' | 'check_in' | 'during_stay' | 'checkout' | 'post_stay' | 'saved_reply';
+export type TemplateAnchor = 'booking' | 'check_in' | 'check_out';
+
 export interface MessageTemplate {
   id: string;
   property_id: number | null;
-  kind: 'pre_arrival' | 'checkout' | 'saved_reply';
+  kind: TemplateKind;
+  anchor: TemplateAnchor | null;
+  min_nights: number | null;
+  positive_only: boolean;
   title: string;
   language: string;
   body: string;

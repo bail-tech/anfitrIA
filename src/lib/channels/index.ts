@@ -11,8 +11,28 @@ export class ChannelError extends Error {
   }
 }
 
+/** Replies through the PMS, which delivers on the booking's channel (Airbnb, Booking.com…). */
+async function sendViaSmoobu(conversation: Conversation, text: string): Promise<null> {
+  // Loaded lazily: the admin client is server-only, and tests import this module.
+  const [{ createAdminSupabase }, smoobu, sync] = await Promise.all([import('@/lib/supabase/server'), import('./smoobu'), import('@/lib/integrations/smoobu-sync')]);
+  const bookingId = sync.bookingIdOf(conversation.guest_ref);
+  if (!Number.isInteger(bookingId)) throw new ChannelError('This conversation is not linked to a Smoobu booking', 'send_failed');
+  const admin = createAdminSupabase();
+  const { data: property } = await admin.from('properties').select('org_id').eq('id', conversation.property_id).single<{ org_id: number }>();
+  const { data: integration } = await admin.from('integrations').select('id, org_id, config, webhook_token, last_sync_at').eq('org_id', property?.org_id ?? -1).eq('provider', 'smoobu').maybeSingle();
+  const creds = integration ? await sync.smoobuCredentials(admin, integration) : null;
+  if (!creds) throw new ChannelError('Smoobu is not connected for this account', 'not_configured');
+  try {
+    await smoobu.sendMessage(creds, bookingId, text);
+    return null; // Smoobu returns no message id; the webhook echo is matched by text
+  } catch (e) {
+    throw new ChannelError(e instanceof Error ? e.message : 'send failed', 'send_failed');
+  }
+}
+
 /** Sends text to the guest on the conversation's channel. The simulator only stores messages. */
 export async function sendToGuest(conversation: Conversation, text: string, opts: { checkWindow?: boolean } = {}): Promise<string | null> {
+  if (conversation.channel === 'smoobu') return sendViaSmoobu(conversation, text);
   if (conversation.channel !== 'whatsapp') return null;
   if (!features.whatsapp()) throw new ChannelError('WhatsApp is not configured on this deployment', 'not_configured');
   if (opts.checkWindow && !whatsapp.inServiceWindow(conversation.last_guest_message_at)) {
@@ -26,6 +46,7 @@ export async function sendToGuest(conversation: Conversation, text: string, opts
 }
 
 export async function sendAudioToGuest(conversation: Conversation, data: Uint8Array, mime: string): Promise<string | null> {
+  if (conversation.channel === 'smoobu') throw new ChannelError('Voice notes can only be sent on WhatsApp', 'send_failed');
   if (conversation.channel !== 'whatsapp') return null;
   if (!features.whatsapp()) throw new ChannelError('WhatsApp is not configured on this deployment', 'not_configured');
   if (!whatsapp.inServiceWindow(conversation.last_guest_message_at)) {
