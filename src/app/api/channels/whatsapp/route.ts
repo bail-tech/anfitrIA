@@ -4,6 +4,7 @@
  *   POST messages: HMAC-checked, answered 200 at once; the work runs after the response.
  * Text goes through the concierge pipeline; voice notes are stored, transcribed, then the same.
  * One number serves every property: messages are routed by the guest's booking.
+ * Calls: Anfi answers by voice (GPT-Live) and the call is logged in the guest's conversation.
  */
 import { after } from 'next/server';
 import { randomUUID } from 'node:crypto';
@@ -11,11 +12,12 @@ import { transcribe } from '@/lib/audio/openai';
 import { guestAI } from '@/lib/concierge/ai';
 import { ASK_BOOKING, detectLanguage, NON_TEXT_REPLY } from '@/lib/concierge/language';
 import { handleInbound } from '@/lib/concierge/pipeline';
-import { downloadMedia, parseWebhook, sendText, validSignature, type InboundWhatsApp } from '@/lib/channels/whatsapp';
+import { callAction, downloadMedia, parseCalls, parseWebhook, sendText, validSignature, type InboundWhatsApp } from '@/lib/channels/whatsapp';
 import { routeWhatsApp } from '@/lib/channels/whatsapp-routing';
 import { todayIn } from '@/lib/concierge/stay';
 import { features } from '@/lib/env';
 import { createAdminSupabase } from '@/lib/supabase/server';
+import { answerGuestCall, logGuestCall } from '@/lib/voice/guest-call';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -88,8 +90,19 @@ export async function POST(request: Request) {
     return new Response('Invalid JSON', { status: 400 });
   }
   const messages = parseWebhook(payload);
+  const calls = parseCalls(payload);
   // Reply to Meta at once; the AI work runs after the response is sent.
   after(async () => {
+    for (const c of calls) {
+      try {
+        if (c.event === 'terminate') await logGuestCall(createAdminSupabase(), c);
+        else if (c.sdp && features.openai()) await answerGuestCall(createAdminSupabase(), c);
+        else await callAction(c.id, 'reject');
+      } catch (e) {
+        console.error('whatsapp call failed', c.id, c.event, e);
+        if (c.event === 'connect') await callAction(c.id, 'reject').catch(() => undefined);
+      }
+    }
     for (const m of messages) {
       try {
         await handleMessage(m);

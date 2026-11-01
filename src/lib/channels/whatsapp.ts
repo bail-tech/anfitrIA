@@ -4,7 +4,7 @@
  */
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-const GRAPH = () => `https://graph.facebook.com/${process.env.WHATSAPP_GRAPH_VERSION ?? 'v21.0'}`;
+const GRAPH = () => `https://graph.facebook.com/${process.env.WHATSAPP_GRAPH_VERSION ?? 'v26.0'}`;
 const token = () => process.env.WHATSAPP_ACCESS_TOKEN ?? '';
 const phoneId = () => process.env.WHATSAPP_PHONE_NUMBER_ID ?? '';
 
@@ -64,6 +64,24 @@ export async function downloadMedia(mediaId: string): Promise<{ data: Uint8Array
   return { data: new Uint8Array(await res.arrayBuffer()), mime: meta.mime_type };
 }
 
+/**
+ * Calling API: answer a guest's WhatsApp call. `pre_accept` then `accept` carry the same SDP
+ * answer; media must only start after accept returns.
+ */
+export async function callAction(callId: string, action: 'pre_accept' | 'accept' | 'reject' | 'terminate', sdp?: string, callbackData?: string): Promise<void> {
+  await graph<{ success?: boolean }>(`/${phoneId()}/calls`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messaging_product: 'whatsapp',
+      call_id: callId,
+      action,
+      ...(sdp ? { session: { sdp_type: 'answer', sdp } } : {}),
+      ...(callbackData ? { biz_opaque_callback_data: callbackData.slice(0, 512) } : {}),
+    }),
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Webhook payload
 // ---------------------------------------------------------------------------
@@ -78,11 +96,26 @@ export interface InboundWhatsApp {
   audioMime?: string;
 }
 
+export interface WhatsAppCall {
+  phoneNumberId: string;
+  id: string;
+  from: string;
+  event: 'connect' | 'terminate';
+  /** connect: the guest's SDP offer. */
+  sdp?: string;
+  /** terminate: seconds talked, when the call was answered. */
+  duration?: number;
+  status?: string;
+  callbackData?: string;
+}
+
 interface WebhookPayload {
   entry?: Array<{
     changes?: Array<{
+      field?: string;
       value?: {
         metadata?: { phone_number_id?: string };
+        calls?: Array<{ id?: string; from?: string; event?: string; status?: string; duration?: number; biz_opaque_callback_data?: string; session?: { sdp_type?: string; sdp?: string } }>;
         messages?: Array<{ from?: string; id?: string; type?: string; text?: { body?: string }; audio?: { id?: string; mime_type?: string } }>;
       };
     }>;
@@ -98,6 +131,30 @@ export function parseWebhook(payload: unknown): InboundWhatsApp[] {
       for (const m of change.value?.messages ?? []) {
         if (!m.from || !m.id || !m.type) continue;
         out.push({ phoneNumberId, from: m.from, id: m.id, type: m.type, text: m.text?.body, audioId: m.audio?.id, audioMime: m.audio?.mime_type });
+      }
+    }
+  }
+  return out;
+}
+
+export function parseCalls(payload: unknown): WhatsAppCall[] {
+  const out: WhatsAppCall[] = [];
+  for (const entry of (payload as WebhookPayload)?.entry ?? []) {
+    for (const change of entry.changes ?? []) {
+      const phoneNumberId = change.value?.metadata?.phone_number_id;
+      if (!phoneNumberId) continue;
+      for (const c of change.value?.calls ?? []) {
+        if (!c.id || !c.from || (c.event !== 'connect' && c.event !== 'terminate')) continue;
+        out.push({
+          phoneNumberId,
+          id: c.id,
+          from: c.from,
+          event: c.event,
+          sdp: c.session?.sdp_type === 'offer' ? c.session.sdp : undefined,
+          duration: c.duration,
+          status: c.status,
+          callbackData: c.biz_opaque_callback_data,
+        });
       }
     }
   }
