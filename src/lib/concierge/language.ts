@@ -49,3 +49,12 @@ export const NON_TEXT_REPLY: Record<string, string> = {
   de: 'Danke für deine Nachricht! Momentan kann ich nur Text und Sprachnachrichten lesen. Was möchtest du wissen?',
   it: 'Grazie per il messaggio! Per ora leggo solo testo e note vocali. Puoi scrivermi la tua domanda?',
 };
+
+/** Reply on the shared WhatsApp number when the guest can't be matched to any booking yet. */
+export const ASK_BOOKING: Record<string, string> = {
+  es: '¡Hola! Soy Anfi 👋 Para ayudarte necesito encontrar tu reserva. ¿Me envías tu código de reserva (o el teléfono con el que reservaste)?',
+  en: 'Hi! I’m Anfi 👋 To help you I need to find your booking. Could you send me your booking code (or the phone number you booked with)?',
+  fr: 'Bonjour ! Je suis Anfi 👋 Pour vous aider, je dois retrouver votre réservation. Pouvez-vous m’envoyer votre code de réservation (ou le téléphone utilisé pour réserver) ?',
+  de: 'Hallo! Ich bin Anfi 👋 Um dir zu helfen, muss ich deine Buchung finden. Schickst du mir deinen Buchungscode (oder die Telefonnummer, mit der du gebucht hast)?',
+  it: 'Ciao! Sono Anfi 👋 Per aiutarti devo trovare la tua prenotazione. Mi mandi il codice di prenotazione (o il telefono con cui hai prenotato)?',
+};

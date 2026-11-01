@@ -3,17 +3,19 @@
  *   GET  verification (hub.challenge)
  *   POST messages: HMAC-checked, answered 200 at once; the work runs after the response.
  * Text goes through the concierge pipeline; voice notes are stored, transcribed, then the same.
+ * One number serves every property: messages are routed by the guest's booking.
  */
 import { after } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { transcribe } from '@/lib/audio/openai';
 import { guestAI } from '@/lib/concierge/ai';
-import { NON_TEXT_REPLY } from '@/lib/concierge/language';
+import { ASK_BOOKING, detectLanguage, NON_TEXT_REPLY } from '@/lib/concierge/language';
 import { handleInbound } from '@/lib/concierge/pipeline';
 import { downloadMedia, parseWebhook, sendText, validSignature, type InboundWhatsApp } from '@/lib/channels/whatsapp';
+import { routeWhatsApp } from '@/lib/channels/whatsapp-routing';
+import { todayIn } from '@/lib/concierge/stay';
 import { features } from '@/lib/env';
 import { createAdminSupabase } from '@/lib/supabase/server';
-import type { Property } from '@/lib/types';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -29,16 +31,22 @@ export async function GET(request: Request) {
 
 async function handleMessage(message: InboundWhatsApp) {
   const db = createAdminSupabase();
-  const { data: property } = await db.from('properties').select('*').eq('whatsapp_phone_number_id', message.phoneNumberId).maybeSingle<Property>();
-  if (!property) return; // number not assigned to any property
-
   const { data: seen } = await db.from('messages').select('id').eq('external_id', message.id).maybeSingle();
   if (seen) return; // Meta retries: already handled
+
+  // One number can serve every property: find the guest's booking, else ask for it.
+  const route = await routeWhatsApp(db, { phoneNumberId: message.phoneNumberId, from: message.from, text: message.text ?? '', today: todayIn() });
+  if (!route) {
+    const lang = message.text ? detectLanguage(message.text, 'es') : 'es';
+    await sendText(message.from, ASK_BOOKING[lang] ?? ASK_BOOKING.es).catch(() => undefined);
+    return;
+  }
+  const { property, reservationId } = route;
 
   const deps = { db, ai: guestAI(), send: async (_: unknown, text: string) => sendText(message.from, text) };
 
   if (message.type === 'text' && message.text) {
-    await handleInbound({ property, guestRef: message.from, text: message.text.slice(0, 4000), channel: 'whatsapp', externalId: message.id }, deps);
+    await handleInbound({ property, guestRef: message.from, text: message.text.slice(0, 4000), channel: 'whatsapp', externalId: message.id, reservationId }, deps);
     return;
   }
 
@@ -57,6 +65,7 @@ async function handleMessage(message: InboundWhatsApp) {
         channel: 'whatsapp',
         externalId: message.id,
         audio: { path, transcript },
+        reservationId,
       },
       deps,
     );

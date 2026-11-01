@@ -11,6 +11,7 @@ import type { GuestAI } from './ai';
 import { embed, isZero, toVector } from './embeddings';
 import { detectLanguage, holdingMessage } from './language';
 import { fillPrivate, forModel, privateWindowOpen } from './privacy';
+import { phoneTail, samePhone } from '@/lib/channels/whatsapp-routing';
 import { proposeUpsells } from '@/lib/upsells';
 import { buildStayContext, pickReservation, todayIn } from './stay';
 import { computeTiming, describeTiming, looksLikeTimingRequest } from './timing';
@@ -29,6 +30,8 @@ export interface InboundInput {
   externalId?: string | null;
   /** Voice notes: the stored audio and its transcript (`text` is the transcript). */
   audio?: { path: string; transcript: string } | null;
+  /** The booking the channel already matched this message to (shared WhatsApp number). */
+  reservationId?: number | null;
 }
 
 export interface PipelineDeps {
@@ -116,13 +119,17 @@ export async function handleInbound(input: InboundInput, deps: PipelineDeps): Pr
   );
 
   // Link the conversation to the guest's reservation.
-  // WhatsApp sends numbers without "+"; bookings may store them with it.
-  const bare = guestRef.replace(/^\+/, '');
-  const { data: guestReservations } = await db.from('reservations').select('*').eq('property_id', property.id).in('guest_ref', [bare, `+${bare}`]);
-  let reservation = pickReservation((guestReservations ?? []) as Reservation[], today);
-  // PMS conversations are keyed by booking, not phone: use the booking they were created for.
-  if (!reservation && conversation.reservation_id) {
-    const { data: linked } = await db.from('reservations').select('*').eq('id', conversation.reservation_id).maybeSingle<Reservation>();
+  // Bookings may store the phone with "+", spaces or without the country code.
+  const tail = phoneTail(guestRef);
+  const { data: guestReservations } = tail
+    ? await db.from('reservations').select('*').eq('property_id', property.id).like('guest_ref', `%${tail}`)
+    : await db.from('reservations').select('*').eq('property_id', property.id).eq('guest_ref', guestRef);
+  let reservation = pickReservation(((guestReservations ?? []) as Reservation[]).filter((r) => !tail || samePhone(r.guest_ref, guestRef)), today);
+  // PMS conversations are keyed by booking, not phone: use the booking they were created for
+  // (or the one the channel matched by booking code).
+  const linkedId = input.reservationId ?? conversation.reservation_id;
+  if (!reservation && linkedId) {
+    const { data: linked } = await db.from('reservations').select('*').eq('id', linkedId).maybeSingle<Reservation>();
     reservation = linked ?? null;
   }
   const convPatch: Partial<Conversation> = { last_guest_message_at: now.toISOString() };
