@@ -30,15 +30,31 @@ async function sendViaSmoobu(conversation: Conversation, text: string): Promise<
   }
 }
 
-/** Sends text to the guest on the conversation's channel. The simulator only stores messages. */
-export async function sendToGuest(conversation: Conversation, text: string, opts: { checkWindow?: boolean } = {}): Promise<string | null> {
+/** What fills the update template when the 24-hour window is closed. */
+export interface TemplateContext {
+  guestName: string;
+  propertyName: string;
+  language: string;
+}
+
+/**
+ * Sends text to the guest on the conversation's channel. The simulator only stores messages.
+ * Outside WhatsApp's 24-hour window the text goes inside the approved update template when a
+ * template context is given; otherwise it is refused.
+ */
+export async function sendToGuest(conversation: Conversation, text: string, opts: { checkWindow?: boolean; template?: TemplateContext } = {}): Promise<string | null> {
   if (conversation.channel === 'smoobu') return sendViaSmoobu(conversation, text);
   if (conversation.channel !== 'whatsapp') return null;
   if (!features.whatsapp()) throw new ChannelError('WhatsApp is not configured on this deployment', 'not_configured');
-  if (opts.checkWindow && !whatsapp.inServiceWindow(conversation.last_guest_message_at)) {
+  const closed = opts.checkWindow && !whatsapp.inServiceWindow(conversation.last_guest_message_at);
+  if (closed && !opts.template) {
     throw new ChannelError('More than 24 h since the guest last wrote: use an approved template', 'window_closed');
   }
   try {
+    if (closed && opts.template) {
+      const { guestName, propertyName, language } = opts.template;
+      return await whatsapp.sendTemplate(conversation.guest_ref, whatsapp.UPDATE_TEMPLATE, language, [guestName.split(' ')[0] || '👋', propertyName, text]);
+    }
     return await whatsapp.sendText(conversation.guest_ref, text);
   } catch (e) {
     throw new ChannelError(e instanceof Error ? e.message : 'send failed', 'send_failed');

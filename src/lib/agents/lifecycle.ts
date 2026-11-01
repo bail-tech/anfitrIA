@@ -3,7 +3,8 @@
  * anchored to the booking, the check-in or the check-out, with optional conditions.
  * Runs daily (Vercel Hobby crons are daily). A message goes out in the first run from 12 h before
  * it is due until 24 h after; the audit log makes sure it goes out once. If the channel cannot
- * send right now (WhatsApp outside its 24-hour window) it leaves a card for the host instead.
+ * send right now it leaves a card for the host instead. Outside WhatsApp's 24-hour window the
+ * text goes inside the approved update template; a voice note cannot, so it becomes a card.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
@@ -140,7 +141,7 @@ export async function runLifecycle(db: SupabaseClient, orgId: number, now = new 
         try {
           if (voice) await sendVoiceNote(db, orgId, conv, text, t.language);
           else {
-            const externalId = await sendToGuest(conv, text, { checkWindow: true });
+            const externalId = await sendToGuest(conv, text, { checkWindow: true, template: { guestName: r.guest_name, propertyName: p.name, language: t.language } });
             await db.from('messages').insert({ conversation_id: conv.id, direction: 'out', text, external_id: externalId });
           }
           sent++;

@@ -71,7 +71,10 @@ export async function sendHostReply(db: SupabaseClient, profile: Profile, input:
   const ctx = await loadConversation(db, input.conversationId);
   const language = 'es';
   const outgoing = await resolvePrivate(db, ctx, input.text, language);
-  const externalId = await sendToGuest(ctx.conversation, outgoing, { checkWindow: true });
+  // Outside WhatsApp's 24-hour window the reply goes inside the update template, in the guest's language.
+  const { data: last } = await db.from('messages').select('language').eq('conversation_id', ctx.conversation.id).eq('direction', 'in').order('created_at', { ascending: false }).limit(1).maybeSingle<{ language: string }>();
+  const template = { guestName: ctx.reservation?.guest_name ?? '', propertyName: ctx.property.name, language: last?.language ?? ctx.property.default_language };
+  const externalId = await sendToGuest(ctx.conversation, outgoing, { checkWindow: true, template });
   await db.from('messages').insert({ conversation_id: ctx.conversation.id, direction: 'out', text: outgoing, external_id: externalId, sent_by: profile.id });
 
   if (input.draftId) {

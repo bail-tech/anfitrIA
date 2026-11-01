@@ -37,6 +37,34 @@ export async function sendText(to: string, body: string): Promise<string | null>
   return r.messages?.[0]?.id ?? null;
 }
 
+/**
+ * Outside the 24-hour window only Meta-approved templates go out. `anfi_update` wraps any
+ * message: "Hi {{1}}, a message about your stay at {{2}}: {{3}} …", created in each language.
+ */
+export const UPDATE_TEMPLATE = 'anfi_update';
+export const TEMPLATE_LANGUAGES = ['es', 'en', 'fr', 'de', 'it'] as const;
+
+/** Template parameters may not contain new lines, tabs or more than four spaces in a row. */
+export function templateParam(text: string, max = 900): string {
+  const flat = text.replace(/\s*\n\s*/g, ' · ').replace(/\s+/g, ' ').trim();
+  return flat.length > max ? `${flat.slice(0, max - 1)}…` : flat;
+}
+
+export async function sendTemplate(to: string, name: string, language: string, params: string[]): Promise<string | null> {
+  const lang = (TEMPLATE_LANGUAGES as readonly string[]).includes(language) ? language : 'es';
+  const r = await graph<{ messages?: Array<{ id: string }> }>(`/${phoneId()}/messages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messaging_product: 'whatsapp',
+      to,
+      type: 'template',
+      template: { name, language: { code: lang }, components: [{ type: 'body', parameters: params.map((p) => ({ type: 'text', text: templateParam(p) })) }] },
+    }),
+  });
+  return r.messages?.[0]?.id ?? null;
+}
+
 /** OGG/Opus shows as a voice note; other accepted formats (AAC, MP4, MPEG, AMR) show as audio files. */
 export async function uploadMedia(data: Uint8Array, mime: string, filename: string): Promise<string> {
   const form = new FormData();

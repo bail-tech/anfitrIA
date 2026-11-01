@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCalls } from '@/lib/channels/whatsapp';
+import { parseCalls, templateParam } from '@/lib/channels/whatsapp';
 import { callFacts, guestCallInstructions, languageForPhone } from '@/lib/voice/guest-call';
 
 const connect = {
@@ -43,5 +43,12 @@ describe('WhatsApp calls', () => {
     expect(prompt).toContain('Tio Pepe Hab 1');
     expect(prompt).toContain('Start in English');
     expect(prompt).not.toContain('bienvenido2026');
+  });
+});
+
+describe('WhatsApp templates', () => {
+  it('flattens a message into one template parameter', () => {
+    expect(templateParam('Hola Ana\n\nTu código llega mañana.\tGracias')).toBe('Hola Ana · Tu código llega mañana. Gracias');
+    expect(templateParam('x'.repeat(2000))).toHaveLength(900);
   });
 });

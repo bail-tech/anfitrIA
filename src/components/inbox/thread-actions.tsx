@@ -136,7 +136,7 @@ export function ThreadActions({ conversationId, handoff, windowOpen, ttsAvailabl
       )}
       {error && <p className="text-sm text-terra">{error}</p>}
       <div className="flex flex-wrap gap-2">
-        <button onClick={sendText} disabled={!text.trim() || busy !== null || !windowOpen} className={buttonClass('primary')}>
+        <button onClick={sendText} disabled={!text.trim() || busy !== null} className={buttonClass('primary')}>
           {busy === 'text' ? <Loader2 className="animate-spin" /> : <Send />} {t('send')}
         </button>
         {ttsAvailable && (

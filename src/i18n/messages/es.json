@@ -112,7 +112,7 @@
     "release": "Devolver a la IA",
     "handoffOn": "Estás atendiendo esta conversación: la IA no responde.",
     "placeholder": "Escribe tu respuesta…",
-    "windowClosed": "Han pasado más de 24 h desde el último mensaje del huésped: WhatsApp solo admite plantillas aprobadas.",
+    "windowClosed": "Han pasado más de 24 h desde el último mensaje del huésped: el texto sale dentro de la plantilla aprobada de WhatsApp; las notas de voz esperan a que vuelva a escribir.",
     "voiceNote": "Nota de voz",
     "transcript": "Transcripción",
     "sim": "Simulador",

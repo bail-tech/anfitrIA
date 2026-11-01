@@ -112,7 +112,7 @@
     "release": "Hand back to AI",
     "handoffOn": "You are handling this conversation: the AI stays out.",
     "placeholder": "Write your reply…",
-    "windowClosed": "More than 24 h since the guest last wrote: WhatsApp only allows approved templates.",
+    "windowClosed": "More than 24 h since the guest last wrote: text goes out inside the approved WhatsApp template; voice notes wait until the guest writes again.",
     "voiceNote": "Voice note",
     "transcript": "Transcript",
     "sim": "Simulator",
